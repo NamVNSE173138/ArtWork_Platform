@@ -46,12 +46,12 @@
 }
 
 .user-actions button {
-    margin-left: 10px;
+    margin-right: 10px;
     /* background-color: #ffffff;
     color: #000000;
     padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer; */
+    border-radius: 4px; */
+    cursor: pointer;
     border-color: #000000;
 }
 
@@ -96,4 +96,32 @@
 
 .nav-buttons {
     margin: 10px;
+}
+
+.menu {
+    text-align: center;
+}
+
+.menu ul {
+    padding-inline-start: 0;
+}
+
+.menu li {
+    list-style-type: none;
+    padding: 4px;
+    color: #767676;
+}
+
+.menu li:hover {
+    color: #000000;
+}
+
+.menu p {
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.menu-part {
+    margin: 0 30px;
+
 }
