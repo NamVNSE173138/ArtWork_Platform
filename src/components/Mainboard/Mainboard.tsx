@@ -2,7 +2,7 @@
 import React from "react";
 import Pin from "./Pin";
 import "./Mainboard.css";
-
+import { FloatButton } from "antd";
 interface PinProps {
   urls: {
     regular: string;
@@ -22,6 +22,7 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
           return <Pin key={index} urls={urls} />;
         })}
       </div>
+      <FloatButton.BackTop />
     </div>
   );
 };

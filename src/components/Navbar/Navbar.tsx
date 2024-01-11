@@ -3,6 +3,7 @@ import "./Navbar.css"; // Assuming you have a corresponding CSS file
 import { Input, Space, Button, Select, Tag, Popover } from "antd";
 import Logo from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
 import { MenuOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -86,7 +87,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     <nav className="navbar">
       <div className="first-line">
         <div className="logo">
-          <img src={Logo} alt="Logo" />
+          <Link to={"/"}>
+            <img src={Logo} alt="Logo" />
+          </Link>
           <div className="search-box">
             <Space direction="vertical">
               <Select
@@ -108,8 +111,12 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
         </div>
         <div style={{ display: "flex" }}>
           <div className="user-actions">
-            <Button size="large">Login</Button>
-            <Button size="large">Signup</Button>
+            <Link to={"/login"}>
+              <Button size="large">Login</Button>
+            </Link>
+            <Link to={"/signup"}>
+              <Button size="large">Signup</Button>
+            </Link>
           </div>
           <Popover
             placement="bottomRight"
