@@ -1,0 +1,153 @@
+.Wrapper {
+    position: relative;
+    padding: 8px;
+}
+
+.image {
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    cursor: pointer;
+    width: 411px;
+
+    img {
+        display: flex;
+        width: 100%;
+        /* cursor: zoom-in; */
+        border-radius: 16px;
+        object-fit: cover;
+    }
+}
+
+.top-btn,
+.bottom-btn {
+    position: absolute;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.top-btn {
+    top: 20px;
+    right: 20px;
+}
+
+.bottom-btn {
+    bottom: 20px;
+    right: 20px;
+}
+
+.image:hover {
+    filter: brightness(85%);
+}
+
+.like-btn,
+.bottom-btn,
+.add-btn,
+.artist-info {
+    opacity: 0;
+}
+
+.like-btn {
+    margin-right: 10px;
+}
+
+.image:hover .bottom-btn,
+.image:hover .like-btn,
+.image:hover .add-btn,
+.image:hover .artist-info {
+    opacity: 1;
+}
+
+.artist-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+}
+
+.image-container img {
+    max-width: 100%;
+    /* Adjust this value based on your design preference */
+    height: auto;
+    /* Maintain aspect ratio */
+    display: block;
+    /* Remove default inline behavior */
+    margin: 0 auto;
+    /* Center the image */
+    height: 580px;
+}
+
+
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+
+
+.name {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.tag {
+    font-size: 12px;
+}
+
+.artist-info-modal {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+}
+
+.artist-info-modal .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+
+
+.artist-info-modal .name {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.artist-info-modal .tag {
+    font-size: 12px;
+}
+
+.top-modal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.like-modal-btn,
+.add-modal-btn,
+.share-btn {
+    margin-right: 20px;
+}
+
+.bottom-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 12px 20px;
+    font-size: 15px;
+    line-height: 24px;
+}
+
+.img-detail {
+    line-height: 24px;
+    font-size: 15px;
+    margin: 10px 20px;
+    color: #767676;
+}
