@@ -8,12 +8,13 @@ import {
 } from "@ant-design/icons";
 import { Button, Modal, message, Tag, Space } from "antd";
 import "./Pin.css";
+import axios from "axios";
+import { MongoClient } from "mongodb";
 interface PinProps {
   urls: {
     regular: string;
   };
 }
-
 const tags = [
   "Sossusvlei",
   "Namibia",

@@ -5,6 +5,8 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./page/Home";
 import LoginForm from "./page/Login";
 import SignupForm from "./page/Signup";
+import Upload from "./page/Upload";
+import Profile from "./page/Profile";
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<LoginForm />} />
       <Route path="/signup" element={<SignupForm />} />
+      <Route path="/upload" element={<Upload />} />
+      <Route path="/profile" element={<Profile />} />
     </Routes>
   );
 }

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import unsplash from "../api/unsplash";
-import Signup from "../components/SignUp/SignUp";
+import Profile from "../components/Profile/Profile";
 
 interface Pin {
   urls: {
@@ -72,7 +72,7 @@ const SignupForm: React.FC = () => {
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />
-      <Signup />
+      <Profile />
     </>
   );
 };

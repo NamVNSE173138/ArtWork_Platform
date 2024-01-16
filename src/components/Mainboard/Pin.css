@@ -68,6 +68,10 @@
     padding: 8px;
 }
 
+.info {
+    color: #ffffff;
+}
+
 .image-container img {
     max-width: 100%;
     /* Adjust this value based on your design preference */

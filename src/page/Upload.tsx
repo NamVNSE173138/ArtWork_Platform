@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import unsplash from "../api/unsplash";
-import Signup from "../components/SignUp/SignUp";
+import UploadImageForm from "../components/UploadForm/UploadForm";
 
 interface Pin {
   urls: {
@@ -15,7 +15,7 @@ interface UnsplashResponse<T> {
   results: T;
 }
 
-const SignupForm: React.FC = () => {
+const Upload: React.FC = () => {
   const [pins, setNewPins] = useState<Pin[]>([]);
 
   const getImages = (term: string) => {
@@ -72,9 +72,9 @@ const SignupForm: React.FC = () => {
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />
-      <Signup />
+      <UploadImageForm />
     </>
   );
 };
 
-export default SignupForm;
+export default Upload;
