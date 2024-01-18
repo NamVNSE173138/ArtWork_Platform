@@ -116,7 +116,7 @@ function Dashboard(): JSX.Element {
 }
 function DashboardCard({ title, value, icon }: { title: string, value: number, icon: JSX.Element }): JSX.Element {
   return (
-    <Card style={{width: '320px'}}>
+    <Card style={{width: '310px'}}>
       <Space direction="horizontal">
         {icon}
         <Statistic title={title} value={value} />
@@ -137,7 +137,7 @@ function RecentOrders(): JSX.Element {
   return (
     <>
       <Typography.Text>Recent Orders</Typography.Text>
-      <Table style={{width: '600px'}}
+      <Table style={{width: '630px'}}
         columns={[
           {
             title: "Title",

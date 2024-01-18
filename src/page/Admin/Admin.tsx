@@ -1,10 +1,17 @@
 import React, { useState } from "react";
-import { SolutionOutlined, PushpinOutlined } from "@ant-design/icons";
-import "./admin.css";
+import "./Admin.css";
+import {
+  ShopOutlined,
+  ShoppingCartOutlined,
+  UserOutlined,
+  SolutionOutlined,
+} from "@ant-design/icons";
 import { Layout, Menu, Button, Input, Avatar, theme } from "antd";
 // import MyDay from "../My Day/MyDay";
 import Customers from "../../components/Admin/Customers";
 import Dashboard from "../../components/Admin/Dashboard";
+import Inventory from "../../components/Admin/Inventory";
+import Orders from "../../components/Admin/Orders";
 import avt from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
 const { Header, Sider, Content } = Layout;
 
@@ -40,43 +47,35 @@ const Admin: React.FC = () => {
     },
     {
       key: "2",
-      icon: <PushpinOutlined />,
+      icon: <UserOutlined />,
       label: "Customers",
       onClick: () => setActiveComponent("Customers"),
     },
-    {
-      key: "3",
-      icon: <SolutionOutlined />,
-      label: "My Day",
-      onClick: () => setActiveComponent("MyDay"),
-    },
+    // {
+    //   key: "3",
+    //   icon: <SolutionOutlined />,
+    //   label: "My Day",
+    //   onClick: () => setActiveComponent("MyDay"),
+    // },
     {
       key: "4",
-      icon: <PushpinOutlined />,
-      label: "Task",
-      onClick: () => setActiveComponent("Task"),
+      icon: <ShopOutlined />,
+      label: "Artwork",
+      onClick: () => setActiveComponent("Inventory"),
     },
     {
       key: "5",
-      icon: <PushpinOutlined />,
-      label: "Task",
-      onClick: () => setActiveComponent("Task"),
+      icon: <ShoppingCartOutlined />,
+      label: "Orders",
+      onClick: () => setActiveComponent("Orders"),
     },
   ];
 
   return (
-    <Layout className="admin">
-      <Sider trigger={null}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            padding: "20px",
-            borderBottom: "1px solid #e8e8e8",
-          }}
-        >
-          <Avatar size={80} src={avt} />
+    <Layout className="Admin">
+      <Sider>
+        <div className="AppHeader">
+          <Avatar size={40} src={avt} />
           {/* {!collapsed ? (
             <>
               <span style={{ marginTop: "10px", fontWeight: "bold" }}>
@@ -87,10 +86,9 @@ const Admin: React.FC = () => {
           ) : null} */}
         </div>
         <Menu
-          theme="light"
-          mode="inline"
+          className="SideMenuVertical"
+          mode="vertical"
           defaultSelectedKeys={["1"]}
-          style={{ backgroundColor: "white" }}
         >
           {menuItems.map((item) => (
             <Menu.Item key={item.key} icon={item.icon} onClick={item.onClick}>
@@ -108,7 +106,7 @@ const Admin: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <h2 style={{ marginLeft: "700px" }}>Admin</h2>
+          <h2 style={{ marginLeft: "650px" }}>Admin</h2>
         </Header>
         <Content
           style={{
@@ -120,6 +118,8 @@ const Admin: React.FC = () => {
         >
           {activeComponent === "Dashboard" && <Dashboard />}
           {activeComponent === "Customers" && <Customers />}
+          {activeComponent === "Orders" && <Orders />}
+          {activeComponent === "Inventory" && <Inventory />}
         </Content>
       </Layout>
     </Layout>

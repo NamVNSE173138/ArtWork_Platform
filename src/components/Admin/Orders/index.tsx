@@ -17,7 +17,7 @@ function Orders() {
   return (
     <Space size={20} direction="vertical">
       <Typography.Title level={4}>Orders</Typography.Title>
-      <Table style={{width: '1300px'}}
+      <Table style={{width: '1250px'}}
         loading={loading}
         columns={[
           {
