@@ -22,10 +22,11 @@ function App() {
       <Route path="/signup" element={<SignupForm />} />
       <Route path="/upload" element={<Upload />} />
       <Route path="/profile" element={<Profile />} />
-      <Route path="/admin/dashboard" element={<Dashboard />}></Route>
+      <Route path="/admin" element={<Admin />} />
+      {/* <Route path="/admin/dashboard" element={<Dashboard />}></Route>
       <Route path="/admin/artworks" element={<Inventory />}></Route>
       <Route path="/admin/orders" element={<Orders />}></Route>
-      <Route path="/admin/customers" element={<Customers />}></Route>
+      <Route path="/admin/customers" element={<Customers />}></Route> */}
     </Routes>
   );
 }
