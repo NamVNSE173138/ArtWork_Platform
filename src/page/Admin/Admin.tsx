@@ -75,7 +75,7 @@ const Admin: React.FC = () => {
     <Layout className="Admin">
       <Sider>
         <div className="AppHeader">
-          <Avatar size={40} src={avt} />
+          <Avatar size={40} src={avt} className="logo" />
           {/* {!collapsed ? (
             <>
               <span style={{ marginTop: "10px", fontWeight: "bold" }}>
