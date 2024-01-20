@@ -12,6 +12,8 @@ import Customers from "./components/Admin/Customers";
 import Dashboard from "./components/Admin/Dashboard";
 import Inventory from "./components/Admin/Inventory";
 import Orders from "./components/Admin/Orders";
+import Navigator from "./page/Navigator/Navigator";
+import FavoriteList from "./page/FavoriteList/FavoriteList";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
       <Route path="/upload" element={<Upload />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/admin" element={<Admin />} />
+      <Route path="/navigator" element={<Navigator />} />
+      <Route path="/favoriteList" element={<FavoriteList />} />
       {/* <Route path="/admin/dashboard" element={<Dashboard />}></Route>
       <Route path="/admin/artworks" element={<Inventory />}></Route>
       <Route path="/admin/orders" element={<Orders />}></Route>

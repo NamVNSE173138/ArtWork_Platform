@@ -1,0 +1,94 @@
+*,
+*:after,
+*:before {
+    box-sizing: border-box;
+}
+
+.container {
+    height: 100%;
+    background-color: #FFF;
+}
+
+.navbar {
+    background-color: rgba(255, 255, 255, .4);
+    text-align: center;
+    max-height: 50px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.dusk {
+    background-color: #FFEBB4;
+    height: 100%;
+    z-index: -1;
+    margin-top: 50px;
+    display: flex;
+    gap: 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+.day {
+    background-color: #92C7CF;
+    height: 100%;
+    z-index: -1;
+    display: flex;
+    margin-top: 50px;
+    gap: 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+.dawn {
+    background-color: #E5D283;
+    height: 100%;
+    z-index: -1;
+    display: flex;
+    gap: 50px;
+    margin-top: 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+.night {
+    background-color: #27374D;
+    height: 100%;
+    z-index: -1;
+    margin-top: 50px;
+    display: flex;
+    gap: 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+.sampleBox {
+    height: 70vh;
+    width: 50vw;
+    border-radius: 5%;
+    background-color: #678983;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 50%;
+}
+
+.sampleButton {
+    margin: 320px 0 0 0;
+    margin-right: 100px;
+}
+
+.sampleText {
+    height: 30vh;
+    width: 30vw;
+    font-size: 70%;
+    color: #294B29;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
