@@ -67,9 +67,10 @@
 }
 
 .sampleBox {
-    height: 70vh;
-    width: 50vw;
+    max-height: 400px;
+    max-width: 700px;
     border-radius: 5%;
+    margin-left: 50px;
     background-color: #678983;
     display: inline-flex;
     justify-content: center;
@@ -77,18 +78,18 @@
     font-size: 50%;
 }
 
-.sampleButton {
-    margin: 320px 0 0 0;
-    margin-right: 100px;
-}
-
 .sampleText {
-    height: 30vh;
-    width: 30vw;
+    max-height: 200px;
+    max-width: 300px;
+    margin-left: 70%;
     font-size: 70%;
-    color: #294B29;
+    color: #248f24;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+}
+
+.sampleButton {
+    margin-top: 50px;
 }
