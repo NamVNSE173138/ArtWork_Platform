@@ -1,3 +1,17 @@
 .profile-container {
     margin: 20px 100px
 }
+
+.ant-card-meta-title {
+    font-size: 20px !important;
+}
+
+span.ant-avatar.ant-avatar-circle.ant-avatar-image.css-dev-only-do-not-override-dkbvqv {
+    height: 100px;
+    width: 100px;
+}
+
+:where(.css-dev-only-do-not-override-dkbvqv).ant-avatar>img {
+    width: 100px !important;
+    height: 100px !important;
+}

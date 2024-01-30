@@ -1,8 +1,10 @@
-// unsplash.ts
 import axios, { AxiosInstance } from "axios";
 
+// Use your local API URL
+const localApiUrl = "http://localhost:5000/artwork";
+
 const unsplash: AxiosInstance = axios.create({
-  baseURL: "https://api.unsplash.com/",
+  baseURL: localApiUrl,
   headers: {
     Authorization: "Client-ID gnITd_as19J-8akX36iY6Dii-QB8QoyuJrdqpOxf_V4",
   },

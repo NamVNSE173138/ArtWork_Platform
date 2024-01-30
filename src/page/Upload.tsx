@@ -1,7 +1,7 @@
 // Home.tsx
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar/Navbar";
-import unsplash from "../api/unsplash";
+import unsplash from "../api/artwork";
 import UploadImageForm from "../components/UploadForm/UploadForm";
 
 interface Pin {

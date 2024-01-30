@@ -4,13 +4,13 @@ import { Row, Col, Card, Avatar, Button, Tabs, Modal, Form, Input } from "antd";
 import { EditOutlined, CameraOutlined } from "@ant-design/icons";
 import type { TabsProps } from "antd";
 import "./Profile.css"; // Create this stylesheet for additional styling if needed
-
+import Contributed from "../ContributedArtwork/ContributedArtwork";
 const { Meta } = Card;
 const items: TabsProps["items"] = [
   {
     key: "1",
     label: "Favourite Artwork",
-    children: "Content of Tab Pane 1",
+    children: <Contributed />,
   },
   {
     key: "2",
@@ -39,13 +39,13 @@ const ProfilePage: React.FC = () => {
       <Row gutter={16}>
         <Col span={24}>
           <Card
-            cover={
-              <img
-                height={300}
-                alt="Profile Cover"
-                src="https://images.unsplash.com/photo-1705311756049-d4720db623f3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHx8"
-              />
-            }
+            // cover={
+            //   <img
+            //     height={300}
+            //     alt="Profile Cover"
+            //     src="https://images.unsplash.com/photo-1705311756049-d4720db623f3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHx8"
+            //   />
+            // }
             actions={[
               <Button
                 icon={<EditOutlined />}
@@ -61,10 +61,15 @@ const ProfilePage: React.FC = () => {
           >
             <Meta
               avatar={
-                <Avatar src="https://source.unsplash.com/200x200/?portrait" />
+                <Avatar src="https://plus.unsplash.com/premium_photo-1677101221533-52b45823a2dc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2F0fGVufDB8fDB8fHww" />
               }
-              title="John Doe"
-              description="Web Developer"
+              title="Nam đẹp trai"
+              description={
+                <>
+                  Web Developer <br />
+                  Bố mày thích lập trình
+                </>
+              }
             />
           </Card>
           <Modal

@@ -1,78 +1,96 @@
-// Home.tsx
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
-import unsplash from "../api/unsplash";
 import Mainboard from "../components/Mainboard/Mainboard";
 
 interface Pin {
-  urls: {
-    regular: string;
-  };
+  _id: string;
+  artworkId: number;
+  userId: number;
+  artworkName: string;
+  createTime: Date;
+  tags: string;
+  numOfLike: number;
+  price: string;
+  describe: string;
+  imageUrl: string;
 }
 
-// Update UnsplashResponse interface
-interface UnsplashResponse<T> {
-  results: T;
+interface ArtworkResponse {
+  data: Pin[];
 }
 
 const Home: React.FC = () => {
-  const [pins, setNewPins] = useState<Pin[]>([]);
+  const [pins, setPins] = useState<Pin[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [image, setImage] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:5000/artwork")
+      .then((response) => response.json())
+      .then((res) => {
+        setImage(res);
+        console.log(res);
+      });
+  }, []);
+  // console.log(image);
 
-  const getImages = (term: string) => {
-    return unsplash.get<UnsplashResponse<Pin[]>>(
-      "search/photos",
-      // Adjust the endpoint based on your API structure
-      {
-        params: {
-          query: term,
-        },
-      }
-    );
+  const getImages = async () => {
+    try {
+      const response = await axios.get<ArtworkResponse>(
+        "http://localhost:5000/artwork"
+      );
+      console.log("reponse: ", response);
+      console.log(response.data);
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching artwork:", error);
+      throw error;
+    }
   };
 
-  const onSearchSubmit = (term: string) => {
-    getImages(term).then((res) => {
-      // Ensure 'res.data.results' exists and is an array before using it
-      let newPins = Array.isArray(res.data.results)
-        ? [...res.data.results, ...pins]
-        : [...pins];
+  const onSearchSubmit = async (term: string) => {
+    setLoading(true);
+
+    try {
+      const res = await getImages();
+      const newPins = Array.isArray(res.data) ? res.data : [];
 
       newPins.sort(() => 0.5 - Math.random());
-      setNewPins(newPins);
-    });
+      setPins(newPins);
+    } catch (error) {
+      console.error("Error fetching search images:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const getNewPins = () => {
-    let promise: Promise<void>[] = [];
-    let pinData: Pin[] = [];
+  const getNewPins = async () => {
+    setLoading(true);
 
-    let pins = ["dogs", "cats", "still life", "fasion", "clouds"];
+    try {
+      const res = await getImages();
 
-    pins.forEach((pinTerm) => {
-      promise.push(
-        getImages(pinTerm).then((res) => {
-          // Ensure 'res.data.results' exists and is an array before using it
-          if (Array.isArray(res.data.results)) {
-            pinData = pinData.concat(res.data.results);
-            pinData.sort(() => 0.5 - Math.random());
-          }
-        })
-      );
-    });
+      // Check if res.data is defined and is an array before sorting
+      const pinData = Array.isArray(res.data) ? res.data : [];
 
-    Promise.all(promise).then(() => {
-      setNewPins(pinData);
-    });
+      setPins(pinData);
+    } catch (error) {
+      console.error("Error fetching new pins:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     getNewPins();
   }, []);
 
+  useEffect(() => {}, [pins]);
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />
-      <Mainboard pins={pins} />
+      {loading ? <p>Loading...</p> : <Mainboard pins={image} />}
     </>
   );
 };

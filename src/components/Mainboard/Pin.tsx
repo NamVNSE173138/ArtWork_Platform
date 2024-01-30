@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CalendarOutlined,
   DownloadOutlined,
@@ -8,12 +8,17 @@ import {
 } from "@ant-design/icons";
 import { Button, Modal, message, Tag, Space } from "antd";
 import "./Pin.css";
-import axios from "axios";
-import { MongoClient } from "mongodb";
-interface PinProps {
-  urls: {
-    regular: string;
-  };
+export interface PinProps {
+  _id: string;
+  artworkId: number;
+  userId: number;
+  artworkName: string;
+  createTime: Date;
+  tags: string;
+  numOfLike: number;
+  price: string;
+  describe: string;
+  imageUrl: string;
 }
 const tags = [
   "Sossusvlei",
@@ -30,7 +35,43 @@ const tags = [
   "People Images & Pictures",
   "Free Stock Photos",
 ];
-const Pin: React.FC<PinProps> = ({ urls }) => {
+const Pin: React.FC<PinProps> = ({
+  _id,
+  artworkId,
+  userId,
+  artworkName,
+  createTime,
+  tags,
+  numOfLike,
+  price,
+  describe,
+  imageUrl,
+}) => {
+  useEffect(() => {
+    console.log("Pin Properties:", {
+      _id,
+      artworkId,
+      userId,
+      artworkName,
+      createTime,
+      tags,
+      numOfLike,
+      price,
+      describe,
+      imageUrl,
+    });
+  }, [
+    _id,
+    artworkId,
+    userId,
+    artworkName,
+    createTime,
+    tags,
+    numOfLike,
+    price,
+    describe,
+    imageUrl,
+  ]);
   const [modalVisible, setModalVisible] = useState(false);
   const showModal = () => {
     setModalVisible(true);
@@ -87,7 +128,7 @@ const Pin: React.FC<PinProps> = ({ urls }) => {
             <p className="tag">#nice</p>
           </div>
         </div>
-        <img src={urls?.regular} alt="pin" onClick={showModal} />
+        <img src={imageUrl} alt="pin" onClick={showModal} />
         <Modal
           style={{ top: 20 }}
           open={modalVisible}
@@ -137,7 +178,7 @@ const Pin: React.FC<PinProps> = ({ urls }) => {
               </div>
             </div>
             <div className="image-container">
-              <img className="img-modal" src={urls?.regular} alt="pin" />
+              <img className="img-modal" src={imageUrl} alt="pin" />
             </div>
             <div className="bottom-section">
               <div className="download-count">
@@ -170,11 +211,11 @@ const Pin: React.FC<PinProps> = ({ urls }) => {
                 <SafetyOutlined /> Free to use under the ArtAttack License
               </span>
             </div>
-            <Space size={[0, 8]} wrap>
+            {/* <Space size={[0, 8]} wrap>
               {tags.map((tag, index) => (
                 <Tag key={index}>{tag}</Tag>
               ))}
-            </Space>
+            </Space> */}
           </div>
         </Modal>
       </div>
