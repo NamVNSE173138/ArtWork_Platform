@@ -1,12 +1,55 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Parallax, ParallaxLayer, IParallax } from '@react-spring/parallax'
 import { Row, Col, Button } from 'antd'
 import { MonitorOutlined, SearchOutlined } from '@ant-design/icons'
+import { Schema, model, connect } from 'mongoose';
 
 import styles from './styles.module.css'
 
 export default function Navigator() {
     const parallax = useRef<IParallax>(null!)
+    interface IUser {
+        userId: number;
+        nickname: string;
+        email: string;
+        password: string;
+        role: string;
+        createTime: Date;
+        numOfFollower: number;
+        avatar?: string;
+        status: boolean;
+    }
+
+    const userSchema = new Schema<IUser>({
+        userId: { type: Number, required: true },
+        nickname: { type: String, required: true },
+        email: { type: String, required: true },
+        avatar: String
+    });
+
+    const User = model<IUser>('User', userSchema);
+    const [user, setUser] = useState<IUser>()
+
+    async function run() {
+        // 4. Connect to MongoDB
+        await connect('mongodb+srv://vonhatnam:vonhatnam@cluster0.u60utzk.mongodb.net/');
+
+        const user = new User({
+            userId: 23,
+            nickname: 'Bill',
+            email: 'bill@initech.com',
+            avatar: 'https://i.imgur.com/dM7Thhn.png'
+        });
+        await user.save();
+        if (user) {
+            setUser(user)
+            console.log(user.userId)
+        } else {
+            console.log("Undefined")
+        }
+    }
+    run()
+
     return (
         <div className={styles.container}>
             <Parallax ref={parallax} pages={4}>
