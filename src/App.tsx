@@ -8,9 +8,9 @@ import SignupForm from "./page/Signup";
 import Upload from "./page/Upload";
 import Profile from "./page/Profile";
 import Admin from "./page/Admin/Admin";
-import Customers from "./components/Admin/Customers";
+import Customers from "./components/Admin/User";
 import Dashboard from "./components/Admin/Dashboard";
-import Inventory from "./components/Admin/Inventory";
+import Artwork from "./components/Admin/Artwork";
 import Orders from "./components/Admin/Orders";
 import Navigator from "./page/Navigator/Navigator";
 import FavoriteList from "./page/FavoriteList/FavoriteList";
@@ -28,7 +28,7 @@ function App() {
       <Route path="/navigator" element={<Navigator />} />
       <Route path="/favoriteList" element={<FavoriteList />} />
       {/* <Route path="/admin/dashboard" element={<Dashboard />}></Route>
-      <Route path="/admin/artworks" element={<Inventory />}></Route>
+      <Route path="/admin/artworks" element={<Artwork />}></Route>
       <Route path="/admin/orders" element={<Orders />}></Route>
       <Route path="/admin/customers" element={<Customers />}></Route> */}
     </Routes>

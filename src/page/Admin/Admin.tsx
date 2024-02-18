@@ -8,9 +8,9 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu, Button, Input, Avatar, theme } from "antd";
 // import MyDay from "../My Day/MyDay";
-import Customers from "../../components/Admin/Customers";
+import Customers from "../../components/Admin/User";
 import Dashboard from "../../components/Admin/Dashboard";
-import Inventory from "../../components/Admin/Inventory";
+import Artwork from "../../components/Admin/Artwork";
 import Orders from "../../components/Admin/Orders";
 import avt from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
 const { Header, Sider, Content } = Layout;
@@ -61,7 +61,7 @@ const Admin: React.FC = () => {
       key: "4",
       icon: <ShopOutlined />,
       label: "Artwork",
-      onClick: () => setActiveComponent("Inventory"),
+      onClick: () => setActiveComponent("Artwork"),
     },
     {
       key: "5",
@@ -119,7 +119,7 @@ const Admin: React.FC = () => {
           {activeComponent === "Dashboard" && <Dashboard />}
           {activeComponent === "Customers" && <Customers />}
           {activeComponent === "Orders" && <Orders />}
-          {activeComponent === "Inventory" && <Inventory />}
+          {activeComponent === "Artwork" && <Artwork />}
         </Content>
       </Layout>
     </Layout>
