@@ -25,7 +25,7 @@ const Home: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [image, setImage] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5000/artwork")
+    fetch("http://localhost:5000/artworks")
       .then((response) => response.json())
       .then((res) => {
         setImage(res);
@@ -37,7 +37,7 @@ const Home: React.FC = () => {
   const getImages = async () => {
     try {
       const response = await axios.get<ArtworkResponse>(
-        "http://localhost:5000/artwork"
+        "http://localhost:5000/artworks"
       );
       console.log("reponse: ", response);
       console.log(response.data);
