@@ -1,0 +1,31 @@
+### Get comments
+GET http://localhost:3000/comments
+
+### Post a comment
+POST http://localhost:3000/comments
+Content-Type: application/json
+
+{
+    "commentId": "cm4920232839",
+    "artworkId": "aw2941233489",
+    "userId": "us1048293847",
+    "text": "Dang san dap trai",
+    "numOfLike": 26
+}
+
+### Get a comment by id
+GET http://localhost:3000/comments/65b29c0aaa80a066e1919360
+
+### Update a comment by id
+PATCH http://localhost:3000/comments/65b29c0aaa80a066e1919360
+Content-Type: application/json
+
+{
+    "numOfLike": 111
+}
+
+### Delete a comment by id
+DELETE http://localhost:3000/comments/65b29c9faa80a066e1919362
+
+### 404
+GET http://localhost:3000/abcabc

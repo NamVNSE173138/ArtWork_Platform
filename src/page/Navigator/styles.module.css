@@ -6,7 +6,8 @@
 
 .container {
     height: 100%;
-    background-color: #FFF;
+    width: 100%;
+    background-color: #FFEBB4;
 }
 
 .navbar {

@@ -3,12 +3,25 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getUser, deleteUser } from "../../../api/index";
 
+interface User {
+  avatar: string;
+  nickname: string;
+  role: string;
+  email: string;
+  status: { status: string };
+  _id: string;
+}
+
+interface EditFormData {
+  nickname?: string;
+  email?: string;
+}
+
 function Users() {
-  const [loading, setLoading] = useState(false);
-  const [dataSource, setDataSource] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editFormData, setEditFormData] = useState({
-    // id: 0,
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dataSource, setDataSource] = useState<User[]>([]);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [editFormData, setEditFormData] = useState<EditFormData | null>({
     nickname: "",
     email: "",
   });
@@ -21,7 +34,7 @@ function Users() {
     });
   }, []);
 
-  const onDeleteUser = (record) => {
+  const onDeleteUser = (record: User) => {
     console.log(record);
     Modal.confirm({
       title: "Are you sure, you want to delete this user?",
@@ -33,12 +46,9 @@ function Users() {
     });
   };
 
-  const onEditUser = (record) => {
+  const onEditUser = (record: User) => {
     setIsEditing(true);
     setEditFormData({ ...record });
-    // const { id } = editFormData;
-    // setEditFormData({ ...id, [id]: record });
-    // console.log("EDIT PRODUCT", editFormData.id);
   };
 
   const resetEditing = () => {
@@ -49,14 +59,14 @@ function Users() {
   return (
     <Space size={20} direction="vertical">
       <Typography.Title level={4}>Users</Typography.Title>
-      <Table
+      <Table<User>
         style={{ width: "1250px" }}
         loading={loading}
         columns={[
           {
             title: "Avatar",
             dataIndex: "avatar",
-            render: (link) => {
+            render: (link: string) => {
               return <Avatar src={link} />;
             },
           },
@@ -75,14 +85,14 @@ function Users() {
           {
             title: "Status",
             dataIndex: "status",
-            render: (status) => {
+            render: (status: { status: string }) => {
               return <span>{status.status}</span>;
             },
           },
           {
             title: "Action",
             dataIndex: "_id",
-            render: (record) => {
+            render: (record: User) => {
               return (
                 <>
                   <EditOutlined
@@ -114,17 +124,6 @@ function Users() {
           resetEditing();
         }}
         onOk={() => {
-          // setDataSource((pre) => {
-          //   return pre.map((product) => {
-          //     if (product.id === editFormData.id) {
-          //       return editFormData;
-          //     } else {
-          //       return product;
-          //     }
-          //   });
-          // });
-          // const { record } = editFormData;
-          // handleSubmit(record);
           resetEditing();
         }}
       >
@@ -150,4 +149,5 @@ function Users() {
     </Space>
   );
 }
+
 export default Users;

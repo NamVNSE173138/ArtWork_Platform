@@ -8,7 +8,9 @@ import SignupForm from "./page/Signup";
 import Upload from "./page/Upload";
 import Profile from "./page/Profile";
 import Admin from "./page/Admin/Admin";
-import Customers from "./components/Admin/User";
+import SignIn from "./page/Authentication/SignIn";
+import EmailSignup from "./page/Authentication/EmailSignup";
+// import Customers from "./components/Admin/Customers";
 import Dashboard from "./components/Admin/Dashboard";
 import Artwork from "./components/Admin/Artwork";
 import Orders from "./components/Admin/Orders";
@@ -20,7 +22,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/admin" element={<Admin />} />
-      <Route path="/login" element={<LoginForm />} />
+      <Route path="/signin" element={<SignIn />} />
+      <Route path="/signup/email" element={<EmailSignup />} />
       <Route path="/signup" element={<SignupForm />} />
       <Route path="/upload" element={<Upload />} />
       <Route path="/profile" element={<Profile />} />

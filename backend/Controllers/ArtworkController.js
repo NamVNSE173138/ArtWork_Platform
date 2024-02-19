@@ -1,6 +1,7 @@
 const createError = require("http-errors");
 const mongoose = require("mongoose");
-const Artwork = require("../models/artwork");
+
+const Artwork = require("../Models/artwork");
 
 module.exports = {
   getAllArtwork: async (req, res, next) => {

@@ -2,24 +2,30 @@ import { Avatar, Rate, Space, Table, Typography, Modal, Image } from "antd";
 import { useEffect, useState } from "react";
 import { getArtwork, deleteArtwork } from "../../../api/index";
 import { DeleteOutlined } from "@ant-design/icons";
-// import {
-//   getAllArtwork,
-//   deleteArtwork,
-// } from "../../../controller/artworkController";
 
-function Artwork() {
-  const [loading, setLoading] = useState(false);
-  const [dataSource, setDataSource] = useState([]);
+interface ArtworkRecord {
+  imageUrl: string;
+  artworkName: string;
+  artworkId: string;
+  price: number;
+  tags: string[];
+  describe: string;
+  _id: string;
+}
+
+const Artwork: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dataSource, setDataSource] = useState<ArtworkRecord[]>([]);
 
   useEffect(() => {
     setLoading(true);
-    getArtwork().then((res) => {
+    getArtwork().then((res: ArtworkRecord[]) => {
       setDataSource(res);
       setLoading(false);
     });
   }, []);
 
-  const onDeleteArtwork = (record) => {
+  const onDeleteArtwork = (record: ArtworkRecord) => {
     console.log(record);
     Modal.confirm({
       title: "Are you sure, you want to delete this artwork?",
@@ -34,16 +40,14 @@ function Artwork() {
   return (
     <Space size={20} direction="vertical">
       <Typography.Title level={4}>Artwork</Typography.Title>
-      <Table
+      <Table<ArtworkRecord>
         style={{ width: "1250px" }}
         loading={loading}
         columns={[
           {
             title: "Thumbnail",
             dataIndex: "imageUrl",
-            render: (link) => {
-              return <Image src={link} width={100} />;
-            },
+            render: (link: string) => <Image src={link} width={100} />,
           },
           {
             title: "Name",
@@ -56,13 +60,12 @@ function Artwork() {
           {
             title: "Price",
             dataIndex: "price",
-            render: (value) => <span>${value}</span>,
+            render: (value: number) => <span>${value}</span>,
           },
           {
             title: "Tags",
             dataIndex: "tags",
           },
-
           {
             title: "Description",
             dataIndex: "describe",
@@ -70,27 +73,25 @@ function Artwork() {
           {
             title: "Action",
             dataIndex: "_id",
-            render: (record) => {
-              return (
-                <>
-                  <DeleteOutlined
-                    onClick={() => {
-                      onDeleteArtwork(record);
-                    }}
-                    style={{ color: "red" }}
-                  />
-                </>
-              );
-              // <Link to={"artwork/" + record.id}>Edit</Link>
-            },
+            render: (record: string) => (
+              <>
+                <DeleteOutlined
+                  onClick={() => {
+                    onDeleteArtwork({ _id: record } as ArtworkRecord);
+                  }}
+                  style={{ color: "red" }}
+                />
+              </>
+            ),
           },
         ]}
         dataSource={dataSource}
         pagination={{
           pageSize: 5,
         }}
-      ></Table>
+      />
     </Space>
   );
-}
+};
+
 export default Artwork;

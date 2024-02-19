@@ -22,11 +22,11 @@ export const deleteUser = (id) => {
 }
 
 export const getArtwork = () => {
-  return fetch("http://localhost:5000/artwork").then((res) => res.json());
+  return fetch("http://localhost:5000/artworks").then((res) => res.json());
 }
 
 export const deleteArtwork = (id) => {
-  return fetch(`http://localhost:5000/artwork/${id}`, {
+  return fetch(`http://localhost:5000/artworks/${id}`, {
     method: 'DELETE',
   })
     .then(res => res.json())

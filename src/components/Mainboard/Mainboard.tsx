@@ -1,4 +1,3 @@
-// Mainboard.tsx
 import React, { useState } from "react";
 import Pin, { PinProps } from "./Pin";
 import "./Mainboard.css";
