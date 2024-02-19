@@ -30,7 +30,7 @@ const SignupForm: React.FC = () => {
   const getImages = async () => {
     try {
       const response = await axios.get<ArtworkResponse>(
-        "http://localhost:5000/artwork"
+        "http://localhost:5000/artworks "
       );
       console.log(response.data);
 
