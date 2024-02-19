@@ -10,10 +10,6 @@ import Profile from "./page/Profile";
 import Admin from "./page/Admin/Admin";
 import SignIn from "./page/Authentication/SignIn";
 import EmailSignup from "./page/Authentication/EmailSignup";
-// import Customers from "./components/Admin/Customers";
-import Dashboard from "./components/Admin/Dashboard";
-import Artwork from "./components/Admin/Artwork";
-import Orders from "./components/Admin/Orders";
 import Navigator from "./page/Navigator/Navigator";
 import FavoriteList from "./page/FavoriteList/FavoriteList";
 
@@ -30,10 +26,7 @@ function App() {
       <Route path="/admin" element={<Admin />} />
       <Route path="/navigator" element={<Navigator />} />
       <Route path="/favoriteList" element={<FavoriteList />} />
-      {/* <Route path="/admin/dashboard" element={<Dashboard />}></Route>
-      <Route path="/admin/artworks" element={<Artwork />}></Route>
-      <Route path="/admin/orders" element={<Orders />}></Route>
-      <Route path="/admin/customers" element={<Customers />}></Route> */}
+      <Route path="/login" element={<LoginForm />} />
     </Routes>
   );
 }
