@@ -21,7 +21,7 @@ interface User {
     _id?: string,
     email: string,
     password: string,
-    nickName: string,
+    nickname: string,
     role: string,
     numOfFollower: number,
     avatar: string,
@@ -59,7 +59,7 @@ interface SignUpFormValues {
     code: string,
 }
 
-export default function Signup() {
+export default function SignUp() {
     const navigate = useNavigate()
     const location = useLocation()
     const [isLoading, setIsLoading] = useState(false)
@@ -70,7 +70,7 @@ export default function Signup() {
         _id: "",
         email: '',
         password: "",
-        nickName: "",
+        nickname: "",
         role: "",
         numOfFollower: 0,
         avatar: "",
@@ -83,10 +83,6 @@ export default function Signup() {
     const [open, setOpen] = useState(false);
     const showModal = () => {
         setOpen(true);
-    };
-
-    const handleCancel = () => {
-        setOpen(false);
     };
 
     const onGoogleSuccess = async (credentialResponse: CredentialResponse) => {
@@ -133,8 +129,37 @@ export default function Signup() {
         console.log("Failed to login with Google")
     }
 
-    const responseFacebook = (response: any) => {
-        console.log("ResponseFacebook: ", response)
+    const responseFacebook = async (response: any) => {
+        console.log("Facebook login credentials: ", response)
+        await fetch("http://localhost:5000/users")
+            .then(res => res.json())
+            .then(data => {
+                var foundUserByEmail = data.find((account: User) => (account.email === response.email))
+                if (foundUserByEmail) {
+                    console.log("Email is already registered.")
+                }
+                else {
+                    var registerUser = {
+                        email: response.email,
+                        password: generatePassword(30, ""),
+                        nickname: response.name,
+                        role: "user",
+                        numOfFollower: 0,
+                        avatar: "unset",
+                        status: true,
+                    }
+                    axios.post("http://localhost:5000/users", registerUser)
+                        .catch((err: any) => {
+                            console.log("Error: ", err.response.data)
+                        })
+                    console.log("A new account has been created by Facebook email: ", response.email)
+                    setTimeout(() => {
+                        setIsLoading(false)
+                    }, 2000)
+                }
+            })
+            .catch(err => console.log(err))
+        navigate('/')
     }
 
     const formRef = useRef(null);
@@ -142,34 +167,35 @@ export default function Signup() {
         if (formRef.current) {
             emailjs.sendForm('service_yhbkxq8', 'template_lhkes4m', formRef.current, 'zGPCRFdr4MiXVNMNw')
                 .then((result) => {
-                    console.log(result.text);
+                    console.log(result);
                 }, (error) => {
-                    console.log(error.text);
+                    console.log(error);
                 });
         }
     };
 
-    const initialValues: SignUpFormValues = {
+    const initialSignUpValues: SignUpFormValues = {
         email: location.state?.email,
         password: '',
         confirm: '',
         nickname: '',
         code: generateCode(6, ""),
     }
-    const signupForm = useFormik({
-        initialValues: initialValues,
+
+    const signUpForm = useFormik({
+        initialValues: initialSignUpValues,
         validationSchema: Yup.object({
             email: Yup.string().email("Invalid email address").required('Please enter your email'),
             password: Yup.string().min(5, "Password must contains within 5-18 symbols").max(18, "Password must contains within 5-18 letters").required("Please enter your password"),
             confirm: Yup.string().test('passwords-match', 'Passwords does not match', function (value) { return this.parent.password === value }),
-            fullName: Yup.string().required("Please enter your full name"),
+            nickname: Yup.string().required("Please enter your name"),
         }),
-        onSubmit: async (values) => {
+        onSubmit: (values) => {
             setVerifyCode(values.code)
             setRegisterUser({
                 email: values.email,
                 password: values.password,
-                nickName: values.nickname,
+                nickname: values.nickname,
                 role: "user",
                 numOfFollower: 0,
                 avatar: "unset",
@@ -189,23 +215,23 @@ export default function Signup() {
             code: Yup.string().min(6, "Verify code should be a 6-digit one.").max(6, "Verify code should be a 6-digit one.").required("")
         }),
         onSubmit: (values) => {
+            setIsLoading(true)
             if (values.code === verifyCode) {
                 axios.post('http://localhost:5000/users', registerUser)
-                    .then((response: any) => {
-                        console.log(response);
+                    .then(() => {
+                        setTimeout(() => {
+                            setOpen(false);
+                            setIsLoading(false);
+                            navigate('/')
+                        }, 2000);
                     })
                     .catch((err: any) => {
                         console.log("Error: ", err.response.data)
                     });
-                setIsLoading(true)
-                setTimeout(() => {
-                    setOpen(false);
-                    setIsLoading(false);
-                    console.log("Successfully registered");
-                }, 2000);
             }
             else {
                 setCodeStatus("Incorrect verification code ! Please check your email and try again.")
+                setIsLoading(false)
             }
         }
     })
@@ -218,19 +244,19 @@ export default function Signup() {
             <Divider type="vertical" />
             <div className="right-container row">
                 <Image className="image" src={eFurniLogo} width={250} preview={false} />
-                <form ref={formRef} onSubmit={signupForm.handleSubmit}>
+                <form ref={formRef} onSubmit={signUpForm.handleSubmit}>
                     <div className="mb-2 mt-2">
                         <input
                             type="text"
                             name="email"
                             placeholder="Email"
-                            onChange={signupForm.handleChange}
-                            onBlur={signupForm.handleBlur}
-                            value={signupForm.values.email}
+                            onChange={signUpForm.handleChange}
+                            onBlur={signUpForm.handleBlur}
+                            value={signUpForm.values.email}
                         />
                         <div className="error">
-                            {signupForm.touched.email && signupForm.errors.email ? (
-                                <i>{signupForm.errors.email}</i>
+                            {signUpForm.touched.email && signUpForm.errors.email ? (
+                                <i>{signUpForm.errors.email}</i>
                             ) : null}
                         </div>
                     </div>
@@ -239,13 +265,13 @@ export default function Signup() {
                             type="password"
                             name="password"
                             placeholder="Password"
-                            onChange={signupForm.handleChange}
-                            onBlur={signupForm.handleBlur}
-                            value={signupForm.values.password}
+                            onChange={signUpForm.handleChange}
+                            onBlur={signUpForm.handleBlur}
+                            value={signUpForm.values.password}
                         />
                         <div className="error">
-                            {signupForm.touched.password && signupForm.errors.password ? (
-                                <i>{signupForm.errors.password}</i>
+                            {signUpForm.touched.password && signUpForm.errors.password ? (
+                                <i>{signUpForm.errors.password}</i>
                             ) : null}
                         </div>
                     </div>
@@ -254,13 +280,13 @@ export default function Signup() {
                             type="password"
                             name="confirm"
                             placeholder="Confirm password"
-                            onChange={signupForm.handleChange}
-                            onBlur={signupForm.handleBlur}
-                            value={signupForm.values.confirm}
+                            onChange={signUpForm.handleChange}
+                            onBlur={signUpForm.handleBlur}
+                            value={signUpForm.values.confirm}
                         />
                         <div className="error">
-                            {signupForm.touched.confirm && signupForm.errors.confirm ? (
-                                <i>{signupForm.errors.confirm}</i>
+                            {signUpForm.touched.confirm && signUpForm.errors.confirm ? (
+                                <i>{signUpForm.errors.confirm}</i>
                             ) : null}
                         </div>
                     </div>
@@ -269,27 +295,32 @@ export default function Signup() {
                             type="text"
                             name="nickname"
                             placeholder="Your name"
-                            onChange={signupForm.handleChange}
-                            onBlur={signupForm.handleBlur}
-                            value={signupForm.values.nickname}
+                            onChange={signUpForm.handleChange}
+                            onBlur={signUpForm.handleBlur}
+                            value={signUpForm.values.nickname}
                         />
                         <div className="error">
-                            {signupForm.touched.nickname && signupForm.errors.nickname ? (
-                                <i>{signupForm.errors.nickname}</i>
+                            {signUpForm.touched.nickname && signUpForm.errors.nickname ? (
+                                <i>{signUpForm.errors.nickname}</i>
                             ) : null}
                         </div>
                     </div>
                     <input
                         type="hidden"
                         name="code"
-                        onChange={signupForm.handleChange}
-                        onBlur={signupForm.handleBlur}
-                        value={signupForm.values.code}
+                        onChange={signUpForm.handleChange}
+                        onBlur={signUpForm.handleBlur}
+                        value={signUpForm.values.code}
                     />
                     <br />
-                    <Button type="primary" htmlType="submit" shape="round" size="large" disabled={isLoading ? true : false}>
-                        {isLoading ? <LoadingOutlined /> : <p>Sign up</p>}
-                    </Button>
+                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: "5px" }}>
+                        <Button type="primary" htmlType="submit" shape="default" size="large" disabled={isLoading ? true : false} style={{ display: "inline-block", width: "70%" }}>
+                            {isLoading ? <LoadingOutlined /> : <p>Sign up</p>}
+                        </Button>
+                        <Button className="signup-btn" type="default" htmlType="reset" shape="default" size="large" style={{ display: "inline-block", width: "30%" }}>
+                            <p>Reset</p>
+                        </Button>
+                    </div>
                 </form>
                 <Divider><Text italic style={{ fontSize: "70%" }}>or you can sign in with</Text></Divider>
                 <div className="otherLogin">
@@ -312,7 +343,7 @@ export default function Signup() {
                     <Modal
                         title="Email sent"
                         open={open}
-                        onCancel={handleCancel}
+                        onCancel={() => { setOpen(false) }}
                         confirmLoading={isLoading}
                         footer={null}
                     >
@@ -334,12 +365,10 @@ export default function Signup() {
                             <input
                                 type="hidden"
                                 name="email"
-                                onChange={signupForm.handleChange}
-                                onBlur={signupForm.handleBlur}
-                                value={signupForm.values.email}
+                                value={signUpForm.values.email}
                             />
                             <span className="modal-button-group">
-                                <Button type="default" shape="round" onClick={handleCancel}>Cancel</Button>
+                                <Button type="default" shape="round" onClick={() => { setOpen(false) }}>Cancel</Button>
                                 <Button type="primary" htmlType="submit" shape="round" disabled={isLoading ? true : false}>
                                     {isLoading ? <LoadingOutlined /> : <p>Verify {verifyCode}</p>}
                                 </Button>

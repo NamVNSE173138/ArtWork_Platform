@@ -153,7 +153,7 @@ export default function EmailSignup() {
           }
         })
         .catch(err => console.log(err))
-      // navigate('/')
+      navigate('/')
     } else {
       console.log("Not found data")
     }
@@ -163,8 +163,37 @@ export default function EmailSignup() {
     console.log("Failed to login with Google");
   };
 
-  const responseFacebook = (response: any) => {
-    console.log("ResponseFacebook: ", response);
+  const responseFacebook = async (response: any) => {
+    console.log("Facebook login credentials: ", response)
+    await fetch("http://localhost:5000/users")
+      .then(res => res.json())
+      .then(data => {
+        var foundUserByEmail = data.find((account: User) => (account.email === response.email))
+        if (foundUserByEmail) {
+          console.log("Email is already registered.")
+        }
+        else {
+          var registerUser = {
+            email: response.email,
+            password: generatePassword(30, ""),
+            nickname: response.name,
+            role: "user",
+            numOfFollower: 0,
+            avatar: "unset",
+            status: true,
+          }
+          axios.post("http://localhost:5000/users", registerUser)
+            .catch((err: any) => {
+              console.log("Error: ", err.response.data)
+            })
+          console.log("A new account has been created by Facebook email: ", response.email)
+          setTimeout(() => {
+            setIsLoading(false)
+          }, 2000)
+        }
+      })
+      .catch(err => console.log(err))
+    navigate('/')
   };
 
   return (

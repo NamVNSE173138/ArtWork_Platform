@@ -84,7 +84,7 @@ export default function Forgot() {
                             })
                         setVerifyCode(emailForm.initialValues.code)
                         setIsLoading(false)
-                        // sendEmail()
+                        sendEmail()
                         showModal()
                     }
                     else {
