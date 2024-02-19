@@ -3,13 +3,14 @@ import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
 import { Route, Routes } from "react-router-dom";
 import Home from "./page/Home";
-import LoginForm from "./page/Login";
-import SignupForm from "./page/Signup";
 import Upload from "./page/Upload";
 import Profile from "./page/Profile";
 import Admin from "./page/Admin/Admin";
 import SignIn from "./page/Authentication/SignIn";
 import EmailSignup from "./page/Authentication/EmailSignup";
+import Signup from "./page/Authentication/SignUp";
+import Forgot from "./page/Authentication/Forgot";
+import Reset from "./page/Authentication/Reset";
 import Customers from "./components/Admin/Customers";
 import Dashboard from "./components/Admin/Dashboard";
 import Inventory from "./components/Admin/Inventory";
@@ -24,7 +25,9 @@ function App() {
       <Route path="/admin" element={<Admin />} />
       <Route path="/signin" element={<SignIn />} />
       <Route path="/signup/email" element={<EmailSignup />} />
-      <Route path="/signup" element={<SignupForm />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/forgot" element={<Forgot />} />
+      <Route path="/reset/:id" element={<Reset />} />
       <Route path="/upload" element={<Upload />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/admin" element={<Admin />} />

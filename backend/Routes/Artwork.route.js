@@ -8,7 +8,7 @@ router.post("/", artworkController.createNewArtwork);
 
 router.get("/:id", artworkController.findArtworkById);
 
-router.put("/:id", artworkController.updateArtwork);
+router.patch("/:id", artworkController.updateArtwork);
 
 router.delete("/:id", artworkController.deleteArtwork);
 
