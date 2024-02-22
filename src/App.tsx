@@ -18,7 +18,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/admin" element={<Admin />} />
-      <Route path="/signin" element={<SignIn />} />
+      <Route path="/login" element={<SignIn />} />
       <Route path="/signup/email" element={<EmailSignup />} />
       <Route path="/signup" element={<SignupForm />} />
       <Route path="/upload" element={<Upload />} />
@@ -26,7 +26,7 @@ function App() {
       <Route path="/admin" element={<Admin />} />
       <Route path="/navigator" element={<Navigator />} />
       <Route path="/favoriteList" element={<FavoriteList />} />
-      <Route path="/login" element={<LoginForm />} />
+      {/* <Route path="/login" element={<LoginForm />} /> */}
     </Routes>
   );
 }

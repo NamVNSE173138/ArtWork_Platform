@@ -39,7 +39,7 @@ const Artwork: React.FC = () => {
 
   return (
     <Space size={20} direction="vertical">
-      <Typography.Title level={4}>Artwork</Typography.Title>
+      {/* <Typography.Title level={4}>Artwork</Typography.Title> */}
       <Table<ArtworkRecord>
         style={{ width: "1250px" }}
         loading={loading}
@@ -47,7 +47,7 @@ const Artwork: React.FC = () => {
           {
             title: "Thumbnail",
             dataIndex: "imageUrl",
-            render: (link: string) => <Image src={link} width={100} />,
+            render: (link: string) => <Image src={link} width={85} />,
           },
           {
             title: "Name",
