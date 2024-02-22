@@ -135,11 +135,11 @@ export default function Signin() {
           console.log("A new account has been created by Facebook email: ", response.email)
           setTimeout(() => {
             setIsLoading(false)
+            navigate('/')
           }, 2000)
         }
       })
       .catch(err => console.log(err))
-    navigate('/')
   }
 
   const loginForm = useFormik({
@@ -223,8 +223,8 @@ export default function Signin() {
             onError={onGoogleError}
           />
           <FacebookLogin
-            appId="689804996380398"
-            autoLoad={true}
+            appId="1059535368457585"
+            autoLoad={false}
             fields="name,email"
             callback={responseFacebook}
             size="small"

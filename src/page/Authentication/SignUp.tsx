@@ -331,8 +331,8 @@ export default function SignUp() {
                         type="icon"
                     />
                     <FacebookLogin
-                        appId="689804996380398"
-                        autoLoad={true}
+                        appId="1059535368457585"
+                        autoLoad={false}
                         fields="name,email"
                         callback={responseFacebook}
                         size="small"
