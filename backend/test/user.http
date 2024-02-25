@@ -1,0 +1,7 @@
+###
+PATCH http://localhost:5000/users/65d2f6817ee05d0485cd2498
+Content-Type: application/json
+
+{
+    "password": "11111"
+}

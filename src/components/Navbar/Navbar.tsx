@@ -111,11 +111,11 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
         </div>
         <div style={{ display: "flex" }}>
           <div className="user-actions">
-            <Link to={"/login"}>
-              <Button size="large">Login</Button>
+            <Link to={"/signin"}>
+              <Button size="large">Sign in</Button>
             </Link>
-            <Link to={"/signup"}>
-              <Button size="large">Signup</Button>
+            <Link to={"/signup/email"}>
+              <Button size="large">Sign up</Button>
             </Link>
           </div>
           <Popover

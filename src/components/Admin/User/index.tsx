@@ -1,8 +1,7 @@
 import { Avatar, Space, Table, Typography, Modal, Input } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { getUser, deleteUser } from "../../../api/index";
-
+import { getUser, deleteUser, updateUser } from "../../../api/index";
 interface User {
   avatar: string;
   nickname: string;
@@ -21,6 +20,7 @@ function Users() {
   const [loading, setLoading] = useState<boolean>(false);
   const [dataSource, setDataSource] = useState<User[]>([]);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [testRecord, setTestRecord] = useState<User | null>(null);
   const [editFormData, setEditFormData] = useState<EditFormData | null>({
     nickname: "",
     email: "",
@@ -47,10 +47,15 @@ function Users() {
   };
 
   const onEditUser = (record: User) => {
+    // console.log("record", record);
+    // console.log("data", editFormData);
     setIsEditing(true);
-    setEditFormData({ ...record });
+    let data = { ...editFormData, id: record };
+    setEditFormData(data);
+    setTestRecord(record);
   };
-
+  // console.log("data: ", editFormData);
+  // console.log("ID: ", testRecord);
   const resetEditing = () => {
     setIsEditing(false);
     setEditFormData(null);
@@ -124,6 +129,7 @@ function Users() {
           resetEditing();
         }}
         onOk={() => {
+          updateUser(testRecord, editFormData);
           resetEditing();
         }}
       >

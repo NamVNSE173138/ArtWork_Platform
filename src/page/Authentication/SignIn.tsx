@@ -1,4 +1,4 @@
-import React, { useEffect, useState, SyntheticEvent } from "react";
+import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'react-toastify/dist/ReactToastify.css';
 import "./Authentication.css"
@@ -10,10 +10,12 @@ import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
+import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import FacebookLogin from 'react-facebook-login';
 import FacebookIcon from '../../assets/icons/facebook.png'
 import eFurniLogo from '../../assets/logos/eFurniLogo_transparent.png'
+import { generatePassword } from "../../assistants/Generators";
 
 interface User {
   _id: string,
@@ -25,7 +27,23 @@ interface User {
   avatar: string,
   status: boolean,
 }
-
+interface OtherLoginResponse {
+  id: string;
+  userID: string;
+  accessToken: string;
+  name?: string | undefined;
+  email?: string | undefined;
+  picture?:
+  | {
+    data: {
+      height?: number | undefined;
+      is_silhouette?: boolean | undefined;
+      url?: string | undefined;
+      width?: number | undefined;
+    };
+  }
+  | undefined;
+}
 interface CredentialResponse {
   credential?: string;
   select_by?: 'auto' | 'user' | 'user_1tap' | 'user_2tap' | 'btn' | 'btn_confirm' | 'btn_add_session' | 'btn_confirm_add_session';
@@ -42,28 +60,86 @@ export default function Signin() {
 
   useEffect(() => {
     if (location.state) {
-      toast.warning("Your email has been registered before. Please enter your password to sign in.")
+      toast.warning("This email has already been registered within the system. Please enter your password to sign in.")
     }
   }, [])
 
 
-  const onGoogleSuccess = (credentialResponse: CredentialResponse) => {
-    console.log("Google login successfully")
-    var decoded
+  const onGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    var decoded: OtherLoginResponse
     if (credentialResponse.credential) {
       decoded = jwtDecode(credentialResponse.credential)
-      console.log("saodiasd:", decoded)
+      console.log("SIGNIN SUCCESSFULLY. Google login user's email:", decoded.email)
+
+      await fetch("http://localhost:5000/users")
+        .then(res => res.json())
+        .then(data => {
+          var foundUserByEmail = data.find((account: User) => (account.email === decoded.email))
+          if (foundUserByEmail) {
+            console.log("Email is already registered.")
+          }
+          else {
+            var registerUser = {
+              email: decoded.email,
+              password: generatePassword(30, ""),
+              nickname: decoded.name,
+              role: "user",
+              numOfFollower: 0,
+              avatar: "unset",
+              status: true,
+            }
+            axios.post("http://localhost:5000/users", registerUser)
+              .catch((err: any) => {
+                console.log("Error: ", err.response.data)
+              })
+            console.log("A new account has been created by email ", decoded.email)
+            setTimeout(() => {
+              setIsLoading(false)
+            }, 2000)
+          }
+        })
+        .catch(err => console.log(err))
+      navigate('/')
+    } else {
+      console.log("Not found data")
     }
-    console.log("Google Login user's data:", decoded)
-    navigate('/')
   }
 
   const onGoogleError = () => {
     console.log("Failed to login with Google")
   }
 
-  const responseFacebook = (response: any) => {
-    console.log("ResponseFacebook: ", response)
+  const responseFacebook = async (response: OtherLoginResponse) => {
+    console.log("Facebook login credentials: ", response)
+    await fetch("http://localhost:5000/users")
+      .then(res => res.json())
+      .then(data => {
+        var foundUserByEmail = data.find((account: User) => (account.email === response.email))
+        if (foundUserByEmail) {
+          console.log("Email is already registered.")
+        }
+        else {
+          var registerUser = {
+            email: response.email,
+            password: generatePassword(30, ""),
+            nickname: response.name,
+            role: "user",
+            numOfFollower: 0,
+            avatar: "unset",
+            status: true,
+          }
+          axios.post("http://localhost:5000/users", registerUser)
+            .catch((err: any) => {
+              console.log("Error: ", err.response.data)
+            })
+          console.log("A new account has been created by Facebook email: ", response.email)
+          setTimeout(() => {
+            setIsLoading(false)
+            navigate('/')
+          }, 2000)
+        }
+      })
+      .catch(err => console.log(err))
   }
 
   const loginForm = useFormik({
@@ -147,8 +223,8 @@ export default function Signin() {
             onError={onGoogleError}
           />
           <FacebookLogin
-            appId="689804996380398"
-            autoLoad={true}
+            appId="1059535368457585"
+            autoLoad={false}
             fields="name,email"
             callback={responseFacebook}
             size="small"

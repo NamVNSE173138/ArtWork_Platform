@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import "./Authentication.css";
@@ -6,14 +6,16 @@ import { Button, Image, Divider, Typography } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css';
+import { useFormik } from 'formik'
+import * as Yup from 'yup';
+import { jwtDecode } from "jwt-decode";
+import FacebookLogin from 'react-facebook-login';
+import FacebookIcon from '../../assets/icons/facebook.png'
 import "react-toastify/dist/ReactToastify.css";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { JwtHeader, JwtPayload, jwtDecode } from "jwt-decode";
-import FacebookLogin from "react-facebook-login";
-import FacebookIcon from "../../assets/icons/facebook.png";
 import axios from "axios";
 import eFurniLogo from "../../assets/logos/eFurniLogo_transparent.png";
+import { generatePassword } from "../../assistants/Generators";
 
 interface User {
   _id: string;
@@ -24,6 +26,60 @@ interface User {
   numOfFollower: number;
   avatar: string;
   status: boolean;
+}
+
+interface OtherLoginResponse {
+  id: string;
+  userID: string;
+  accessToken: string;
+  name?: string | undefined;
+  email?: string | undefined;
+  picture?:
+  | {
+    data: {
+      height?: number | undefined;
+      is_silhouette?: boolean | undefined;
+      url?: string | undefined;
+      width?: number | undefined;
+    };
+  }
+  | undefined;
+}
+
+interface OtherLoginResponse {
+  id: string;
+  userID: string;
+  accessToken: string;
+  name?: string | undefined;
+  email?: string | undefined;
+  picture?:
+  | {
+    data: {
+      height?: number | undefined;
+      is_silhouette?: boolean | undefined;
+      url?: string | undefined;
+      width?: number | undefined;
+    };
+  }
+  | undefined;
+}
+
+interface OtherLoginResponse {
+  id: string;
+  userID: string;
+  accessToken: string;
+  name?: string | undefined;
+  email?: string | undefined;
+  picture?:
+  | {
+    data: {
+      height?: number | undefined;
+      is_silhouette?: boolean | undefined;
+      url?: string | undefined;
+      width?: number | undefined;
+    };
+  }
+  | undefined;
 }
 
 export default function EmailSignup() {
@@ -64,53 +120,80 @@ export default function EmailSignup() {
   });
 
   const onGoogleSuccess = async (credentialResponse: CredentialResponse) => {
-    setIsLoading(true);
-    var decoded: JwtHeader;
+    var decoded: OtherLoginResponse
     if (credentialResponse.credential) {
-      decoded = jwtDecode(credentialResponse.credential);
-      console.log("Google Login user's data:", decoded);
+      decoded = jwtDecode(credentialResponse.credential)
+      console.log("SIGNIN SUCCESSFULLY. Google login user's email:", decoded.email)
+
+      await fetch("http://localhost:5000/users")
+        .then(res => res.json())
+        .then(data => {
+          var foundUserByEmail = data.find((account: User) => (account.email === decoded.email))
+          if (foundUserByEmail) {
+            console.log("Email is already registered.")
+          }
+          else {
+            var registerUser = {
+              email: decoded.email,
+              password: generatePassword(30, ""),
+              nickname: decoded.name,
+              role: "user",
+              numOfFollower: 0,
+              avatar: "unset",
+              status: true,
+            }
+            axios.post("http://localhost:5000/users", registerUser)
+              .catch((err: any) => {
+                console.log("Error: ", err.response.data)
+              })
+            console.log("A new account has been created by email ", decoded.email)
+            setTimeout(() => {
+              setIsLoading(false)
+            }, 2000)
+          }
+        })
+        .catch(err => console.log(err))
+      navigate('/')
+    } else {
+      console.log("Not found data")
     }
-    // await fetch("http://localhost:3344/users")
-    //     .then(res => res.json())
-    //     .then(data => {
-    //         var foundUserByEmail = data.find((account: User) => (account.email === decoded.email))
-    //         if (foundUserByEmail) {
-    //             navigate('/signin')
-    //         }
-    //         else {
-    //             setRegisterUser({
-    //                 _id: ,
-    //                 email: string,
-    //                 password: string,
-    //                 nickName: string,
-    //                 role: string,
-    //                 numOfFollower: number,
-    //                 avatar: string,
-    //                 status: boolean,
-    //                 userId: newUserId,
-    //                 email: decoded.email,
-    //                 password: "",
-    //                 fullName: decoded.name,
-    //                 roleId: "US",
-    //                 phone: "",
-    //                 createAt: createAt,
-    //                 status: true,
-    //             })
-    //             axios.post("http://localhost:3344/register", registerUser)
-    //             setTimeout(() => {
-    //                 setIsLoading(false)
-    //             }, 2000)
-    //         }
-    //     })
-    //     .catch(err => console.log(err))
-  };
+  }
 
   const onGoogleError = () => {
     console.log("Failed to login with Google");
   };
 
-  const responseFacebook = (response: any) => {
-    console.log("ResponseFacebook: ", response);
+  const responseFacebook = async (response: any) => {
+    console.log("Facebook login credentials: ", response)
+    await fetch("http://localhost:5000/users")
+      .then(res => res.json())
+      .then(data => {
+        var foundUserByEmail = data.find((account: User) => (account.email === response.email))
+        if (foundUserByEmail) {
+          console.log("Email is already registered.")
+        }
+        else {
+          var registerUser = {
+            email: response.email,
+            password: generatePassword(30, ""),
+            nickname: response.name,
+            role: "user",
+            numOfFollower: 0,
+            avatar: "unset",
+            status: true,
+          }
+          axios.post("http://localhost:5000/users", registerUser)
+            .catch((err: any) => {
+              console.log("Error: ", err.response.data)
+            })
+          console.log("A new account has been created by Facebook email: ", response.email)
+          setTimeout(() => {
+            setIsLoading(false)
+          }, 2000)
+        }
+      })
+      .catch(err => console.log(err))
+    navigate('/')
   };
 
   return (
@@ -161,8 +244,8 @@ export default function EmailSignup() {
             type="icon"
           />
           <FacebookLogin
-            appId="689804996380398"
-            autoLoad={true}
+            appId="1059535368457585"
+            autoLoad={false}
             fields="name,email"
             callback={responseFacebook}
             size="small"
