@@ -6,6 +6,8 @@ router.get('/', userController.getAllUsers);
 
 router.post('/', userController.createNewUser);
 
+router.post('/login', userController.userLogin);
+
 router.get('/:id', userController.findUserById);
 
 router.patch('/:id', userController.updateUser);

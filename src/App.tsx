@@ -29,7 +29,6 @@ function App() {
       <Route path="/admin" element={<Admin />} />
       <Route path="/navigator" element={<Navigator />} />
       <Route path="/favoriteList" element={<FavoriteList />} />
-
     </Routes>
   );
 }

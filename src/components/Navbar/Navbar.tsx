@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Navbar.css"; // Assuming you have a corresponding CSS file
 import { Input, Space, Button, Select, Tag, Popover } from "antd";
 import Logo from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
-import { MenuOutlined } from "@ant-design/icons";
+import { MenuOutlined, SearchOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
 const { Search } = Input;
@@ -58,31 +58,21 @@ interface NavbarProps {
   onSubmit: (term: string) => void; // Define the type for the onSubmit prop
 }
 const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
-  const [startIndex, setStartIndex] = useState(0);
-  const [nextClickCount, setNextClickCount] = useState(0);
-  const responsiveTagCount = 3;
-  // const handleNextClick = () => {
-  //   if (nextClickCount < 4) {
-  //     setStartIndex((prevIndex) => prevIndex + 3);
-  //     setNextClickCount((prevCount) => prevCount + 1);
-  //   }
-  // };
-
-  // const handlePrevClick = () => {
-  //   if (nextClickCount > 0) {
-  //     setStartIndex((prevIndex) => prevIndex - 3);
-  //     setNextClickCount((prevCount) => prevCount - 1);
-  //   }
-  // };
-
-  // const calculateMarginLeft = () => `-${startIndex * 20}%`;
+  // const [startIndex, setStartIndex] = useState(0);
+  // const [nextClickCount, setNextClickCount] = useState(0);
+  // const responsiveTagCount = 3;
 
   const onSearch = (value: string) => {
     console.log("Search value:", value);
     // Call the onSubmit prop passed from the parent component
     onSubmit(value);
   };
+  const [searchTerm, setSearchTerm] = useState("");
 
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    onSubmit(value);
+  };
   return (
     <nav className="navbar">
       <div className="first-line">
@@ -90,32 +80,21 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
           <Link to={"/"}>
             <img src={Logo} alt="Logo" />
           </Link>
-          <div className="search-box">
-            <Space direction="vertical">
-              <Select
-                mode="tags"
-                placeholder="Select tags"
-                style={{ width: 600, display: "inline-block" }}
-                maxTagCount={responsiveTagCount}
-                maxTagTextLength={10}
-                onSearch={onSearch}
-              >
-                {tags.map((tag, index) => (
-                  <Option key={index}>
-                    <Tag>{tag}</Tag>
-                  </Option>
-                ))}
-              </Select>
-            </Space>
-          </div>
+          <Input
+            size="large"
+            className="search-box"
+            prefix={<SearchOutlined />}
+            placeholder="Search "
+            onChange={(e) => handleSearch(e.target.value)}
+          />
         </div>
         <div style={{ display: "flex" }}>
           <div className="user-actions">
             <Link to={"/signin"}>
-              <Button size="large">Sign in</Button>
+              <Button size="large">Sign In</Button>
             </Link>
-            <Link to={"/signup/email"}>
-              <Button size="large">Sign up</Button>
+            <Link to={"/signup"}>
+              <Button size="large">Sign Up</Button>
             </Link>
           </div>
           <Popover

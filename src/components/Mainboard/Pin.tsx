@@ -74,6 +74,8 @@ const Pin: React.FC<PinProps> = ({
   ]);
   const [modalVisible, setModalVisible] = useState(false);
   const showModal = () => {
+    console.log("show modal");
+
     setModalVisible(true);
   };
   const handleLike = () => {
@@ -129,7 +131,7 @@ const Pin: React.FC<PinProps> = ({
           </div>
         </div>
         <img src={imageUrl} alt="pin" onClick={showModal} />
-        <Modal
+        {/* <Modal
           style={{ top: 20 }}
           open={modalVisible}
           onCancel={() => setModalVisible(false)}
@@ -211,13 +213,8 @@ const Pin: React.FC<PinProps> = ({
                 <SafetyOutlined /> Free to use under the ArtAttack License
               </span>
             </div>
-            {/* <Space size={[0, 8]} wrap>
-              {tags.map((tag, index) => (
-                <Tag key={index}>{tag}</Tag>
-              ))}
-            </Space> */}
           </div>
-        </Modal>
+        </Modal> */}
       </div>
     </div>
   );

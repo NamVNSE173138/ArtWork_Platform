@@ -91,6 +91,7 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                 footer={null}
                 width={1233}
                 centered
+                mask={false}
               >
                 <div className="modal-content">
                   <div className="top-modal">
@@ -166,11 +167,6 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                       <SafetyOutlined /> Free to use under the ArtAttack License
                     </span>
                   </div>
-                  {/* <Space size={[0, 8]} wrap>
-                  {tags.map((tag, index) => (
-                    <Tag key={index}>{tag}</Tag>
-                  ))}
-                </Space> */}
                 </div>
               </Modal>
             </div>
