@@ -1,17 +1,35 @@
 .profile-container {
-    margin: 20px 100px
+    margin: 20px 100px;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+}
+
+/* .profile-card-meta{
+    display: flex ;
+    align-items: center ;
+    justify-content: center ;
+} */
+
+.profile-content {
+    /* align-items: center;
+    text-align: center; */
+}
+
+.profile-btn {
+    margin-top: 20px;
+    margin-right: 20px;
+}
+
+span.ant-avatar.ant-avatar-circle.ant-avatar-image.css-dev-only-do-not-override-dkbvqv {
+    width: 100px;
+    height: 100px;
+}
+
+.ant-card-meta-detail {
+    font-size: 16px;
 }
 
 .ant-card-meta-title {
     font-size: 20px !important;
-}
-
-span.ant-avatar.ant-avatar-circle.ant-avatar-image.css-dev-only-do-not-override-dkbvqv {
-    height: 100px;
-    width: 100px;
-}
-
-:where(.css-dev-only-do-not-override-dkbvqv).ant-avatar>img {
-    width: 100px !important;
-    height: 100px !important;
 }
