@@ -142,9 +142,44 @@ export default function Signin() {
       .catch(err => console.log(err))
   }
 
+  // const loginForm = useFormik({
+  //   initialValues: {
+  //     email: location.state?.email,
+  //     password: ''
+  //   },
+  //   validationSchema: Yup.object({
+  //     email: Yup.string().email().required(),
+  //     password: Yup.string().required(),
+  //   }),
+  //   onSubmit: async (values) => {
+  //     setIsLoading(true)
+  //     await fetch('http://localhost:5000/users/login')
+  //       .then(res => res.json())
+  //       .then(data => {
+  //         var loginUser = data.find((account: User) => (account.email === values.email) && (account.password === values.password))
+  //         if (loginUser) {
+  //           setTimeout(() => {
+  //             navigate('/')
+  //           }, 2000)
+  //         }
+  //         else {
+  //           setTimeout(() => {
+  //             setIsLoading(false)
+  //             toast.error("Incorrect credentials. Please try again.")
+  //           }, 1000)
+  //         }
+  //       })
+  //       .catch(err => {
+  //         toast.error("Cannot connect to the server. Please try again later.")
+  //         console.log(err)
+  //         setIsLoading(false)
+  //       })
+  //   }
+  // })
+
   const loginForm = useFormik({
     initialValues: {
-      email: location.state?.email,
+      email: location.state?.email || '',
       password: ''
     },
     validationSchema: Yup.object({
@@ -152,30 +187,47 @@ export default function Signin() {
       password: Yup.string().required(),
     }),
     onSubmit: async (values) => {
-      setIsLoading(true)
-      await fetch('http://localhost:5000/users')
-        .then(res => res.json())
-        .then(data => {
-          var loginUser = data.find((account: User) => (account.email === values.email) && (account.password === values.password))
-          if (loginUser) {
+      setIsLoading(true);
+      try {
+        const response = await fetch('http://localhost:5000/users/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(values)
+        });
+
+        if (response.ok) {
+          const responseBody = await response.text();
+          try {
+
+            const data = JSON.parse(responseBody);
+
+            localStorage.setItem('USER', data.token);
             setTimeout(() => {
-              navigate('/')
-            }, 2000)
-          }
-          else {
+              navigate('/');
+            }, 2000);
+          } catch (error) {
+
+            localStorage.setItem('USER', responseBody);
             setTimeout(() => {
-              setIsLoading(false)
-              toast.error("Incorrect credentials. Please try again.")
-            }, 1000)
+              navigate('/');
+            }, 2000);
           }
-        })
-        .catch(err => {
-          toast.error("Cannot connect to the server. Please try again later.")
-          console.log(err)
-          setIsLoading(false)
-        })
+        } else {
+          // If there's an error, read the error response body as JSON
+          const errorData = await response.json();
+          toast.error(errorData.message || 'An error occurred. Please try again.');
+          setIsLoading(false);
+        }
+      } catch (error) {
+        // Handle network or other errors
+        toast.error('Cannot connect to the server. Please try again later.');
+        console.error(error);
+        setIsLoading(false);
+      }
     }
-  })
+  });
 
   return (
     <div className="container">
