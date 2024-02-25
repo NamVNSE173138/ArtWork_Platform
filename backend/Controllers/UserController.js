@@ -23,7 +23,36 @@ module.exports = {
 			if (error.name === 'ValidationError') {
 				next(createError(422, error.message));
 				return;
-			}	
+			}
+			next(error);
+		}
+	},
+
+	userLogin: async (req, res, next) => {
+		try {
+			const { email, password } = req.body;
+
+			// Check if the email already exists
+			const checkEmail = await User.findOne({ email });
+
+			if (checkEmail) {
+				const checkPass = bcrypt.compareSync(password, checkEmail.password);
+				if (checkPass) {
+					// Encode user data (excluding password) into a token
+					const token = createToken({ checkEmail, password: "" });
+					res.send(token);
+				} else {
+					res.status(401).send("Incorrect password");
+				}
+			} else {
+				res.status(404).send("Email not found");
+			}
+		} catch (error) {
+			console.error(error.message);
+			if (error.name === 'ValidationError') {
+				next(createError(422, error.message));
+				return;
+			}
 			next(error);
 		}
 	},
