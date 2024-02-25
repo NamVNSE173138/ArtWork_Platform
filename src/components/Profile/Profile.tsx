@@ -48,6 +48,8 @@ const ProfilePage: React.FC = () => {
     // Handle logic for saving edited profile data
     setEditModalVisible(false);
   };
+  const isLogin = localStorage.getItem("USER");
+
   const handleShareProfile = () => {
     // Copy URL to clipboard
     const url = window.location.href;
@@ -81,7 +83,7 @@ const ProfilePage: React.FC = () => {
                 description={
                   <>
                     Web Developer <br />
-                    Bố mày thích lập trình
+                    <i>sport</i>
                   </>
                 }
               />

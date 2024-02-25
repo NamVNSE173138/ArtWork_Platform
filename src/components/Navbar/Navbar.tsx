@@ -2,8 +2,13 @@ import React, { useState } from "react";
 import "./Navbar.css"; // Assuming you have a corresponding CSS file
 import { Input, Space, Button, Select, Tag, Popover } from "antd";
 import Logo from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
-import { MenuOutlined, SearchOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import {
+  LogoutOutlined,
+  MenuOutlined,
+  SearchOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Link, useNavigate } from "react-router-dom";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -58,10 +63,17 @@ interface NavbarProps {
   onSubmit: (term: string) => void; // Define the type for the onSubmit prop
 }
 const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
+  let navigate = useNavigate();
+
   // const [startIndex, setStartIndex] = useState(0);
   // const [nextClickCount, setNextClickCount] = useState(0);
   // const responsiveTagCount = 3;
-
+  const isLogin = localStorage.getItem("USER");
+  console.log(isLogin);
+  const handleLogout = () => {
+    localStorage.removeItem("USER");
+    navigate("/");
+  };
   const onSearch = (value: string) => {
     console.log("Search value:", value);
     // Call the onSubmit prop passed from the parent component
@@ -90,12 +102,36 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
         </div>
         <div style={{ display: "flex" }}>
           <div className="user-actions">
-            <Link to={"/signin"}>
-              <Button size="large">Sign In</Button>
-            </Link>
-            <Link to={"/signup"}>
-              <Button size="large">Sign Up</Button>
-            </Link>
+            {!isLogin ? (
+              <>
+                <Link className="link-btn-nav" to={"/signin"}>
+                  <Button className="btn-nav" size="large">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link className="link-btn-nav" to={"/signup"}>
+                  <Button className="btn-nav" size="large">
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link className="link-btn-nav" to={"/profile"}>
+                  <Button className="btn-nav" size="large">
+                    <UserOutlined /> Profile
+                  </Button>
+                </Link>
+                <Button
+                  className="btn-nav link-btn-nav"
+                  size="large"
+                  onClick={handleLogout}
+                >
+                  <LogoutOutlined />
+                  Log out
+                </Button>
+              </>
+            )}
           </div>
           <Popover
             placement="bottomRight"

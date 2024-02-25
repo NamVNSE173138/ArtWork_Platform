@@ -22,8 +22,10 @@
 
 .logo img {
     width: 40px;
+    margin-left: 10px;
     height: auto;
     margin-right: 10px;
+    border-radius: 30px;
 }
 
 .search-box {
@@ -82,4 +84,20 @@
 
 .menu-part {
     margin: 0 30px;
+}
+
+.btn-nav {
+    margin-left: 0.75rem;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-nav svg {
+    font-size: 20px;
+}
+
+.link-btn-nav {
+    text-decoration: none;
 }

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
 import Mainboard from "../components/Mainboard/Mainboard";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 interface Pin {
   _id: string;
@@ -90,7 +92,11 @@ const Home: React.FC = () => {
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />
-      {loading ? <p>Loading...</p> : <Mainboard pins={image} />}
+      {loading ? (
+        <Spin indicator={<LoadingOutlined style={{ fontSize: 60 }} spin />} />
+      ) : (
+        <Mainboard pins={image} />
+      )}
     </>
   );
 };
