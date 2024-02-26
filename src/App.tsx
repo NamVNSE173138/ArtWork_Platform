@@ -13,6 +13,8 @@ import Forgot from "./page/Authentication/Forgot";
 import Reset from "./page/Authentication/Reset";
 import Navigator from "./page/Navigator/Navigator";
 import FavoriteList from "./page/FavoriteList/FavoriteList";
+import ArtistList from "./page/ArtistList";
+import ArtistProfile from "./components/ArtistProfile/ArtistProfile";
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
       <Route path="/admin" element={<Admin />} />
       <Route path="/home" element={<Home />} />
       <Route path="/favoriteList" element={<FavoriteList />} />
+      <Route path="/artistList" element={<ArtistList />} />
+      <Route path="/artistList/:_id" element={<ArtistProfile />} />
     </Routes>
   );
 }

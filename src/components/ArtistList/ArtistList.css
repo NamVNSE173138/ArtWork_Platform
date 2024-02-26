@@ -1,0 +1,25 @@
+.btn-fl {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.btn-fl svg {
+    font-size: 1rem;
+}
+
+.artist-list {
+    margin: 20px 40px;
+}
+
+.artist-action {
+    display: flex;
+    margin-top: 15px;
+}
+
+.nickname a {
+    text-decoration: none;
+    color: #0F1035;
+}
