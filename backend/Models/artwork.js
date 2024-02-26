@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const artworkSchema = new Schema(
   {
-    userId: {
+    user: {
       type: Schema.Types.ObjectId,
       ref: 'users',
     },
