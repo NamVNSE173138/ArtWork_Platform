@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 export const getOrders = () => {
   return fetch("https://dummyjson.com/carts/1").then((res) => res.json());
 };
@@ -40,7 +42,18 @@ export const deleteUser = (id) => {
   return fetch(`http://localhost:5000/users/${id}`, {
     method: 'DELETE',
   })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) {
+        throw new Error('Network response is not OK!');
+      }
+      return res.json();
+    })
+    .then(() => {
+      toast.success("User Deleted!!!");
+    })
+    .catch(error => {
+      toast.error(error);
+    })
 }
 
 export const getArtwork = () => {
@@ -51,7 +64,14 @@ export const deleteArtwork = (id) => {
   return fetch(`http://localhost:5000/artworks/${id}`, {
     method: 'DELETE',
   })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) {
+        toast.error('Network response is not OK!');
+      } else {
+        toast.success("Artwork Deleted!!!");
+      }
+      return res.json();
+    })
 }
 
 export const getCustomers = () => {

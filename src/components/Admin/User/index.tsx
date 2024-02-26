@@ -41,7 +41,8 @@ function Users() {
       okText: "Yes",
       okType: "danger",
       onOk: () => {
-        deleteUser(record);
+        setLoading(true);
+        deleteUser(record).then(() => setLoading(false));
       },
     });
   };
@@ -63,7 +64,7 @@ function Users() {
 
   return (
     <Space size={20} direction="vertical">
-      <Typography.Title level={4}>Users</Typography.Title>
+      {/* <Typography.Title level={4}>Users</Typography.Title> */}
       <Table<User>
         style={{ width: "1250px" }}
         loading={loading}
@@ -72,7 +73,7 @@ function Users() {
             title: "Avatar",
             dataIndex: "avatar",
             render: (link: string) => {
-              return <Avatar src={link} />;
+              return <Avatar src={link} size={55} />;
             },
           },
           {

@@ -57,3 +57,66 @@ aside.ant-layout-sider.ant-layout-sider-dark {
     padding: 20px,
     borderBottom: 1px solid #e8e8e8,
 } */
+
+/* Admin.css */
+
+.Admin {
+  display: flex;
+  height: 100vh;
+}
+
+.Sider {
+  flex: 0 0 auto;
+}
+
+.Layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.Header {
+  flex: 0 0 auto;
+}
+
+.Content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+@media screen and (max-width: 768px) {
+  .Admin {
+    flex-direction: column;
+  }
+
+  .Layout {
+    flex: none;
+  }
+
+  .AppHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+  }
+
+  .logo {
+    margin-right: 16px;
+  }
+
+  .SideMenuVertical {
+    width: 100%;
+  }
+
+  .Header {
+    padding: 0 16px;
+  }
+
+  .Content {
+    padding: 16px;
+  }
+
+  .Content > * {
+    width: 100%;
+  }
+}
