@@ -32,7 +32,9 @@ const Artwork: React.FC = () => {
       okText: "Yes",
       okType: "danger",
       onOk: () => {
+        // setLoading(true);
         deleteArtwork(record);
+        // .then(() => setLoading(false));
       },
     });
   };
@@ -40,56 +42,58 @@ const Artwork: React.FC = () => {
   return (
     <Space size={20} direction="vertical">
       {/* <Typography.Title level={4}>Artwork</Typography.Title> */}
-      <Table<ArtworkRecord>
-        style={{ width: "1250px" }}
-        loading={loading}
-        columns={[
-          {
-            title: "Thumbnail",
-            dataIndex: "imageUrl",
-            render: (link: string) => <Image src={link} width={85} />,
-          },
-          {
-            title: "Name",
-            dataIndex: "artworkName",
-          },
-          {
-            title: "Artist",
-            dataIndex: "artworkId",
-          },
-          {
-            title: "Price",
-            dataIndex: "price",
-            render: (value: number) => <span>${value}</span>,
-          },
-          {
-            title: "Tags",
-            dataIndex: "tags",
-          },
-          {
-            title: "Description",
-            dataIndex: "describe",
-          },
-          {
-            title: "Action",
-            dataIndex: "_id",
-            render: (record: string) => (
-              <>
-                <DeleteOutlined
-                  onClick={() => {
-                    onDeleteArtwork({ _id: record } as ArtworkRecord);
-                  }}
-                  style={{ color: "red" }}
-                />
-              </>
-            ),
-          },
-        ]}
-        dataSource={dataSource}
-        pagination={{
-          pageSize: 5,
-        }}
-      />
+      <div style={{ overflowX: "auto" }}>
+        <Table<ArtworkRecord>
+          style={{ width: "1250px", minWidth: "100%" }}
+          loading={loading}
+          columns={[
+            {
+              title: "Thumbnail",
+              dataIndex: "imageUrl",
+              render: (link: string) => <Image src={link} width={85} />,
+            },
+            {
+              title: "Name",
+              dataIndex: "artworkName",
+            },
+            {
+              title: "Artist",
+              dataIndex: "artworkId",
+            },
+            {
+              title: "Price",
+              dataIndex: "price",
+              render: (value: number) => <span>${value}</span>,
+            },
+            {
+              title: "Tags",
+              dataIndex: "tags",
+            },
+            {
+              title: "Description",
+              dataIndex: "describe",
+            },
+            {
+              title: "Action",
+              dataIndex: "_id",
+              render: (record: ArtworkRecord) => (
+                <>
+                  <DeleteOutlined
+                    onClick={() => {
+                      onDeleteArtwork(record);
+                    }}
+                    style={{ color: "red" }}
+                  />
+                </>
+              ),
+            },
+          ]}
+          dataSource={dataSource}
+          pagination={{
+            pageSize: 5,
+          }}
+        />
+      </div>
     </Space>
   );
 };

@@ -16,7 +16,6 @@ import emailjs from "@emailjs/browser";
 import axios from "axios";
 import logo from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
 import { generatePassword, generateCode } from "../../assistants/Generators";
-import Navbar from "../../components/Navbar/Navbar";
 
 interface User {
   _id?: string;
@@ -36,27 +35,27 @@ interface OtherLoginResponse {
   name?: string | undefined;
   email?: string | undefined;
   picture?:
-    | {
-        data: {
-          height?: number | undefined;
-          is_silhouette?: boolean | undefined;
-          url?: string | undefined;
-          width?: number | undefined;
-        };
-      }
-    | undefined;
+  | {
+    data: {
+      height?: number | undefined;
+      is_silhouette?: boolean | undefined;
+      url?: string | undefined;
+      width?: number | undefined;
+    };
+  }
+  | undefined;
 }
 interface CredentialResponse {
   credential?: string;
   select_by?:
-    | "auto"
-    | "user"
-    | "user_1tap"
-    | "user_2tap"
-    | "btn"
-    | "btn_confirm"
-    | "btn_add_session"
-    | "btn_confirm_add_session";
+  | "auto"
+  | "user"
+  | "user_1tap"
+  | "user_2tap"
+  | "btn"
+  | "btn_confirm"
+  | "btn_add_session"
+  | "btn_confirm_add_session";
   clientId?: string;
 }
 
@@ -326,22 +325,6 @@ export default function SignUp() {
     }
   };
 
-  const onSearchSubmit = async (term: string) => {
-    setLoading(true);
-
-    try {
-      const res = await getImages();
-      const newPins = Array.isArray(res.data) ? res.data : [];
-
-      newPins.sort(() => 0.5 - Math.random());
-      setPins(newPins);
-    } catch (error) {
-      console.error("Error fetching search images:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const getNewPins = async () => {
     setLoading(true);
 
@@ -364,7 +347,6 @@ export default function SignUp() {
   }, []);
   return (
     <>
-      <Navbar onSubmit={onSearchSubmit} />
       <div className="container">
         <div className="left-container">
           <Image src={randomImage} width={400} preview={false} />
@@ -467,16 +449,6 @@ export default function SignUp() {
                 style={{ display: "inline-block", width: "70%" }}
               >
                 {isLoading ? <LoadingOutlined /> : <p>Sign up</p>}
-              </Button>
-              <Button
-                className="signup-btn"
-                type="default"
-                htmlType="reset"
-                shape="default"
-                size="large"
-                style={{ display: "inline-block", width: "30%" }}
-              >
-                <p>Reset</p>
               </Button>
             </div>
           </form>

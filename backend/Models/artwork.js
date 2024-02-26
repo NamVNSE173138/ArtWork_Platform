@@ -3,15 +3,11 @@ const Schema = mongoose.Schema;
 
 const artworkSchema = new Schema(
   {
-    artworkId: {
-      type: String,
-      required: true,
-    },
     userId: {
-      type: String,
-      required: true,
+      type: Schema.Types.ObjectId,
+      ref: 'users',
     },
-    artworkName: {
+    name: {
       type: String,
       required: true,
     },
@@ -24,10 +20,10 @@ const artworkSchema = new Schema(
       required: true,
     },
     price: {
-      type: String,
+      type: Number,
       required: false,
     },
-    describe: {
+    description: {
       type: String,
       required: true,
     },

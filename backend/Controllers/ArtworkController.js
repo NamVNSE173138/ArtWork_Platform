@@ -15,17 +15,12 @@ module.exports = {
 
   createNewArtwork: async (req, res, next) => {
     try {
-      const product = new Artwork(req.body);
-      const result = await product.save();
-      res.send(result);
-    } catch (error) {
-      console.log(error.message);
-      if (error.name === "ValidationError") {
-        next(createError(422, error.message));
-        return;
-      }
-      next(error);
-    }
+      const artwork = new Artwork(req.body)
+      const result = await artwork.save()
+      res.send(result)
+  } catch (error) {
+      console.log(error.message)
+  }
   },
 
   findArtworkById: async (req, res, next) => {

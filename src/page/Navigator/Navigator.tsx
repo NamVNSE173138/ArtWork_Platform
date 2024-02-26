@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Parallax, ParallaxLayer, IParallax } from "@react-spring/parallax";
-import { Row, Col, Button } from "antd";
+import { Row, Col, Button, Image, Typography } from "antd";
 import HomeImg from "../../assets/image/Home.png";
 import UploadImg from "../../assets/image/Upload.png";
 import {
@@ -13,9 +13,12 @@ import {
 import styles from "./styles.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import artistImage from '../../assets/image/artist.jpg'
 
 export default function Navigator() {
+  const navigate = useNavigate()
+  const { Text, Title } = Typography
   const parallax = useRef<IParallax>(null!);
   interface IUser {
     userId: number;
@@ -92,7 +95,7 @@ export default function Navigator() {
       const response = await axios.get<ArtworkResponse>(
         "http://localhost:5000/artworks"
       );
-      console.log("reponse: ", response);
+      console.log("response: ", response);
       console.log(response.data);
 
       return response.data;
@@ -119,7 +122,7 @@ export default function Navigator() {
   return (
     <>
       <div className={styles.container}>
-        <Parallax ref={parallax} pages={3}>
+        <Parallax ref={parallax} pages={2}>
           {/*Navigator's navbar*/}
           <ParallaxLayer
             offset={0}
@@ -132,56 +135,38 @@ export default function Navigator() {
           </ParallaxLayer>
 
           {/*Background*/}
-          <ParallaxLayer offset={0} speed={0.3} className={styles.dusk} />
-          <ParallaxLayer offset={1} speed={0.3} className={styles.day} />
-          <ParallaxLayer offset={2} speed={0.3} className={styles.dawn} />
+          <ParallaxLayer offset={0} speed={0.3} className={styles.top} />
+          <ParallaxLayer offset={1} speed={0.3} className={styles.bottom} />
 
           {/*Page's main frame*/}
-          <ParallaxLayer offset={0.2} speed={0.9} className={styles.sampleBox}>
-            <img
-              src="https://images.unsplash.com/photo-1628607292260-9195108b03b7?q=80&w=1771&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt=""
-              className={styles.sampleImage}
-            />
+          <ParallaxLayer offset={1.2} speed={0.9} className={styles.sampleBox}>
+            <Image src={HomeImg} alt="" className={styles.sampleImage} preview={false} />
           </ParallaxLayer>
           <ParallaxLayer offset={1.2} speed={0.9} className={styles.sampleBox}>
-            <img src={HomeImg} alt="" className={styles.sampleImage} />
+            <Image src={artistImage} alt="" className={styles.sampleImage} preview={false} />
           </ParallaxLayer>
-          <ParallaxLayer offset={2.2} speed={0.9} className={styles.sampleBox}>
-            <img src={UploadImg} alt="" className={styles.sampleImage} />
-          </ParallaxLayer>
-          {/* <ParallaxLayer offset={3.2} speed={0.9} className={styles.sampleBox}>
-            Sample box
-          </ParallaxLayer> */}
 
           {/*Typography and buttons*/}
-          <ParallaxLayer offset={0.5} speed={1.1} className={styles.sampleTest}>
-            <div className={styles.homeTextSection}>
-              <h1 className={styles.primaryHeading}>
-                Artwork Sharing Platform
-              </h1>
-              <p className={styles.primaryText}>
-                Introducing our revolutionary artwork sharing platform - where
-                artists and art enthusiasts come together to explore, discover,
-                and share their passion for creativity.
-              </p>
-              <Col span={24} className={styles.sampleButton}>
-                <button
-                  onClick={() => parallax.current.scrollTo(1)}
-                  className={styles.secondaryButton}
-                >
-                  Next
-                </button>
-                <Link to={"/home"} className={styles.firstButton}>
-                  <button className={styles.secondaryButton}>
-                    Get start <ArrowRightOutlined />{" "}
-                  </button>
-                </Link>
-              </Col>
-            </div>
+          <ParallaxLayer offset={0} speed={1.1} className={styles.topTextSection}>
+            <span className={styles.branding}>
+              <Text strong className={styles.primaryHeading}>
+                ARTWORK SHARING PLATFORM
+              </Text>
+              <Text underline className={styles.primaryText}>
+                One of the best places to enjoy the work of art.
+              </Text>
+            </span>
+            <span className={styles.buttonGroup}>
+              <button
+                onClick={() => { navigate('/home') }}
+                className={styles.secondaryButton}>
+                DISCOVER
+              </button>
+            </span>
           </ParallaxLayer>
-          <ParallaxLayer offset={1.5} speed={1.1} className={styles.sampleTest}>
-            <div className={styles.homeTextSection}>
+
+          <ParallaxLayer offset={1} speed={1.1} className={styles.splitSection}>
+            <div className={styles.halfSection}>
               <h1 className={styles.primaryHeading}>
                 Do you want to visit website?
               </h1>
@@ -203,9 +188,7 @@ export default function Navigator() {
                 </Link>
               </Col>
             </div>
-          </ParallaxLayer>
-          <ParallaxLayer offset={2.5} speed={1.1} className={styles.sampleTest}>
-            <div className={styles.homeTextSection}>
+            <div className={styles.halfSection}>
               <h1 className={styles.primaryHeading}>Are you artist?</h1>
               <p className={styles.primaryText}>
                 If you are a artist, you can log in and then post your artworks

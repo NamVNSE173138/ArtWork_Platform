@@ -1,43 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Admin.css";
 import {
   ShopOutlined,
   ShoppingCartOutlined,
   UserOutlined,
   SolutionOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, Button, Input, Avatar, theme } from "antd";
-// import MyDay from "../My Day/MyDay";
+import { Layout, Menu, Avatar, theme, Breadcrumb } from "antd";
 import User from "../../components/Admin/User";
 import Dashboard from "../../components/Admin/Dashboard";
 import Artwork from "../../components/Admin/Artwork";
 import Orders from "../../components/Admin/Orders";
 import avt from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
+
 const { Header, Sider, Content } = Layout;
 
-// interface UserData {
-//   avatar: string;
-//   name: string;
-//   email: string;
-// }
-
 const Admin: React.FC = () => {
-  // const [collapsed, setCollapsed] = useState<boolean>(false);
-  const [activeComponent, setActiveComponent] = useState<string>("Dashboard");
+  const [activeComponent, setActiveComponent] = useState<string>(
+    localStorage.getItem("activeComponent") || "Dashboard"
+  );
 
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  // Dummy user data
-  // const userData: UserData = {
-  //   avatar:
-  //     "https://i.pinimg.com/564x/4a/05/b1/4a05b176175fe8ace75e68262057ab25.jpg",
-  //   name: "Văn Anh Quân",
-  //   email: "qsao2212@gmail.com",
-  // };
-
-  //account, artwork, request, transaction, report,
   const menuItems = [
     {
       key: "1",
@@ -52,37 +39,33 @@ const Admin: React.FC = () => {
       onClick: () => setActiveComponent("User"),
     },
     {
-      key: "4",
+      key: "3",
       icon: <ShopOutlined />,
       label: "Artwork",
       onClick: () => setActiveComponent("Artwork"),
     },
     {
-      key: "5",
+      key: "4",
       icon: <ShoppingCartOutlined />,
       label: "Orders",
       onClick: () => setActiveComponent("Orders"),
     },
   ];
 
+  useEffect(() => {
+    localStorage.setItem("activeComponent", activeComponent);
+  }, [activeComponent]);
+
   return (
     <Layout className="Admin">
       <Sider>
         <div className="AppHeader">
           <Avatar size={40} src={avt} className="logo" />
-          {/* {!collapsed ? (
-            <>
-              <span style={{ marginTop: "10px", fontWeight: "bold" }}>
-                {userData.name}
-              </span>
-              <span>{userData.email}</span>
-            </>
-          ) : null} */}
         </div>
         <Menu
           className="SideMenuVertical"
           mode="vertical"
-          defaultSelectedKeys={["1"]}
+          defaultSelectedKeys={[activeComponent]}
         >
           {menuItems.map((item) => (
             <Menu.Item key={item.key} icon={item.icon} onClick={item.onClick}>
@@ -104,12 +87,33 @@ const Admin: React.FC = () => {
         </Header>
         <Content
           style={{
-            margin: "24px 16px",
-            padding: 24,
+            margin: "20px 16px",
+            padding: 20,
             minHeight: 280,
             background: colorBgContainer,
           }}
         >
+          <Breadcrumb
+            items={[
+              {
+                href: "/home",
+                title: <HomeOutlined />,
+              },
+              {
+                href: "/admin",
+                title: (
+                  <>
+                    <UserOutlined />
+                    <span>Admin</span>
+                  </>
+                ),
+              },
+              {
+                href: "",
+                title: activeComponent,
+              },
+            ]}
+          />
           {activeComponent === "Dashboard" && <Dashboard />}
           {activeComponent === "User" && <User />}
           {activeComponent === "Orders" && <Orders />}

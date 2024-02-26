@@ -14,8 +14,8 @@ import FacebookLogin from 'react-facebook-login';
 import FacebookIcon from '../../assets/icons/facebook.png'
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import eFurniLogo from "../../assets/logos/eFurniLogo_transparent.png";
 import { generatePassword } from "../../assistants/Generators";
+import logo from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
 
 interface User {
   _id: string;
@@ -203,7 +203,7 @@ export default function EmailSignup() {
       </div>
       <Divider type="vertical" />
       <div className="right-container row">
-        <Image className="image" src={eFurniLogo} width={250} preview={false} />
+        <Image className="image" src={logo} width={250} preview={false} />
         <form onSubmit={emailForm.handleSubmit}>
           <div className="mb-2 mt-2">
             <br />
