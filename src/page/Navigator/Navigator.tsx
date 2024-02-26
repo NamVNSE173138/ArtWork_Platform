@@ -172,7 +172,7 @@ export default function Navigator() {
                 >
                   Next
                 </button>
-                <Link to={"/"} className={styles.firstButton}>
+                <Link to={"/home"} className={styles.firstButton}>
                   <button className={styles.secondaryButton}>
                     Get start <ArrowRightOutlined />{" "}
                   </button>
@@ -196,7 +196,7 @@ export default function Navigator() {
                 >
                   Next
                 </button>
-                <Link to={"/"} className={styles.firstButton}>
+                <Link to={"/home"} className={styles.firstButton}>
                   <button className={styles.secondaryButton}>
                     Let's Start <ArrowRightOutlined />{" "}
                   </button>
@@ -216,7 +216,7 @@ export default function Navigator() {
                   onClick={() => parallax.current.scrollTo(0)}
                   className={styles.secondaryButton}
                 >
-                  Go to top
+                  Back to top
                 </button>
                 <Link to={"/signin"} className={styles.firstButton}>
                   <button className={styles.secondaryButton}>

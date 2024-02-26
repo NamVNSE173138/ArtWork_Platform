@@ -1,31 +1,32 @@
 import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import 'react-toastify/dist/ReactToastify.css';
-import "./Authentication.css"
-import { Button, Image, Divider, Typography } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons'
-import { GoogleLogin } from '@react-oauth/google';
+import "react-toastify/dist/ReactToastify.css";
+import "./Authentication.css";
+import { Button, Image, Divider, Typography } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-import { useFormik } from 'formik'
-import * as Yup from 'yup';
+import "react-toastify/dist/ReactToastify.css";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import FacebookLogin from 'react-facebook-login';
-import FacebookIcon from '../../assets/icons/facebook.png'
-import eFurniLogo from '../../assets/logos/eFurniLogo_transparent.png'
+import FacebookLogin from "react-facebook-login";
+import FacebookIcon from "../../assets/icons/facebook.png";
+import logo from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
 import { generatePassword } from "../../assistants/Generators";
+import Navbar from "../../components/Navbar/Navbar";
 
 interface User {
-  _id: string,
-  email: string,
-  password: string,
-  nickName: string,
-  role: string,
-  numOfFollower: number,
-  avatar: string,
-  status: boolean,
+  _id: string;
+  email: string;
+  password: string;
+  nickName: string;
+  role: string;
+  numOfFollower: number;
+  avatar: string;
+  status: boolean;
 }
 interface OtherLoginResponse {
   id: string;
@@ -34,51 +35,80 @@ interface OtherLoginResponse {
   name?: string | undefined;
   email?: string | undefined;
   picture?:
-  | {
-    data: {
-      height?: number | undefined;
-      is_silhouette?: boolean | undefined;
-      url?: string | undefined;
-      width?: number | undefined;
-    };
-  }
-  | undefined;
+    | {
+        data: {
+          height?: number | undefined;
+          is_silhouette?: boolean | undefined;
+          url?: string | undefined;
+          width?: number | undefined;
+        };
+      }
+    | undefined;
 }
 interface CredentialResponse {
   credential?: string;
-  select_by?: 'auto' | 'user' | 'user_1tap' | 'user_2tap' | 'btn' | 'btn_confirm' | 'btn_add_session' | 'btn_confirm_add_session';
+  select_by?:
+    | "auto"
+    | "user"
+    | "user_1tap"
+    | "user_2tap"
+    | "btn"
+    | "btn_confirm"
+    | "btn_add_session"
+    | "btn_confirm_add_session";
   clientId?: string;
 }
+interface Pin {
+  _id: string;
+  artworkId: number;
+  userId: number;
+  artworkName: string;
+  createTime: Date;
+  tags: string;
+  numOfLike: number;
+  price: string;
+  describe: string;
+  imageUrl: string;
+}
 
+interface ArtworkResponse {
+  data: Pin[];
+}
 export default function Signin() {
-  const navigate = useNavigate()
-  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const { Text } = Typography;
-  const randomImage = "https://t4.ftcdn.net/jpg/05/51/69/95/360_F_551699573_1wjaMGnizF5QeorJJIgw5eRtmq5nQnzz.jpg"
+  const randomImage =
+    "https://i.pinimg.com/564x/3a/e6/7d/3ae67df286b9b8e568de17e4657fd21d.jpg";
 
-  const location = useLocation()
+  const location = useLocation();
 
   useEffect(() => {
     if (location.state) {
-      toast.warning("This email has already been registered within the system. Please enter your password to sign in.")
+      toast.warning(
+        "This email has already been registered within the system. Please enter your password to sign in."
+      );
     }
-  }, [])
-
+  }, []);
 
   const onGoogleSuccess = async (credentialResponse: CredentialResponse) => {
-    var decoded: OtherLoginResponse
+    var decoded: OtherLoginResponse;
     if (credentialResponse.credential) {
-      decoded = jwtDecode(credentialResponse.credential)
-      console.log("SIGNIN SUCCESSFULLY. Google login user's email:", decoded.email)
+      decoded = jwtDecode(credentialResponse.credential);
+      console.log(
+        "SIGNIN SUCCESSFULLY. Google login user's email:",
+        decoded.email
+      );
 
       await fetch("http://localhost:5000/users")
-        .then(res => res.json())
-        .then(data => {
-          var foundUserByEmail = data.find((account: User) => (account.email === decoded.email))
+        .then((res) => res.json())
+        .then((data) => {
+          var foundUserByEmail = data.find(
+            (account: User) => account.email === decoded.email
+          );
           if (foundUserByEmail) {
-            console.log("Email is already registered.")
-          }
-          else {
+            console.log("Email is already registered.");
+          } else {
             var registerUser = {
               email: decoded.email,
               password: generatePassword(30, ""),
@@ -87,38 +117,43 @@ export default function Signin() {
               numOfFollower: 0,
               avatar: "unset",
               status: true,
-            }
-            axios.post("http://localhost:5000/users", registerUser)
+            };
+            axios
+              .post("http://localhost:5000/users", registerUser)
               .catch((err: any) => {
-                console.log("Error: ", err.response.data)
-              })
-            console.log("A new account has been created by email ", decoded.email)
+                console.log("Error: ", err.response.data);
+              });
+            console.log(
+              "A new account has been created by email ",
+              decoded.email
+            );
             setTimeout(() => {
-              setIsLoading(false)
-            }, 2000)
+              setIsLoading(false);
+            }, 2000);
           }
         })
-        .catch(err => console.log(err))
-      navigate('/')
+        .catch((err) => console.log(err));
+      navigate("/");
     } else {
-      console.log("Not found data")
+      console.log("Not found data");
     }
-  }
+  };
 
   const onGoogleError = () => {
-    console.log("Failed to login with Google")
-  }
+    console.log("Failed to login with Google");
+  };
 
   const responseFacebook = async (response: OtherLoginResponse) => {
-    console.log("Facebook login credentials: ", response)
+    console.log("Facebook login credentials: ", response);
     await fetch("http://localhost:5000/users")
-      .then(res => res.json())
-      .then(data => {
-        var foundUserByEmail = data.find((account: User) => (account.email === response.email))
+      .then((res) => res.json())
+      .then((data) => {
+        var foundUserByEmail = data.find(
+          (account: User) => account.email === response.email
+        );
         if (foundUserByEmail) {
-          console.log("Email is already registered.")
-        }
-        else {
+          console.log("Email is already registered.");
+        } else {
           var registerUser = {
             email: response.email,
             password: generatePassword(30, ""),
@@ -127,20 +162,24 @@ export default function Signin() {
             numOfFollower: 0,
             avatar: "unset",
             status: true,
-          }
-          axios.post("http://localhost:5000/users", registerUser)
+          };
+          axios
+            .post("http://localhost:5000/users", registerUser)
             .catch((err: any) => {
-              console.log("Error: ", err.response.data)
-            })
-          console.log("A new account has been created by Facebook email: ", response.email)
+              console.log("Error: ", err.response.data);
+            });
+          console.log(
+            "A new account has been created by Facebook email: ",
+            response.email
+          );
           setTimeout(() => {
-            setIsLoading(false)
-            navigate('/')
-          }, 2000)
+            setIsLoading(false);
+            navigate("/");
+          }, 2000);
         }
       })
-      .catch(err => console.log(err))
-  }
+      .catch((err) => console.log(err));
+  };
 
   // const loginForm = useFormik({
   //   initialValues: {
@@ -179,8 +218,8 @@ export default function Signin() {
 
   const loginForm = useFormik({
     initialValues: {
-      email: location.state?.email || '',
-      password: ''
+      email: location.state?.email || "",
+      password: "",
     },
     validationSchema: Yup.object({
       email: Yup.string().email().required(),
@@ -189,119 +228,220 @@ export default function Signin() {
     onSubmit: async (values) => {
       setIsLoading(true);
       try {
-        const response = await fetch('http://localhost:5000/users/login', {
-          method: 'POST',
+        const response = await fetch("http://localhost:5000/users/login", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(values)
+          body: JSON.stringify(values),
         });
 
         if (response.ok) {
           const responseBody = await response.text();
           try {
-
             const data = JSON.parse(responseBody);
 
-            localStorage.setItem('USER', data.token);
+            localStorage.setItem("USER", data.token);
             setTimeout(() => {
-              navigate('/');
+              navigate("/");
             }, 2000);
           } catch (error) {
-
-            localStorage.setItem('USER', responseBody);
+            localStorage.setItem("USER", responseBody);
             setTimeout(() => {
-              navigate('/');
+              navigate("/");
             }, 2000);
           }
         } else {
           // If there's an error, read the error response body as JSON
           const errorData = await response.json();
-          toast.error(errorData.message || 'An error occurred. Please try again.');
+          toast.error(
+            errorData.message || "An error occurred. Please try again."
+          );
           setIsLoading(false);
         }
       } catch (error) {
         // Handle network or other errors
-        toast.error('Cannot connect to the server. Please try again later.');
+        toast.error("Cannot connect to the server. Please try again later.");
         console.error(error);
         setIsLoading(false);
       }
-    }
+    },
   });
+  const [pins, setPins] = useState<Pin[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [image, setImage] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:5000/artworks")
+      .then((response) => response.json())
+      .then((res) => {
+        setImage(res);
+        console.log(res);
+      });
+  }, []);
+  // console.log(image);
 
+  const getImages = async () => {
+    try {
+      const response = await axios.get<ArtworkResponse>(
+        "http://localhost:5000/artworks"
+      );
+      console.log("reponse: ", response);
+      console.log(response.data);
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching artwork:", error);
+      throw error;
+    }
+  };
+
+  const onSearchSubmit = async (term: string) => {
+    setLoading(true);
+
+    try {
+      const res = await getImages();
+      const newPins = Array.isArray(res.data) ? res.data : [];
+
+      newPins.sort(() => 0.5 - Math.random());
+      setPins(newPins);
+    } catch (error) {
+      console.error("Error fetching search images:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getNewPins = async () => {
+    setLoading(true);
+
+    try {
+      const res = await getImages();
+
+      // Check if res.data is defined and is an array before sorting
+      const pinData = Array.isArray(res.data) ? res.data : [];
+
+      setPins(pinData);
+    } catch (error) {
+      console.error("Error fetching new pins:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getNewPins();
+  }, []);
   return (
-    <div className="container">
-      <div className="left-container">
-        <Image src={randomImage} width={400} preview={false} />
-      </div>
-      <Divider type="vertical" />
-      <div className="right-container row">
-        <Image className="image" src={eFurniLogo} width={250} preview={false} />
-        <form onSubmit={loginForm.handleSubmit}>
-          <div className="mb-2 mt-2">
-            <input
-              type="text"
-              name="email"
-              placeholder="Email"
-              onChange={loginForm.handleChange}
-              onBlur={loginForm.handleBlur}
-              value={loginForm.values.email}
+    <>
+      <Navbar onSubmit={onSearchSubmit} />
+      <div className="container">
+        <div className="left-container">
+          <Image src={randomImage} width={400} preview={false} />
+        </div>
+        <Divider type="vertical" />
+        <div className="right-container row">
+          <Image
+            className=""
+            src={logo}
+            style={{ height: "200px" }}
+            width={250}
+            preview={false}
+          />
+          <form onSubmit={loginForm.handleSubmit}>
+            <div className="mb-2 mt-2">
+              <input
+                type="text"
+                name="email"
+                placeholder="Email"
+                onChange={loginForm.handleChange}
+                onBlur={loginForm.handleBlur}
+                value={loginForm.values.email}
+              />
+            </div>
+            <div className="mb-2 password-input-container">
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                onChange={loginForm.handleChange}
+                onBlur={loginForm.handleBlur}
+                value={loginForm.values.password}
+              />
+            </div>
+            <Button
+              type="link"
+              className="forgot"
+              onClick={() => {
+                navigate("/forgot");
+              }}
+            >
+              Forgot password?
+            </Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              shape="round"
+              size="large"
+              disabled={isLoading ? true : false}
+            >
+              {isLoading ? <LoadingOutlined /> : <p>Sign in</p>}
+            </Button>
+          </form>
+          <Divider>
+            <Text italic style={{ fontSize: "70%" }}>
+              or you can sign in with
+            </Text>
+          </Divider>
+          <div className="otherLogin">
+            <GoogleLogin
+              size="large"
+              type="icon"
+              logo_alignment="center"
+              onSuccess={onGoogleSuccess}
+              onError={onGoogleError}
+            />
+            <FacebookLogin
+              appId="1059535368457585"
+              autoLoad={false}
+              fields="name,email"
+              callback={responseFacebook}
+              size="small"
+              cssClass="my-facebook-button-class"
+              textButton=""
+              icon={
+                <Image
+                  src={FacebookIcon}
+                  width={20}
+                  preview={false}
+                  height={22}
+                />
+              }
             />
           </div>
-          <div className="mb-2 password-input-container">
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              onChange={loginForm.handleChange}
-              onBlur={loginForm.handleBlur}
-              value={loginForm.values.password}
-            />
+          <ToastContainer
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+          <div className="form-footer">
+            <p>Don't have an account yet?&nbsp;</p>
+            <a
+              onClick={() => {
+                navigate("/signup/email");
+              }}
+            >
+              Sign up
+            </a>
           </div>
-          <Button type="link" className="forgot" onClick={() => { navigate('/forgot') }}>
-            Forgot password?
-          </Button>
-          <Button type="primary" htmlType="submit" shape="round" size="large" disabled={isLoading ? true : false}>
-            {isLoading ? <LoadingOutlined /> : <p>Sign in</p>}
-          </Button>
-        </form>
-        <Divider><Text italic style={{ fontSize: "70%" }}>or you can sign in with</Text></Divider>
-        <div className="otherLogin">
-          <GoogleLogin
-            size="large"
-            type="icon"
-            logo_alignment="center"
-            onSuccess={onGoogleSuccess}
-            onError={onGoogleError}
-          />
-          <FacebookLogin
-            appId="1059535368457585"
-            autoLoad={false}
-            fields="name,email"
-            callback={responseFacebook}
-            size="small"
-            cssClass="my-facebook-button-class"
-            textButton=""
-            icon={<Image src={FacebookIcon} width={20} preview={false} height={22} />}
-          />
-        </div>
-        <ToastContainer
-          position="top-right"
-          autoClose={2000}
-          hideProgressBar
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
-        <div className="form-footer">
-          <p>Don't have an account yet?&nbsp;</p>
-          <a onClick={() => { navigate('/signup/email') }}>Sign up</a>
         </div>
       </div>
-    </div>
-  )
+    </>
+  );
 }

@@ -89,7 +89,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     <nav className="navbar">
       <div className="first-line">
         <div className="logo">
-          <Link to={"/"}>
+          <Link to={"/home"}>
             <img src={Logo} alt="Logo" />
           </Link>
           <Input

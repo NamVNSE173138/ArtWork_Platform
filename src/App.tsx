@@ -15,7 +15,7 @@ import FavoriteList from "./page/FavoriteList/FavoriteList";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Navigator />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/signin" element={<SignIn />} />
       <Route path="/signup/email" element={<EmailSignup />} />
@@ -25,7 +25,7 @@ function App() {
       <Route path="/upload" element={<Upload />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/admin" element={<Admin />} />
-      <Route path="/navigator" element={<Navigator />} />
+      <Route path="/home" element={<Home />} />
       <Route path="/favoriteList" element={<FavoriteList />} />
     </Routes>
   );
