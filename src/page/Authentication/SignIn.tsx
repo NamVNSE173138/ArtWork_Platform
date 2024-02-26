@@ -16,7 +16,6 @@ import FacebookLogin from "react-facebook-login";
 import FacebookIcon from "../../assets/icons/facebook.png";
 import logo from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
 import { generatePassword } from "../../assistants/Generators";
-import Navbar from "../../components/Navbar/Navbar";
 
 interface User {
   _id: string;
@@ -295,22 +294,6 @@ export default function Signin() {
     }
   };
 
-  const onSearchSubmit = async (term: string) => {
-    setLoading(true);
-
-    try {
-      const res = await getImages();
-      const newPins = Array.isArray(res.data) ? res.data : [];
-
-      newPins.sort(() => 0.5 - Math.random());
-      setPins(newPins);
-    } catch (error) {
-      console.error("Error fetching search images:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const getNewPins = async () => {
     setLoading(true);
 
@@ -333,7 +316,6 @@ export default function Signin() {
   }, []);
   return (
     <>
-      <Navbar onSubmit={onSearchSubmit} />
       <div className="container">
         <div className="left-container">
           <Image src={randomImage} width={400} preview={false} />

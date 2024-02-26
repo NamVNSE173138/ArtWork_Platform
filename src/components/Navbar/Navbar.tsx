@@ -109,7 +109,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                     Sign In
                   </Button>
                 </Link>
-                <Link className="link-btn-nav" to={"/signup"}>
+                <Link className="link-btn-nav" to={"/signup/email"}>
                   <Button className="btn-nav" size="large">
                     Sign Up
                   </Button>
