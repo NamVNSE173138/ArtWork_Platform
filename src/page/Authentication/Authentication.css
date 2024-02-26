@@ -12,6 +12,7 @@
   position: relative;
   margin: 10px auto 0 auto;
   border-radius: 3%;
+  margin-top: 20px;
 }
 
 .left-container {
@@ -25,6 +26,11 @@
   justify-content: center;
   text-overflow: hidden;
   flex-grow: 1;
+}
+
+.left-container img {
+  border-radius: 10px;
+
 }
 
 .left-container:nth-child(1) {
