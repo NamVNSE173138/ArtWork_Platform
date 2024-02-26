@@ -1,13 +1,11 @@
-import React from "react";
 import "./App.css";
-import Navbar from "./components/Navbar/Navbar";
 import { Route, Routes } from "react-router-dom";
 import Home from "./page/Home";
 import Upload from "./page/Upload";
 import Profile from "./page/Profile";
 import Admin from "./page/Admin/Admin";
 import SignIn from "./page/Authentication/SignIn";
-import EmailSignup from "./page/Authentication/EmailSignup";
+import EmailSignup from "./page/Authentication/EmailSignUp";
 import SignUp from "./page/Authentication/SignUp";
 import Forgot from "./page/Authentication/Forgot";
 import Reset from "./page/Authentication/Reset";

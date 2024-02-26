@@ -1,0 +1,16 @@
+###
+GET http://localhost:5000/artworks
+
+###
+POST http://localhost:5000/artworks
+Content-Type: application/json
+
+{
+    "userId": "65b360a7e91e5908a8d7181e",
+    "name": "Beautiful Coast",
+    "tags": "Scenery",
+    "numOfLike": 26,
+    "price": 2000,
+    "description": "Cool",
+    "imageUrl": "sadasduasd",
+}
