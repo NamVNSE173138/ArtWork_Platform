@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Londrina+Solid:wght@100;400&family=Titillium+Web:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Londrina+Solid:wght@100;300;400;900&family=Protest+Revolution&family=Titillium+Web:wght@400;700&display=swap');
 
 *,
 *:after,
@@ -7,23 +7,63 @@
 }
 
 .container {
-    height: 100%;
     width: 100%;
-    background-color: #FFEBB4;
+    height: 100%;
+    background-color: rgb(48, 48, 48);
 }
 
 .navbar {
-    background-color: rgba(255, 255, 255, .4);
-    text-align: center;
+    background-color: rgba(0, 0, 0, 1);
+    color: #FFFFFF;
     max-height: 50px;
-    width: 100vw;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.buttons {
+.navbar span {
+    width: 100%;
+}
+
+.navbar .primaryHeading {
+    font-family: "Protest Revolution", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 180%;
+    color: #FFFFFF;
+}
+
+.navbarButton {
+    background-color: #ffffff;
+    outline: none;
+    border-radius: 5rem;
+    font-size: 100%;
+    cursor: pointer;
+    font-weight: 600;
+    color: rgb(0, 0, 0);
+    transition: 0.3s;
+    display: inline-block;
+    width: fit-content;
+    padding: 1% 3%;
+    text-align: center;
+    border: none;
+    font-family: "Josefin Sans", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.navbarButton:hover {
+    background-color: #9f9f9f;
+}
+
+.navbar .buttonGroup {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
     align-items: center;
-    gap: 10px;
+    justify-content: end;
+    margin-right: 3%;
+    gap: 3%;
 }
 
 .top {
@@ -35,7 +75,6 @@
     width: 100%;
     height: 100%;
     z-index: -1;
-    margin-top: 76px;
     display: flex;
     gap: 50px;
     justify-content: center;
@@ -43,7 +82,8 @@
 }
 
 .bottom {
-    background-color: #7FC7D9;
+    background-color: rgb(110, 110, 110);
+    width: 100%;
     height: 100%;
     z-index: -1;
     display: flex;
@@ -55,7 +95,6 @@
 
 .wideImage {
     width: 90%;
-
 }
 
 .topTextSection {
@@ -78,6 +117,82 @@
     justify-content: center;
 }
 
+.splitSection {
+    display: flex;
+    flex-direction: row;
+}
+
+.splitSection div {
+    width: 50%;
+}
+
+.halfSection {
+    display: flex;
+    flex-direction: row;
+    gap: 5%;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.infoSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 70%;
+    text-align: center;
+    height: 40%;
+}
+
+.decorativeSection {
+    display: inline-block;
+    width: fit-content;
+    height: fit-content;
+    margin-left: 5%;
+}
+
+.decorativeSection :first-child {
+    border-radius: 10%;
+}
+
+#artist {
+    background-color: #000000;
+}
+
+#artist .primaryHeading,
+#artist .primaryText {
+    color: #FFFFFF;
+}
+
+#artist .primaryButton {
+    color: #000000;
+    background-color: #ededed;
+}
+
+#artist .primaryButton:hover {
+    background-color: #c0c0c0;
+}
+
+#own {
+    background-color: #f1f1f1;
+}
+
+#own .primaryHeading,
+#own .primaryText {
+    color: #000000;
+}
+
+#own .primaryButton {
+    color: #FFFFFF;
+    background-color: #000000;
+}
+
+#own .primaryButton:hover {
+    background-color: #2e2e2e;
+}
+
 .primaryHeading {
     font-family: "Londrina Solid", sans-serif;
     font-weight: 400;
@@ -85,21 +200,15 @@
 }
 
 .primaryText {
-    color: #6a6a6a;
+    color: #388a95;
     font-family: "Londrina Solid", sans-serif;
-    font-size: 110%;
+    font-size: 130%;
     font-weight: 100;
 }
 
-.buttonGroup {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.secondaryButton {
-    padding: 1rem 2.5rem !important;
-    background-color: #176B87;
+.primaryButton {
+    padding: 1rem 3rem !important;
+    background-color: #171717;
     outline: none;
     border: none;
     border-radius: 5rem;
@@ -113,88 +222,7 @@
     justify-content: center;
 }
 
-.sampleImage {
-    max-height: 500px;
-    max-width: 800px;
-    border-radius: 5%;
-    position: absolute;
-    /* top: -100px; */
-    right: -90px;
-    /* z-index: -2; */
-    max-width: 700px;
-}
-
-.sampleBox {
-    max-height: 100%;
-    max-width: 700px;
-    border-radius: 5%;
-    margin-left: 50px;
-    /* background-color: #678983; */
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 50%;
-}
-
-.sampleText {
-    max-height: 200px;
-    max-width: 300px;
-    margin-left: 70%;
-    font-size: 70%;
-    color: #248f24;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.sampleButton {
-    margin-top: 50px;
-    display: flex;
-}
-
-.sampleTest {
-    max-height: 70px;
-    max-width: 600px;
-    /* position: relative; */
-    display: flex;
-    /* padding-top: 3rem; */
-    margin-left: 60%;
-}
-
-.halfSection {
-    display: flex;
-    flex-direction: row;
-    gap: 5%;
-    align-items: center;
-    justify-content: center;
-    border: solid 1px red;
-    overflow: hidden;
-}
-
-.firstButton {
-    margin-left: 15px;
-    text-decoration: none;
-    padding: 1rem 0 !important;
-    background-color: #176B87;
-    /* outline: none; */
-    /* border: none; */
-    border-radius: 5rem;
-    /* font-size: 1.1rem;
-    
-    font-weight: 600;
-    color: white;
-    transition: 0.2s; */
-    display: flex;
-    cursor: pointer;
-    /* align-items: center;
-    justify-content: center; */
-}
-
-
-
-
-.secondaryButton svg {
-    margin-left: 0.75rem;
-    font-size: 1.5rem;
+.primaryButton:hover {
+    background-color: #515151;
+    text-decoration: underline;
 }
