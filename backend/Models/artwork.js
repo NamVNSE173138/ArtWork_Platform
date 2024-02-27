@@ -5,7 +5,7 @@ const artworkSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'users',
+      ref: 'User',
     },
     name: {
       type: String,
@@ -36,6 +36,11 @@ const artworkSchema = new Schema(
     timestamps: true,
   }
 );
-
+// artworkSchema.virtual('userDetails', {
+//   ref: 'User', // This assumes your user model is named 'User'
+//   localField: 'user',
+//   foreignField: '_id',
+//   justOne: true
+// });
 const Artwork = mongoose.model("Artwork", artworkSchema);
 module.exports = Artwork;
