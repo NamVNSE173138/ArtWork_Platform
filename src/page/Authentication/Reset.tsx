@@ -10,7 +10,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup';
 import axios from "axios";
 import { generateCode } from "../../assistants/Generators";
-import eFurniLogo from '../../assets/logos/eFurniLogo_transparent.png'
+import logo from '../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png'
 
 interface User {
     _id: string,
@@ -28,7 +28,7 @@ export default function Reset() {
     const [isLoading, setIsLoading] = useState(false)
     const params = useParams()
 
-    const randomImage = "https://t4.ftcdn.net/jpg/05/51/69/95/360_F_551699573_1wjaMGnizF5QeorJJIgw5eRtmq5nQnzz.jpg"
+    const randomImage = "https://i.pinimg.com/564x/3a/e6/7d/3ae67df286b9b8e568de17e4657fd21d.jpg";
 
     const resetPasswordForm = useFormik({
         initialValues: {
@@ -62,7 +62,13 @@ export default function Reset() {
             </div>
             <Divider type="vertical" />
             <div className="right-container row" style={{ padding: "20px 0" }}>
-                <Image className="image" src={eFurniLogo} width={250} preview={false} />
+                <Image
+                    className=""
+                    src={logo}
+                    height={100}
+                    width={100}
+                    preview={false}
+                />
                 <form onSubmit={resetPasswordForm.handleSubmit}>
                     <h5>Enter your email address to reset password.</h5>
                     <br />

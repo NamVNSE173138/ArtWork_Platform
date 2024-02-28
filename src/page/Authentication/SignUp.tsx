@@ -356,10 +356,8 @@ export default function SignUp() {
           <Image
             className=""
             src={logo}
-            style={{
-              height: "200px",
-            }}
-            width={250}
+            height={100}
+            width={100}
             preview={false}
           />
           <form ref={formRef} onSubmit={signUpForm.handleSubmit}>

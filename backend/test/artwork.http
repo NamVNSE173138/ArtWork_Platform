@@ -6,11 +6,11 @@ POST http://localhost:5000/artworks
 Content-Type: application/json
 
 {
-    "userId": "65b360a7e91e5908a8d7181e",
+    "userId": "65d44930ff3096c11cabd85e",
     "name": "Beautiful Coast",
     "tags": "Scenery",
     "numOfLike": 26,
     "price": 2000,
     "description": "Cool",
-    "imageUrl": "sadasduasd",
+    "imageUrl": "https://i0.wp.com/theluxurytravelexpert.com/wp-content/uploads/2019/03/best-coastlines-world.jpg?fit=1300%2C731&ssl=1",
 }

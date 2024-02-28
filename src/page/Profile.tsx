@@ -18,12 +18,22 @@ interface Pin {
     regular: string;
   };
 }
-
+interface User {
+  _id: string;
+  email: string;
+  password: string;
+  nickName: string;
+  role: string;
+  numOfFollower: number;
+  avatar: string;
+  status: boolean;
+}
 interface ArtworkResponse {
   data: Pin[];
 }
 
 const SignupForm: React.FC = () => {
+  const currentUser = localStorage.getItem("USER")
   const [pins, setPins] = useState<Pin[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -79,6 +89,11 @@ const SignupForm: React.FC = () => {
   };
   useEffect(() => {
     getNewPins();
+    if (currentUser) {
+      console.log("User data: ", currentUser)
+    } else {
+      console.log("No user found")
+    }
   }, []);
 
   return (
