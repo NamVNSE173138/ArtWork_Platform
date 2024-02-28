@@ -1,6 +1,6 @@
 const createError = require('http-errors');
 const mongoose = require('mongoose');
-const createToken = require('../Config/config.js')
+const { createToken } = require('../Config/config.js')
 const User = require('../Models/user.js');
 
 module.exports = {
@@ -108,3 +108,4 @@ module.exports = {
     }
   }
 };
+

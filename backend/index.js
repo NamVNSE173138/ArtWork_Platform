@@ -18,6 +18,18 @@ app.use("/artworks", artworkRouter);
 const CommentRoute = require('./Routes/Comment.route.js')
 app.use('/comments', CommentRoute)
 
+const MessageRoute = require('./Routes/Message.route.js')
+app.use('/messages', MessageRoute)
+
+const TagRoute = require('./Routes/Tag.route.js')
+app.use('/tags', TagRoute)
+
+const OrderRoute = require('./Routes/Order.route.js')
+app.use('/orders', OrderRoute)
+
+const ConversationRoute = require('./Routes/Conversation.route.js')
+app.use('/conversations', ConversationRoute)
+
 app.use((req, res, next) => {
     next(createError(404, "Not found"))
 })
