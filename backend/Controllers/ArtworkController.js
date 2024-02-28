@@ -17,6 +17,7 @@ module.exports = {
   createNewArtwork: async (req, res, next) => {
     try {
       const artwork = new Artwork(req.body)
+      // await artwork.populate('user', 'username email role').execPopulate();
       const result = await artwork.save()
       res.send(result)
     } catch (error) {

@@ -4,7 +4,7 @@ const createToken = (data) => {
     const token = jwt.sign(
         { data },
         "ARTWORK",
-        { expiresIn: "10m" }
+        { expiresIn: "5y" }
     );
     return token;
 };

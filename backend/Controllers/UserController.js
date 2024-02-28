@@ -1,6 +1,6 @@
 const createError = require('http-errors');
 const mongoose = require('mongoose');
-const { createToken } = require('../Config/config.js')
+const { createToken, decodeToken } = require('../Config/config.js')
 const User = require('../Models/user.js');
 
 module.exports = {
@@ -105,6 +105,39 @@ module.exports = {
         return;
       }
       next(error);
+    }
+  },
+
+  getUserInfo: async (req, res, next) => {
+    try {
+      // Extract the token from the request headers
+      const { token } = req.headers;
+
+      // Decode the token to get user data
+      const userInfo = decodeToken(token);
+
+      // Ensure that userInfo is not null and contains the necessary data
+      // if (!userInfo || !userInfo.data || !userInfo.data.checkEmail || !userInfo.data.checkEmail._id) {
+      //   throw new Error('Invalid User id');
+      // }
+
+      // Extract user ID from the decoded token
+      const userId = userInfo.data.checkEmail;
+
+      // Use async/await with findById for simplicity
+      const user = await User.findById(userId);
+
+      // Check if user is not found
+      if (!user) {
+        return res.status(404).send('User not found');
+      }
+
+      // Send user information as JSON response
+      res.send(user);
+    } catch (error) {
+      // Handle errors and send appropriate response
+      console.error(error);
+      res.status(400).json({ error: { status: 400, message: error.message || 'Invalid User id' } });
     }
   }
 };
