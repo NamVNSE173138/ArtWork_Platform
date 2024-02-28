@@ -79,7 +79,7 @@ const ProfilePage: React.FC = () => {
                 avatar={
                   <Avatar src="https://plus.unsplash.com/premium_photo-1677101221533-52b45823a2dc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2F0fGVufDB8fDB8fHww" />
                 }
-                title="Nam đẹp trai"
+                title="User's nickname"
                 description={
                   <>
                     Web Developer <br />

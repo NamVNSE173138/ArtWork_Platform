@@ -26,7 +26,7 @@ function App() {
       <Route path="/forgot" element={<Forgot />} />
       <Route path="/reset/:id" element={<Reset />} />
       <Route path="/upload" element={<Upload />} />
-      <Route path="/profile" element={<Profile />} />
+      <Route path="/profile/:userId" element={<Profile />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/home" element={<Home />} />
       <Route path="/favoriteList" element={<FavoriteList />} />

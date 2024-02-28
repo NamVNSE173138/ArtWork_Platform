@@ -5,7 +5,7 @@ const artworkSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'users',
+      ref: 'User',
     },
     name: {
       type: String,
@@ -31,16 +31,24 @@ const artworkSchema = new Schema(
       type: String,
       require: true,
     },
+    userNickname: String,
   },
   {
     timestamps: true,
   }
 );
-// artworkSchema.virtual('userDetails', {
-//   ref: 'User', // This assumes your user model is named 'User'
-//   localField: 'user',
-//   foreignField: '_id',
-//   justOne: true
-// });
+artworkSchema.pre('save', async function (next) {
+  try {
+    if (this.user) {
+      const user = await mongoose.model('User').findById(this.user);
+      if (user) {
+        this.userNickname = user.nickname;
+      }
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 const Artwork = mongoose.model("Artwork", artworkSchema);
 module.exports = Artwork;

@@ -8,7 +8,7 @@ import {
   SearchOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -51,6 +51,8 @@ const content = (
   </div>
 );
 
+
+
 const tags = [
   "Minimalism",
   "Wallpapers",
@@ -64,7 +66,7 @@ interface NavbarProps {
 }
 const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   let navigate = useNavigate();
-
+  const { userId } = useParams<{ userId: string }>();
   // const [startIndex, setStartIndex] = useState(0);
   // const [nextClickCount, setNextClickCount] = useState(0);
   // const responsiveTagCount = 3;
@@ -85,6 +87,8 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     setSearchTerm(value);
     onSubmit(value);
   };
+
+
   return (
     <nav className="navbar">
       <div className="first-line">
@@ -117,7 +121,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
               </>
             ) : (
               <>
-                <Link className="link-btn-nav" to={"/profile"}>
+                <Link className="link-btn-nav" to={`/profile/${userId}`}>
                   <Button className="btn-nav" size="large">
                     <UserOutlined /> Profile
                   </Button>
