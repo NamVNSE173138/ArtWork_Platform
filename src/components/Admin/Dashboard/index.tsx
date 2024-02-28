@@ -6,7 +6,14 @@ import {
 } from "@ant-design/icons";
 import { Card, Space, Statistic, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { getCustomers, getInventory, getOrders, getRevenue } from "../../../api/index";
+import {
+  getArtwork,
+  getCustomers,
+  getInventory,
+  getOrders,
+  getRevenue,
+  getUser,
+} from "../../../api/index";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -28,18 +35,18 @@ ChartJS.register(
 function Dashboard(): JSX.Element {
   const [orders, setOrders] = useState<number>(0);
   const [inventory, setInventory] = useState<number>(0);
-  const [customers, setCustomers] = useState<number>(0);
+  const [users, setUsers] = useState<number>(0);
   const [revenue, setRevenue] = useState<number>(0);
   useEffect(() => {
     getOrders().then((res: any) => {
       setOrders(res.total);
       setRevenue(res.discountedTotal);
     });
-    getInventory().then((res: any) => {
+    getArtwork().then((res: any) => {
       setInventory(res.total);
     });
-    getCustomers().then((res: any) => {
-      setCustomers(res.total);
+    getUser().then((res: any) => {
+      setUsers(res.total);
     });
   }, []);
   return (
@@ -89,7 +96,7 @@ function Dashboard(): JSX.Element {
             />
           }
           title={"Customer"}
-          value={customers}
+          value={users}
         />
         <DashboardCard
           icon={
@@ -114,9 +121,17 @@ function Dashboard(): JSX.Element {
     </Space>
   );
 }
-function DashboardCard({ title, value, icon }: { title: string, value: number, icon: JSX.Element }): JSX.Element {
+function DashboardCard({
+  title,
+  value,
+  icon,
+}: {
+  title: string;
+  value: number;
+  icon: JSX.Element;
+}): JSX.Element {
   return (
-    <Card style={{width: '310px'}}>
+    <Card style={{ width: "310px" }}>
       <Space direction="horizontal">
         {icon}
         <Statistic title={title} value={value} />
@@ -137,7 +152,8 @@ function RecentOrders(): JSX.Element {
   return (
     <>
       <Typography.Text>Recent Orders</Typography.Text>
-      <Table style={{width: '630px'}}
+      <Table
+        style={{ width: "630px" }}
         columns={[
           {
             title: "Title",
@@ -204,5 +220,3 @@ function DashboardChart(): JSX.Element {
   );
 }
 export default Dashboard;
-
-

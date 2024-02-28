@@ -5,12 +5,15 @@ import Upload from "./page/Upload";
 import Profile from "./page/Profile";
 import Admin from "./page/Admin/Admin";
 import SignIn from "./page/Authentication/SignIn";
-import EmailSignup from "./page/Authentication/EmailSignUp";
+import EmailSignup from "./page/Authentication/EmailSignup";
 import SignUp from "./page/Authentication/SignUp";
 import Forgot from "./page/Authentication/Forgot";
 import Reset from "./page/Authentication/Reset";
 import Navigator from "./page/Navigator/Navigator";
 import FavoriteList from "./page/FavoriteList/FavoriteList";
+import ArtistList from "./page/ArtistList";
+import ArtistProfile from "./components/ArtistProfile/ArtistProfile";
+import ArtworkRequest from "./page/ArtworkRequest";
 
 function App() {
   return (
@@ -27,6 +30,9 @@ function App() {
       <Route path="/admin" element={<Admin />} />
       <Route path="/home" element={<Home />} />
       <Route path="/favoriteList" element={<FavoriteList />} />
+      <Route path="/artistList" element={<ArtistList />} />
+      <Route path="/artistList/:_id" element={<ArtistProfile />} />
+      <Route path="/artworkRequest" element={<ArtworkRequest />} />
     </Routes>
   );
 }

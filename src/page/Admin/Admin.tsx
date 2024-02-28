@@ -11,7 +11,7 @@ import { Layout, Menu, Avatar, theme, Breadcrumb } from "antd";
 import User from "../../components/Admin/User";
 import Dashboard from "../../components/Admin/Dashboard";
 import Artwork from "../../components/Admin/Artwork";
-import Orders from "../../components/Admin/Orders";
+import Request from "../../components/Admin/Request/index";
 import avt from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
 
 const { Header, Sider, Content } = Layout;
@@ -47,8 +47,8 @@ const Admin: React.FC = () => {
     {
       key: "4",
       icon: <ShoppingCartOutlined />,
-      label: "Orders",
-      onClick: () => setActiveComponent("Orders"),
+      label: "Request",
+      onClick: () => setActiveComponent("Request"),
     },
   ];
 
@@ -116,7 +116,7 @@ const Admin: React.FC = () => {
           />
           {activeComponent === "Dashboard" && <Dashboard />}
           {activeComponent === "User" && <User />}
-          {activeComponent === "Orders" && <Orders />}
+          {activeComponent === "Request" && <Request />}
           {activeComponent === "Artwork" && <Artwork />}
         </Content>
       </Layout>

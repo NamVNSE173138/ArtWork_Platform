@@ -50,7 +50,7 @@ const Artwork: React.FC = () => {
             {
               title: "Thumbnail",
               dataIndex: "imageUrl",
-              render: (link: string) => <Image src={link} width={85} />,
+              render: (link: string) => <Avatar shape="square" src={link} size={50} />,
             },
             {
               title: "Name",
