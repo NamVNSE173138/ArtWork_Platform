@@ -34,27 +34,27 @@ interface OtherLoginResponse {
   name?: string | undefined;
   email?: string | undefined;
   picture?:
-    | {
-        data: {
-          height?: number | undefined;
-          is_silhouette?: boolean | undefined;
-          url?: string | undefined;
-          width?: number | undefined;
-        };
-      }
-    | undefined;
+  | {
+    data: {
+      height?: number | undefined;
+      is_silhouette?: boolean | undefined;
+      url?: string | undefined;
+      width?: number | undefined;
+    };
+  }
+  | undefined;
 }
 interface CredentialResponse {
   credential?: string;
   select_by?:
-    | "auto"
-    | "user"
-    | "user_1tap"
-    | "user_2tap"
-    | "btn"
-    | "btn_confirm"
-    | "btn_add_session"
-    | "btn_confirm_add_session";
+  | "auto"
+  | "user"
+  | "user_1tap"
+  | "user_2tap"
+  | "btn"
+  | "btn_confirm"
+  | "btn_add_session"
+  | "btn_confirm_add_session";
   clientId?: string;
 }
 interface Pin {
@@ -239,15 +239,17 @@ export default function Signin() {
           const responseBody = await response.text();
           try {
             const data = JSON.parse(responseBody);
-
             localStorage.setItem("USER", data.token);
             setTimeout(() => {
-              navigate("/");
+              setIsLoading(false)
+              // navigate("/home");
             }, 2000);
           } catch (error) {
             localStorage.setItem("USER", responseBody);
+            console.log("Response body info:", responseBody)
             setTimeout(() => {
-              navigate("/");
+              setIsLoading(false)
+              // navigate("/home");
             }, 2000);
           }
         } else {
@@ -325,8 +327,8 @@ export default function Signin() {
           <Image
             className=""
             src={logo}
-            style={{ height: "200px" }}
-            width={250}
+            height={100}
+            width={100}
             preview={false}
           />
           <form onSubmit={loginForm.handleSubmit}>

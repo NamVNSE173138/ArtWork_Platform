@@ -11,7 +11,7 @@ import * as Yup from 'yup';
 import emailjs from '@emailjs/browser';
 import { generateCode } from "../../assistants/Generators";
 // import Reset from "./Reset";
-import eFurniLogo from '../../assets/logos/eFurniLogo_transparent.png'
+import logo from '../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png'
 
 interface User {
     _id?: string,
@@ -27,7 +27,7 @@ interface User {
 export default function Forgot() {
     const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
-    const randomImage = "https://t4.ftcdn.net/jpg/05/51/69/95/360_F_551699573_1wjaMGnizF5QeorJJIgw5eRtmq5nQnzz.jpg"
+    const randomImage = "https://i.pinimg.com/564x/3a/e6/7d/3ae67df286b9b8e568de17e4657fd21d.jpg";
 
     const [open, setOpen] = useState(false);
     const showModal = () => {
@@ -132,7 +132,13 @@ export default function Forgot() {
             </div>
             <Divider type="vertical" />
             <div className="right-container row" style={{ padding: "20px 0" }}>
-                <Image className="image" src={eFurniLogo} width={250} preview={false} />
+                <Image
+                    className=""
+                    src={logo}
+                    height={100}
+                    width={100}
+                    preview={false}
+                />
                 <form ref={formRef} onSubmit={emailForm.handleSubmit}>
                     <h5>Enter your email address to reset password.</h5>
                     <br />
