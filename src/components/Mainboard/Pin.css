@@ -9,7 +9,7 @@
     align-items: center;
     box-sizing: border-box;
     cursor: pointer;
-    width: 411px;
+    width: 260px;
 
     img {
         display: flex;
@@ -18,6 +18,35 @@
         border-radius: 16px;
         object-fit: cover;
     }
+}
+
+@media (max-width: 767px) {
+
+
+    .image {
+        width: 350px !important;
+    }
+}
+
+@media (min-width:576px) and (max-width:767px) {
+    .image {
+        width: 290px !important;
+
+    }
+}
+
+@media (min-width: 1800px) {
+    .image {
+        width: 290px;
+    }
+
+}
+
+@media (max-width: 1200px) {
+    .image {
+        width: 240px;
+    }
+
 }
 
 .top-btn,
