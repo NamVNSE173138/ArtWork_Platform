@@ -16,11 +16,16 @@ interface MainboardProps {
 }
 
 const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
-  console.log("Mainboard Pins:", pins);
-  const [modalVisible, setModalVisible] = useState(false);
-  const showModal = () => {
-    setModalVisible(true);
+  const [modalIndex, setModalIndex] = useState(-1);
+
+  const showModal = (index: number) => {
+    setModalIndex(index);
   };
+
+  const hideModal = () => {
+    setModalIndex(-1);
+  };
+
   const handleLike = () => {
     message.success("Liked!");
     // Implement your like functionality here
@@ -31,9 +36,21 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
     // Implement your add functionality here
   };
 
-  const handleDownload = () => {
+  const handleDownload = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const imageUrl = pins[modalIndex].imageUrl; // Assuming you have access to pins and modalIndex
     message.success("Downloading...");
-    // Implement your download functionality here
+    // Create a new anchor element
+    const link = document.createElement("a");
+    // Set the href attribute to the image URL
+    link.href = imageUrl;
+    // Set the download attribute to force download the image
+    link.download = "image.jpg";
+    // Append the anchor element to the body
+    document.body.appendChild(link);
+    // Programmatically click the anchor element to start downloading
+    link.click();
+    // Remove the anchor element from the DOM
+    document.body.removeChild(link);
   };
 
   const handleShare = () => {
@@ -45,22 +62,25 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
     message.success("Report functionality goes here");
     // Implement your report functionality here
   };
+
   return (
     <div className="mainboard_wrapper">
       <div className="mainboard_container">
         {pins.map((pin, index) => (
-          <div className="Wrapper">
+          <div className="Wrapper" key={index}>
             <div className="image">
               <div className="top-btn">
                 <Button
                   size="large"
                   className="like-btn"
                   icon={<HeartFilled />}
+                  onClick={handleLike}
                 />
                 <Button
                   size="large"
                   className="add-btn"
                   icon={<PlusOutlined />}
+                  onClick={handleAdd}
                 />
               </div>
               <div className="bottom-btn">
@@ -68,26 +88,29 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                   size="large"
                   className="download-btn"
                   icon={<DownloadOutlined />}
+                  onClick={handleDownload}
                 />
               </div>
               <div className="artist-info">
                 <img
-                  src={
-                    "https://scontent.fsgn16-1.fna.fbcdn.net/v/t39.30808-6/374852207_3473181502955513_5066250399042915797_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=efb6e6&_nc_eui2=AeFK-YCTXTmYEZbuyizFU-9hMR_6p8bWSwExH_qnxtZLATUF4CJxoBYDUFxEiZ8BW7Su3Ot6k7vphoBITf1qMnsH&_nc_ohc=HdV6eApcuiEAX8vm2Gu&_nc_ht=scontent.fsgn16-1.fna&oh=00_AfA9ZIrDGIYoFRu2f1D-P8s-dTaNXGKvegN0I2RbdUsGkw&oe=65A7032A"
-                  }
+                  src="https://i.pinimg.com/564x/30/2f/d4/302fd4ae9a9786bf3b637f7cbe1ae7b6.jpg"
                   alt="artist avatar"
                   className="avatar"
                 />
                 <div className="info">
-                  <p className="name">Cun</p>
-                  <p className="tag">#nice</p>
+                  <p className="name">{pin.user}</p>
+                  {/* <p className="tag">{pin.tag}</p> */}
                 </div>
               </div>
-              <img src={pin.imageUrl} alt="pin" onClick={showModal} />
+              <img
+                src={pin.imageUrl}
+                alt="pin"
+                onClick={() => showModal(index)}
+              />
               <Modal
                 style={{ top: 20 }}
-                open={modalVisible}
-                onCancel={() => setModalVisible(false)}
+                open={modalIndex === index}
+                onCancel={hideModal}
                 footer={null}
                 width={1233}
                 centered
@@ -97,15 +120,13 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                   <div className="top-modal">
                     <div className="artist-info-modal">
                       <img
-                        src={
-                          "https://images.unsplash.com/photo-1682686579688-c2ba945eda0e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwyOHx8fGVufDB8fHx8fA%3D%3D"
-                        }
+                        src="https://i.pinimg.com/564x/30/2f/d4/302fd4ae9a9786bf3b637f7cbe1ae7b6.jpg"
                         alt="artist avatar"
                         className="avatar"
                       />
                       <div className="info">
-                        <p className="name">Cun</p>
-                        <p className="tag">#kk</p>
+                        <p className="name-modal">{pin.user}</p>
+                        {/* <p className="tag">{pin.tag}</p> */}
                       </div>
                     </div>
                     <div className="modal-btns">
@@ -121,14 +142,12 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                         icon={<PlusOutlined />}
                         onClick={handleAdd}
                       />
-
                       <Button
                         size="large"
-                        className="download-modal-btn"
+                        className="download-btn"
                         icon={<DownloadOutlined />}
                         onClick={handleDownload}
                       >
-                        {" "}
                         Download
                       </Button>
                     </div>
@@ -137,10 +156,10 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                     <img className="img-modal" src={pin.imageUrl} alt="pin" />
                   </div>
                   <div className="bottom-section">
-                    <div className="download-count">
+                    {/* <div className="download-count">
                       Downloads
-                      <br /> <span>5,432</span>
-                    </div>
+                      <br /> <span>{pin.downloads}</span>
+                    </div> */}
                     <div className="actions">
                       <Button
                         className="share-btn"
@@ -159,9 +178,9 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                     </div>
                   </div>
                   <div className="img-detail">
-                    <span>
-                      <CalendarOutlined /> Pushlished 12 days ago
-                    </span>
+                    {/* <span>
+                      <CalendarOutlined /> Published {pin.createAt}
+                    </span> */}
                     <br />
                     <span>
                       <SafetyOutlined /> Free to use under the ArtAttack License
@@ -171,7 +190,6 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
               </Modal>
             </div>
           </div>
-          // <Pin key={index} {...pin} />
         ))}
       </div>
       <FloatButton.BackTop />

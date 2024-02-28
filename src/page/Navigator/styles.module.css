@@ -208,21 +208,20 @@
 
 .primaryButton {
     padding: 1rem 3rem !important;
-    background-color: #171717;
-    outline: none;
-    border: none;
+    background-color: #FFF;
     border-radius: 5rem;
     font-size: 1.1rem;
     cursor: pointer;
     font-weight: 600;
-    color: white;
+    color: rgb(0, 0, 0);
     transition: 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
+    border: solid #000;
 }
 
 .primaryButton:hover {
-    background-color: #515151;
+    background-color: #b5b5b5;
     text-decoration: underline;
 }

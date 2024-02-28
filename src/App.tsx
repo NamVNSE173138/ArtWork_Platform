@@ -13,6 +13,7 @@ import Navigator from "./page/Navigator/Navigator";
 import FavoriteList from "./page/FavoriteList/FavoriteList";
 import ArtistList from "./page/ArtistList";
 import ArtistProfile from "./components/ArtistProfile/ArtistProfile";
+import ArtworkRequest from "./page/ArtworkRequest";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
       <Route path="/favoriteList" element={<FavoriteList />} />
       <Route path="/artistList" element={<ArtistList />} />
       <Route path="/artistList/:_id" element={<ArtistProfile />} />
+      <Route path="/artworkRequest" element={<ArtworkRequest />} />
     </Routes>
   );
 }

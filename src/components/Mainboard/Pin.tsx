@@ -10,15 +10,15 @@ import { Button, Modal, message, Tag, Space } from "antd";
 import "./Pin.css";
 export interface PinProps {
   _id: string;
-  artworkId: number;
-  userId: number;
-  artworkName: string;
-  createTime: Date;
+  user: string;
+  name: string;
   tags: string;
   numOfLike: number;
-  price: string;
-  describe: string;
+  price: number;
+  description: string;
   imageUrl: string;
+  createAt: Date;
+  updatedAt: Date;
 }
 const tags = [
   "Sossusvlei",
@@ -37,40 +37,40 @@ const tags = [
 ];
 const Pin: React.FC<PinProps> = ({
   _id,
-  artworkId,
-  userId,
-  artworkName,
-  createTime,
+  user,
+  name,
   tags,
   numOfLike,
   price,
-  describe,
+  description,
   imageUrl,
+  createAt,
+  updatedAt,
 }) => {
   useEffect(() => {
     console.log("Pin Properties:", {
       _id,
-      artworkId,
-      userId,
-      artworkName,
-      createTime,
+      user,
+      name,
       tags,
       numOfLike,
       price,
-      describe,
+      description,
       imageUrl,
+      createAt,
+      updatedAt,
     });
   }, [
     _id,
-    artworkId,
-    userId,
-    artworkName,
-    createTime,
+    user,
+    name,
     tags,
     numOfLike,
     price,
-    describe,
+    description,
     imageUrl,
+    createAt,
+    updatedAt,
   ]);
   const [modalVisible, setModalVisible] = useState(false);
   const showModal = () => {
@@ -126,95 +126,11 @@ const Pin: React.FC<PinProps> = ({
             className="avatar"
           />
           <div className="info">
-            <p className="name">Cun</p>
+            <p className="name">{user}</p>
             <p className="tag">#nice</p>
           </div>
         </div>
-        <img src={imageUrl} alt="pin" onClick={showModal} />
-        {/* <Modal
-          style={{ top: 20 }}
-          open={modalVisible}
-          onCancel={() => setModalVisible(false)}
-          footer={null}
-          width={1233}
-          centered
-        >
-          <div className="modal-content">
-            <div className="top-modal">
-              <div className="artist-info-modal">
-                <img
-                  src={
-                    "https://images.unsplash.com/photo-1682686579688-c2ba945eda0e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwyOHx8fGVufDB8fHx8fA%3D%3D"
-                  }
-                  alt="artist avatar"
-                  className="avatar"
-                />
-                <div className="info">
-                  <p className="name">Cun</p>
-                  <p className="tag">#kk</p>
-                </div>
-              </div>
-              <div className="modal-btns">
-                <Button
-                  size="large"
-                  className="like-modal-btn"
-                  icon={<HeartFilled />}
-                  onClick={handleLike}
-                />
-                <Button
-                  size="large"
-                  className="add-modal-btn"
-                  icon={<PlusOutlined />}
-                  onClick={handleAdd}
-                />
-
-                <Button
-                  size="large"
-                  className="download-modal-btn"
-                  icon={<DownloadOutlined />}
-                  onClick={handleDownload}
-                >
-                  {" "}
-                  Download
-                </Button>
-              </div>
-            </div>
-            <div className="image-container">
-              <img className="img-modal" src={imageUrl} alt="pin" />
-            </div>
-            <div className="bottom-section">
-              <div className="download-count">
-                Downloads
-                <br /> <span>5,432</span>
-              </div>
-              <div className="actions">
-                <Button
-                  className="share-btn"
-                  size="large"
-                  onClick={handleShare}
-                >
-                  Share
-                </Button>
-                <Button
-                  className="report-btn"
-                  size="large"
-                  onClick={handleReport}
-                >
-                  Report
-                </Button>
-              </div>
-            </div>
-            <div className="img-detail">
-              <span>
-                <CalendarOutlined /> Pushlished 12 days ago
-              </span>
-              <br />
-              <span>
-                <SafetyOutlined /> Free to use under the ArtAttack License
-              </span>
-            </div>
-          </div>
-        </Modal> */}
+        <img src={imageUrl} alt="pin" />
       </div>
     </div>
   );
