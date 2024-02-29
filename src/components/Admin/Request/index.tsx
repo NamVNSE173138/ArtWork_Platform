@@ -2,7 +2,7 @@ import { Avatar, Rate, Space, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { getInventory, getOrders } from "../../../api/index";
 
-function Orders() {
+function Request() {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
 
@@ -16,8 +16,9 @@ function Orders() {
 
   return (
     <Space size={20} direction="vertical">
-      <Typography.Title level={4}>Orders</Typography.Title>
-      <Table style={{width: '1250px'}}
+      <Typography.Title level={4}>Request</Typography.Title>
+      <Table
+        style={{ width: "1250px" }}
         loading={loading}
         columns={[
           {
@@ -51,4 +52,4 @@ function Orders() {
     </Space>
   );
 }
-export default Orders;
+export default Request;

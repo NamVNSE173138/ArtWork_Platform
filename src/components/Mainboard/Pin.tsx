@@ -17,6 +17,7 @@ export interface PinProps {
   price: number;
   description: string;
   imageUrl: string;
+  userNickname: string;
   createAt: Date;
   updatedAt: Date;
 }

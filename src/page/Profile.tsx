@@ -35,7 +35,6 @@ const SignupForm: React.FC = () => {
   const userToken = localStorage.getItem("USER")
   const [pins, setPins] = useState<Pin[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
   const getImages = async () => {
     try {
       const response = await axios.get<ArtworkResponse>(

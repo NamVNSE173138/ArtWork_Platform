@@ -1,6 +1,6 @@
 const createError = require('http-errors');
 const mongoose = require('mongoose');
-const { createToken } = require('../Config/config.js')
+const { createToken, decodeToken } = require('../Config/config.js')
 const User = require('../Models/user.js');
 
 module.exports = {
@@ -105,6 +105,26 @@ module.exports = {
         return;
       }
       next(error);
+    }
+  },
+
+  countUser: async (req, res, next) => {
+    try {
+      const results = await User.find({ role: 'user' })
+      const total = results.length;
+      res.send({ total });
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+
+  countArtist: async (req, res, next) => {
+    try {
+      const results = await User.find({ role: 'artist' })
+      const total = results.length;
+      res.send({ total });
+    } catch (error) {
+      console.log(error.message);
     }
   }
 };
