@@ -16,7 +16,10 @@ interface MainboardProps {
 }
 
 const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
+  const [pin, setPin] = useState<PinProps[]>(pins);
   const [modalIndex, setModalIndex] = useState(-1);
+  // console.log(pins);
+  const [loading, setLoading] = useState(false);
 
   const showModal = (index: number) => {
     setModalIndex(index);
