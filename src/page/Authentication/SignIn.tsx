@@ -84,9 +84,15 @@ export default function Signin() {
 
   useEffect(() => {
     if (location.state) {
-      toast.warning(
-        "This email has already been registered within the system. Please enter your password to sign in."
-      );
+      if (location.state?.noti === "signup") {
+        toast.warning("Your email has been registered before. Please enter your password to sign in.")
+      }
+      if (location.state?.noti === "reset") {
+        toast.success("Your password has been successfully reset.")
+      }
+      if (location.state?.noti === "create") {
+        toast.success("Your account has been successfully signed up. Please login to continue.")
+      }
     }
   }, []);
 
@@ -132,7 +138,7 @@ export default function Signin() {
           }
         })
         .catch((err) => console.log(err));
-      navigate("/");
+      navigate("/home");
     } else {
       console.log("Not found data");
     }
@@ -173,7 +179,7 @@ export default function Signin() {
           );
           setTimeout(() => {
             setIsLoading(false);
-            navigate("/");
+            navigate("/home");
           }, 2000);
         }
       })
@@ -242,14 +248,13 @@ export default function Signin() {
             localStorage.setItem("USER", data.token);
             setTimeout(() => {
               setIsLoading(false)
-              // navigate("/home");
+              navigate("/home");
             }, 2000);
           } catch (error) {
             localStorage.setItem("USER", responseBody);
-            console.log("Response body info:", responseBody)
             setTimeout(() => {
               setIsLoading(false)
-              // navigate("/home");
+              navigate("/home");
             }, 2000);
           }
         } else {

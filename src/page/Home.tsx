@@ -41,8 +41,7 @@ const Home: React.FC = () => {
       const response = await axios.get<ArtworkResponse>(
         "http://localhost:5000/artworks"
       );
-      console.log("reponse: ", response);
-      console.log(response.data);
+      console.log("Data: ", response.data);
 
       return response.data;
     } catch (error) {

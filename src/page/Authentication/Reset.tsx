@@ -50,7 +50,7 @@ export default function Reset() {
                 .catch(err => console.log(err))
             setTimeout(() => {
                 setIsLoading(false)
-                navigate('/signin')
+                navigate("/signin", { state: { noti: "reset" } });
             }, 2000)
         }
     })

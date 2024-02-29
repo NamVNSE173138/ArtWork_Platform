@@ -5,14 +5,14 @@ const artworkSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'users',
+      ref: 'User',
     },
     name: {
       type: String,
       required: true,
     },
     tags: {
-      type: String,
+      type: [String],
       required: true,
     },
     numOfLike: {
