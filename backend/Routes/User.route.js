@@ -7,6 +7,10 @@ router.get('/', userController.getAllUsers);
 
 router.post('/', userController.createNewUser);
 
+router.get('/count', userController.countUser);
+
+router.get('/artcount', userController.countArtist);
+
 router.post('/login', userController.userLogin);
 
 router.get('/:id', userController.findUserById);
@@ -15,6 +19,5 @@ router.patch('/:id', userController.updateUser);
 
 router.delete('/:id', userController.deleteUser);
 
-router.get('/getUserInfo', userController.getUserInfo);
 
 module.exports = router;

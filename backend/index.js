@@ -31,19 +31,19 @@ const ConversationRoute = require('./Routes/Conversation.route.js')
 app.use('/conversations', ConversationRoute)
 
 app.use((req, res, next) => {
-    next(createError(404, "Not found"))
+  next(createError(404, "Not found"))
 })
 
 app.use((err, req, res, next) => {
-    res.status(err.status || 500)
-    res.send({
-        error: {
-            status: err.status || 500,
-            message: err.message
-        }
-    })
+  res.status(err.status || 500)
+  res.send({
+    error: {
+      status: err.status || 500,
+      message: err.message
+    }
+  })
 })
 
 app.listen(5000, () => {
-    console.log('Server started on port 5000')
+  console.log('Server started on port 5000')
 })

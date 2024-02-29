@@ -16,6 +16,18 @@ export const getUser = () => {
   return fetch("http://localhost:5000/users").then((res) => res.json());
 }
 
+export const getUserId = (id) => {
+  return fetch(`http://localhost:5000/users/${id}`).then((res) => res.json());
+}
+
+export const countUser = () => {
+  return fetch("http://localhost:5000/users/count").then((res) => res.json());
+}
+
+export const countArtist = () => {
+  return fetch("http://localhost:5000/users/artcount").then((res) => res.json());
+}
+
 export const updateUser = (id, data) => {
   return fetch(`http://localhost:5000/users/${id}`, {
     method: 'PATCH',
@@ -58,6 +70,14 @@ export const deleteUser = (id) => {
 
 export const getArtwork = () => {
   return fetch("http://localhost:5000/artworks").then((res) => res.json());
+}
+
+export const getArtworkId = (id) => {
+  return fetch(`http://localhost:5000/artworks/${id}`).then((res) => res.json());
+}
+
+export const countArtwork = () => {
+  return fetch("http://localhost:5000/artworks/count").then((res) => res.json());
 }
 
 export const deleteArtwork = (id) => {

@@ -81,4 +81,13 @@ module.exports = {
     }
   },
 
+  countArtwork: async (req, res, next) => {
+    try {
+      const results = await Artwork.find({})
+      const total = results.length;
+      res.send({ total });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 };
