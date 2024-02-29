@@ -249,7 +249,7 @@ export default function Signin() {
             console.log("Response body info:", responseBody)
             setTimeout(() => {
               setIsLoading(false)
-              // navigate("/home");
+              navigate("/home");
             }, 2000);
           }
         } else {
