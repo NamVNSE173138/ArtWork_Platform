@@ -16,7 +16,6 @@ import FacebookLogin from "react-facebook-login";
 import FacebookIcon from "../../assets/icons/facebook.png";
 import logo from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
 import { generatePassword } from "../../assistants/Generators";
-import Navbar from "../../components/Navbar/Navbar";
 
 interface User {
   _id: string;
@@ -35,27 +34,27 @@ interface OtherLoginResponse {
   name?: string | undefined;
   email?: string | undefined;
   picture?:
-    | {
-        data: {
-          height?: number | undefined;
-          is_silhouette?: boolean | undefined;
-          url?: string | undefined;
-          width?: number | undefined;
-        };
-      }
-    | undefined;
+  | {
+    data: {
+      height?: number | undefined;
+      is_silhouette?: boolean | undefined;
+      url?: string | undefined;
+      width?: number | undefined;
+    };
+  }
+  | undefined;
 }
 interface CredentialResponse {
   credential?: string;
   select_by?:
-    | "auto"
-    | "user"
-    | "user_1tap"
-    | "user_2tap"
-    | "btn"
-    | "btn_confirm"
-    | "btn_add_session"
-    | "btn_confirm_add_session";
+  | "auto"
+  | "user"
+  | "user_1tap"
+  | "user_2tap"
+  | "btn"
+  | "btn_confirm"
+  | "btn_add_session"
+  | "btn_confirm_add_session";
   clientId?: string;
 }
 interface Pin {
@@ -240,15 +239,17 @@ export default function Signin() {
           const responseBody = await response.text();
           try {
             const data = JSON.parse(responseBody);
-
             localStorage.setItem("USER", data.token);
             setTimeout(() => {
-              navigate("/");
+              setIsLoading(false)
+              // navigate("/home");
             }, 2000);
           } catch (error) {
             localStorage.setItem("USER", responseBody);
+            console.log("Response body info:", responseBody)
             setTimeout(() => {
-              navigate("/");
+              setIsLoading(false)
+              // navigate("/home");
             }, 2000);
           }
         } else {
@@ -295,22 +296,6 @@ export default function Signin() {
     }
   };
 
-  const onSearchSubmit = async (term: string) => {
-    setLoading(true);
-
-    try {
-      const res = await getImages();
-      const newPins = Array.isArray(res.data) ? res.data : [];
-
-      newPins.sort(() => 0.5 - Math.random());
-      setPins(newPins);
-    } catch (error) {
-      console.error("Error fetching search images:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const getNewPins = async () => {
     setLoading(true);
 
@@ -333,7 +318,6 @@ export default function Signin() {
   }, []);
   return (
     <>
-      <Navbar onSubmit={onSearchSubmit} />
       <div className="container">
         <div className="left-container">
           <Image src={randomImage} width={400} preview={false} />
@@ -343,8 +327,8 @@ export default function Signin() {
           <Image
             className=""
             src={logo}
-            style={{ height: "200px" }}
-            width={250}
+            height={100}
+            width={100}
             preview={false}
           />
           <form onSubmit={loginForm.handleSubmit}>

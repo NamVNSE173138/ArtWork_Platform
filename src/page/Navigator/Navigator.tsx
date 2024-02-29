@@ -1,21 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { Parallax, ParallaxLayer, IParallax } from "@react-spring/parallax";
-import { Row, Col, Button } from "antd";
+import { Image, Typography, FloatButton } from "antd";
 import HomeImg from "../../assets/image/Home.png";
-import UploadImg from "../../assets/image/Upload.png";
-import {
-  ArrowRightOutlined,
-  MonitorOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-// import { Schema, model, connect } from "mongoose";
-
+import { ArrowRightOutlined } from "@ant-design/icons";
 import styles from "./styles.module.css";
-import Navbar from "../../components/Navbar/Navbar";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Navigator() {
+  const navigate = useNavigate()
+  const { Text } = Typography
   const parallax = useRef<IParallax>(null!);
   interface IUser {
     userId: number;
@@ -40,196 +33,111 @@ export default function Navigator() {
     describe: string;
     imageUrl: string;
   }
-  interface ArtworkResponse {
-    data: Pin[];
+
+  const scroll = (to: number) => {
+    if (parallax.current) {
+      parallax.current.scrollTo(to)
+    }
   }
-  //   const userSchema = new Schema<IUser>({
-  //     userId: { type: Number, required: true },
-  //     nickname: { type: String, required: true },
-  //     email: { type: String, required: true },
-  //     avatar: String,
-  //   });
 
-  //   const User = model<IUser>("User", userSchema);
-  const [user, setUser] = useState<IUser>();
-
-  //   async function run() {
-  //     // 4. Connect to MongoDB
-  //     await connect(
-  //       "mongodb+srv://vonhatnam:vonhatnam@cluster0.u60utzk.mongodb.net/"
-  //     );
-
-  //     const user = new User({
-  //       userId: 23,
-  //       nickname: "Bill",
-  //       email: "bill@initech.com",
-  //       avatar: "https://i.imgur.com/dM7Thhn.png",
-  //     });
-  //     await user.save();
-  //     if (user) {
-  //       setUser(user);
-  //       console.log(user.userId);
-  //     } else {
-  //       console.log("Undefined");
-  //     }
-  //   }
-  //   run();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [pins, setPins] = useState<Pin[]>([]);
-  const [image, setImage] = useState([]);
-  useEffect(() => {
-    fetch("http://localhost:5000/artworks")
-      .then((response) => response.json())
-      .then((res) => {
-        setImage(res);
-        console.log(res);
-      });
-  }, []);
-  // console.log(image);
-
-  const getImages = async () => {
-    try {
-      const response = await axios.get<ArtworkResponse>(
-        "http://localhost:5000/artworks"
-      );
-      console.log("reponse: ", response);
-      console.log(response.data);
-
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching artwork:", error);
-      throw error;
-    }
-  };
-  const onSearchSubmit = async (term: string) => {
-    setLoading(true);
-
-    try {
-      const res = await getImages();
-      const newPins = Array.isArray(res.data) ? res.data : [];
-
-      newPins.sort(() => 0.5 - Math.random());
-      setPins(newPins);
-    } catch (error) {
-      console.error("Error fetching search images:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
   return (
-    <>
-      <div className={styles.container}>
-        <Parallax ref={parallax} pages={3}>
-          {/*Navigator's navbar*/}
-          <ParallaxLayer
-            offset={0}
-            sticky={{ start: 0, end: 3 }}
-            className={styles.navbar}
-          >
-            <Row style={{ display: "inherit" }}>
-              <Navbar onSubmit={onSearchSubmit} />
-            </Row>
-          </ParallaxLayer>
+    <div>
+      <Parallax ref={parallax} pages={2} className={styles.container}>
+        <ParallaxLayer
+          offset={0}
+          sticky={{ start: 0, end: 2 }}
+          className={styles.navbar}
+        >
+          <span style={{ marginLeft: "1%" }}>
+            <Text strong className={styles.primaryHeading}>
+              ART FROM THE SOUL, ART FOR THE SOUL
+            </Text>
+          </span>
+          <span className={styles.buttonGroup}>
+            <button
+              onClick={() => { navigate('/signin') }}
+              className={styles.navbarButton}>
+              SIGN IN
+            </button>
+            <button
+              onClick={() => { navigate('/signup/email') }}
+              className={styles.navbarButton}
+            >
+              CREATE A FREE ACCOUNT
+            </button>
+          </span>
+        </ParallaxLayer>
 
-          {/*Background*/}
-          <ParallaxLayer offset={0} speed={0.3} className={styles.dusk} />
-          <ParallaxLayer offset={1} speed={0.3} className={styles.day} />
-          <ParallaxLayer offset={2} speed={0.3} className={styles.dawn} />
+        <ParallaxLayer offset={0} speed={0.3} className={styles.top} />
+        <ParallaxLayer offset={1} speed={0.3} className={styles.bottom} />
 
-          {/*Page's main frame*/}
-          <ParallaxLayer offset={0.2} speed={0.9} className={styles.sampleBox}>
-            <img
-              src="https://images.unsplash.com/photo-1628607292260-9195108b03b7?q=80&w=1771&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt=""
-              className={styles.sampleImage}
-            />
-          </ParallaxLayer>
-          <ParallaxLayer offset={1.2} speed={0.9} className={styles.sampleBox}>
-            <img src={HomeImg} alt="" className={styles.sampleImage} />
-          </ParallaxLayer>
-          <ParallaxLayer offset={2.2} speed={0.9} className={styles.sampleBox}>
-            <img src={UploadImg} alt="" className={styles.sampleImage} />
-          </ParallaxLayer>
-          {/* <ParallaxLayer offset={3.2} speed={0.9} className={styles.sampleBox}>
-            Sample box
-          </ParallaxLayer> */}
+        <ParallaxLayer offset={0} speed={2.5} className={styles.topTextSection}>
+          <span className={styles.branding}>
+            <Text strong className={styles.primaryHeading}>
+              ARTWORK SHARING PLATFORM
+            </Text>
+            <Text className={styles.primaryText}>
+              one of the best places to enjoy the work of art
+            </Text>
+          </span>
 
-          {/*Typography and buttons*/}
-          <ParallaxLayer offset={0.5} speed={1.1} className={styles.sampleTest}>
-            <div className={styles.homeTextSection}>
-              <h1 className={styles.primaryHeading}>
-                Artwork Sharing Platform
-              </h1>
-              <p className={styles.primaryText}>
-                Introducing our revolutionary artwork sharing platform - where
-                artists and art enthusiasts come together to explore, discover,
-                and share their passion for creativity.
-              </p>
-              <Col span={24} className={styles.sampleButton}>
-                <button
-                  onClick={() => parallax.current.scrollTo(1)}
-                  className={styles.secondaryButton}
-                >
-                  Next
-                </button>
-                <Link to={"/home"} className={styles.firstButton}>
-                  <button className={styles.secondaryButton}>
-                    Get start <ArrowRightOutlined />{" "}
-                  </button>
-                </Link>
-              </Col>
-            </div>
-          </ParallaxLayer>
-          <ParallaxLayer offset={1.5} speed={1.1} className={styles.sampleTest}>
-            <div className={styles.homeTextSection}>
-              <h1 className={styles.primaryHeading}>
-                Do you want to visit website?
-              </h1>
-              <p className={styles.primaryText}>
-                Welcome to the world of artistry, where imagination meets
-                innovation, and expression knows no limits.
-              </p>
-              <Col span={24} className={styles.sampleButton}>
-                <button
-                  onClick={() => parallax.current.scrollTo(2)}
-                  className={styles.secondaryButton}
-                >
-                  Next
-                </button>
-                <Link to={"/home"} className={styles.firstButton}>
-                  <button className={styles.secondaryButton}>
-                    Let's Start <ArrowRightOutlined />{" "}
-                  </button>
-                </Link>
-              </Col>
-            </div>
-          </ParallaxLayer>
-          <ParallaxLayer offset={2.5} speed={1.1} className={styles.sampleTest}>
-            <div className={styles.homeTextSection}>
-              <h1 className={styles.primaryHeading}>Are you artist?</h1>
-              <p className={styles.primaryText}>
-                If you are a artist, you can log in and then post your artworks
-                on the website. Do you want to try?
-              </p>
-              <Col span={24} className={styles.sampleButton}>
-                <button
-                  onClick={() => parallax.current.scrollTo(0)}
-                  className={styles.secondaryButton}
-                >
-                  Back to top
-                </button>
-                <Link to={"/signin"} className={styles.firstButton}>
-                  <button className={styles.secondaryButton}>
-                    Try It <ArrowRightOutlined />{" "}
-                  </button>
-                </Link>
-              </Col>
-            </div>
-          </ParallaxLayer>
+          <button
+            onClick={() => { navigate('/home') }}
+            className={styles.primaryButton}>
+            DISCOVER
+            <ArrowRightOutlined style={{ fontSize: '75%', display: 'inline', marginLeft: '10%' }} />
+          </button>
+        </ParallaxLayer>
 
-          {/*Navigate*/}
-        </Parallax>
-      </div>
-    </>
+        <ParallaxLayer offset={1} speed={2} className={styles.splitSection}>
+          <div className={styles.halfSection} id={styles.artist}>
+            <span className={styles.decorativeSection}>
+              <Image src="https://www.suzinassif.com/wp-content/uploads/2020/12/PARADOX.jpg" width={200} preview={false} alt="" />
+            </span>
+
+            <span className={styles.infoSection}>
+              <span>
+                <Text strong className={styles.primaryHeading}>
+                  BECOME AN ARTIST
+                </Text>
+                <p className={styles.primaryText} style={{ color: 'white' }}>
+                  Share your dedicated artworks to everyone and live an artist's life.
+                </p>
+              </span>
+              <button onClick={() => parallax.current.scrollTo(2)} className={styles.primaryButton}>
+                START
+                <ArrowRightOutlined style={{ fontSize: '75%', display: 'inline', marginLeft: '10%' }} />
+              </button>
+            </span>
+          </div>
+
+          <div className={styles.halfSection} id={styles.own}>
+            <span className={styles.decorativeSection}>
+              <Image src={HomeImg} width={220} height={220} preview={false} alt="" />
+            </span>
+
+            <span className={styles.infoSection}>
+              <span>
+                <Text strong className={styles.primaryHeading} style={{ fontSize: '350%' }}>
+                  VISUALIZE YOUR ART
+                </Text>
+                <p className={styles.primaryText}>
+                  Thousands of artists are ready to make your dream come true.
+                </p>
+              </span>
+              <button className={styles.primaryButton} onClick={() => { navigate('/') }}>
+                START
+                <ArrowRightOutlined style={{ fontSize: '75%', display: 'inline', marginLeft: '10%' }} />
+              </button>
+            </span>
+            <span>
+
+            </span>
+          </div>
+        </ParallaxLayer>
+      </Parallax>
+
+      <FloatButton.BackTop style={{ marginRight: "2%" }} onClick={() => { scroll(0) }} />
+    </div>
   );
 }

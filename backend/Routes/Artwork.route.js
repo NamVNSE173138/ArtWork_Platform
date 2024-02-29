@@ -1,8 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const Artwork = require('../Models/artwork')
 const artworkController = require("../Controllers/ArtworkController");
 
 router.get("/", artworkController.getAllArtwork);
+
+router.get("/count", artworkController.countArtwork);
 
 router.post("/", artworkController.createNewArtwork);
 

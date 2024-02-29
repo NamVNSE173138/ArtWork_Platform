@@ -1,7 +1,7 @@
-import { Avatar, Rate, Space, Table, Typography, Modal, Image } from "antd";
+import { Avatar, Space, Table, Typography, Modal, Input } from "antd";
 import { useEffect, useState } from "react";
-import { getArtwork, deleteArtwork } from "../../../api/index";
-import { DeleteOutlined } from "@ant-design/icons";
+import { getArtwork, getArtworkId, deleteArtwork } from "../../../api/index";
+import { DeleteOutlined, SolutionOutlined } from "@ant-design/icons";
 
 interface ArtworkRecord {
   imageUrl: string;
@@ -15,6 +15,9 @@ interface ArtworkRecord {
 
 const Artwork: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [searchInput, setSearchInput] = useState<string>();
+  const [selectedRequest, setSelectedRequest] = useState<any>(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const [dataSource, setDataSource] = useState<ArtworkRecord[]>([]);
 
   useEffect(() => {
@@ -25,6 +28,17 @@ const Artwork: React.FC = () => {
     });
   }, []);
 
+  const handleCardClick = (request: any) => {
+    getArtworkId(request).then((res) => {
+      setSelectedRequest(res);
+    });
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
   const onDeleteArtwork = (record: ArtworkRecord) => {
     console.log(record);
     Modal.confirm({
@@ -32,10 +46,32 @@ const Artwork: React.FC = () => {
       okText: "Yes",
       okType: "danger",
       onOk: () => {
-        // setLoading(true);
         deleteArtwork(record);
-        // .then(() => setLoading(false));
       },
+    });
+  };
+
+  const handleSearch = (searchText: string) => {
+    setSearchInput(searchText);
+    getArtwork().then((res) => {
+      if (searchText === "") {
+        setDataSource(res);
+      } else {
+        setDataSource(
+          res.filter(
+            (item: any) =>
+              (item.name?.toLowerCase() || "").includes(
+                searchText.toLowerCase()
+              ) ||
+              (item.tags?.toLowerCase() || "").includes(
+                searchText.toLowerCase()
+              ) ||
+              (item.description?.toLowerCase() || "").includes(
+                searchText.toLowerCase()
+              )
+          )
+        );
+      }
     });
   };
 
@@ -43,6 +79,13 @@ const Artwork: React.FC = () => {
     <Space size={20} direction="vertical">
       {/* <Typography.Title level={4}>Artwork</Typography.Title> */}
       <div style={{ overflowX: "auto" }}>
+        <Input.Search
+          placeholder="Search by name, tag, description..."
+          value={searchInput}
+          onChange={(e) => handleSearch(e.target.value)}
+          enterButton
+          style={{ width: "500px", margin: "10px 0px 10px 0px" }}
+        />
         <Table<ArtworkRecord>
           style={{ width: "1250px", minWidth: "100%" }}
           loading={loading}
@@ -50,15 +93,17 @@ const Artwork: React.FC = () => {
             {
               title: "Thumbnail",
               dataIndex: "imageUrl",
-              render: (link: string) => <Avatar shape="square" src={link} size={50} />,
+              render: (link: string) => (
+                <Avatar shape="square" src={link} size={50} />
+              ),
             },
             {
               title: "Name",
-              dataIndex: "artworkName",
+              dataIndex: "name",
             },
             {
               title: "Artist",
-              dataIndex: "artworkId",
+              dataIndex: "user",
             },
             {
               title: "Price",
@@ -71,20 +116,30 @@ const Artwork: React.FC = () => {
             },
             {
               title: "Description",
-              dataIndex: "describe",
+              dataIndex: "description",
             },
             {
               title: "Action",
               dataIndex: "_id",
               render: (record: ArtworkRecord) => (
-                <>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <SolutionOutlined
+                    onClick={() => {
+                      handleCardClick(record);
+                    }}
+                  />
                   <DeleteOutlined
                     onClick={() => {
                       onDeleteArtwork(record);
                     }}
                     style={{ color: "red" }}
                   />
-                </>
+                </div>
               ),
             },
           ]}
@@ -94,6 +149,33 @@ const Artwork: React.FC = () => {
           }}
         />
       </div>
+      <Modal
+        title="Artwork Information"
+        open={modalVisible}
+        onCancel={closeModal}
+        footer={null}
+        width={1000}
+        centered
+      >
+        {selectedRequest && (
+          <Table
+            dataSource={[selectedRequest]}
+            columns={[
+              {
+                title: "Artwork",
+                dataIndex: "name",
+                key: "name",
+              },
+              {
+                title: "Artist",
+                dataIndex: "artistId",
+                key: "artist",
+              },
+            ]}
+            pagination={false}
+          />
+        )}
+      </Modal>
     </Space>
   );
 };

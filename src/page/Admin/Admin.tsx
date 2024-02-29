@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./Admin.css";
 import {
   ShopOutlined,
-  ShoppingCartOutlined,
   UserOutlined,
   SolutionOutlined,
   HomeOutlined,
@@ -46,7 +45,7 @@ const Admin: React.FC = () => {
     },
     {
       key: "4",
-      icon: <ShoppingCartOutlined />,
+      icon: <SolutionOutlined />,
       label: "Request",
       onClick: () => setActiveComponent("Request"),
     },

@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
-import Login from "../components/Login/Login";
+import Mainboard from "../components/Mainboard/Mainboard";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import ArtworkRequest from "../components/ArtworkRequest/ArtworkRequest";
 
 interface Pin {
   _id: string;
@@ -13,28 +16,39 @@ interface Pin {
   numOfLike: number;
   price: string;
   describe: string;
-  urls: {
-    regular: string;
-  };
+  imageUrl: string;
 }
+
 interface ArtworkResponse {
   data: Pin[];
 }
 
-const LoginForm: React.FC = () => {
+const Home: React.FC = () => {
   const [pins, setPins] = useState<Pin[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [image, setImage] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:5000/artworks")
+      .then((response) => response.json())
+      .then((res) => {
+        setImage(res);
+        console.log(res);
+      });
+  }, []);
+  // console.log(image);
 
   const getImages = async () => {
     try {
       const response = await axios.get<ArtworkResponse>(
         "http://localhost:5000/artworks"
       );
+      console.log("reponse: ", response);
+      console.log(response.data);
 
       return response.data;
     } catch (error) {
       console.error("Error fetching artwork:", error);
-      throw error; // Propagate the error
+      throw error;
     }
   };
 
@@ -43,9 +57,7 @@ const LoginForm: React.FC = () => {
 
     try {
       const res = await getImages();
-      const newPins = Array.isArray(res.data)
-        ? [...res.data, ...pins]
-        : [...pins];
+      const newPins = Array.isArray(res.data) ? res.data : [];
 
       newPins.sort(() => 0.5 - Math.random());
       setPins(newPins);
@@ -63,9 +75,7 @@ const LoginForm: React.FC = () => {
       const res = await getImages();
 
       // Check if res.data is defined and is an array before sorting
-      const pinData = Array.isArray(res.data)
-        ? res.data.sort(() => 0.5 - Math.random())
-        : [];
+      const pinData = Array.isArray(res.data) ? res.data : [];
 
       setPins(pinData);
     } catch (error) {
@@ -79,12 +89,17 @@ const LoginForm: React.FC = () => {
     getNewPins();
   }, []);
 
+  useEffect(() => {}, [pins]);
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />
-      <Login />
+      {loading ? (
+        <Spin indicator={<LoadingOutlined style={{ fontSize: 60 }} spin />} />
+      ) : (
+        <ArtworkRequest />
+      )}
     </>
   );
 };
 
-export default LoginForm;
+export default Home;

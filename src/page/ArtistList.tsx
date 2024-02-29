@@ -1,8 +1,9 @@
-// Home.tsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
-import Signup from "../components/SignUp/SignUp";
+import Artist from "../components/ArtistList/ArtistList";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 interface Pin {
   _id: string;
@@ -14,30 +15,39 @@ interface Pin {
   numOfLike: number;
   price: string;
   describe: string;
-  urls: {
-    regular: string;
-  };
+  imageUrl: string;
 }
 
 interface ArtworkResponse {
   data: Pin[];
 }
 
-const SignupForm: React.FC = () => {
+const ArtistList: React.FC = () => {
   const [pins, setPins] = useState<Pin[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [image, setImage] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:5000/artworks")
+      .then((response) => response.json())
+      .then((res) => {
+        setImage(res);
+        console.log(res);
+      });
+  }, []);
+  // console.log(image);
 
   const getImages = async () => {
     try {
       const response = await axios.get<ArtworkResponse>(
         "http://localhost:5000/artworks"
       );
+      console.log("reponse: ", response);
       console.log(response.data);
 
       return response.data;
     } catch (error) {
       console.error("Error fetching artwork:", error);
-      throw error; // Propagate the error
+      throw error;
     }
   };
 
@@ -46,9 +56,7 @@ const SignupForm: React.FC = () => {
 
     try {
       const res = await getImages();
-      const newPins = Array.isArray(res.data)
-        ? [...res.data, ...pins]
-        : [...pins];
+      const newPins = Array.isArray(res.data) ? res.data : [];
 
       newPins.sort(() => 0.5 - Math.random());
       setPins(newPins);
@@ -66,9 +74,7 @@ const SignupForm: React.FC = () => {
       const res = await getImages();
 
       // Check if res.data is defined and is an array before sorting
-      const pinData = Array.isArray(res.data)
-        ? res.data.sort(() => 0.5 - Math.random())
-        : [];
+      const pinData = Array.isArray(res.data) ? res.data : [];
 
       setPins(pinData);
     } catch (error) {
@@ -82,12 +88,13 @@ const SignupForm: React.FC = () => {
     getNewPins();
   }, []);
 
+  useEffect(() => {}, [pins]);
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />
-      <Signup />
+      <Artist />
     </>
   );
 };
 
-export default SignupForm;
+export default ArtistList;
