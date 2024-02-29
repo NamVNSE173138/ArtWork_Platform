@@ -66,7 +66,7 @@ interface NavbarProps {
 }
 const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   let navigate = useNavigate();
-  const { userId } = useParams<{ userId: string }>();
+  const { userId } = useParams();
   // const [startIndex, setStartIndex] = useState(0);
   // const [nextClickCount, setNextClickCount] = useState(0);
   // const responsiveTagCount = 3;

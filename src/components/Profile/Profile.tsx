@@ -1,5 +1,5 @@
 // ProfilePage.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Row,
   Col,
@@ -20,6 +20,7 @@ import {
 import type { TabsProps } from "antd";
 import "./Profile.css"; // Create this stylesheet for additional styling if needed
 import Contributed from "../ContributedArtwork/ContributedArtwork";
+import axios from "axios";
 const { Meta } = Card;
 const items: TabsProps["items"] = [
   {
@@ -33,6 +34,7 @@ const items: TabsProps["items"] = [
     children: "Content of Tab Pane 2",
   },
 ];
+
 const ProfilePage: React.FC = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
 
@@ -87,6 +89,7 @@ const ProfilePage: React.FC = () => {
                   </>
                 }
               />
+
               {[
                 <Button
                   size="large"
