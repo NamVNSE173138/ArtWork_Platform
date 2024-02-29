@@ -101,7 +101,7 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                   className="avatar"
                 />
                 <div className="info">
-                  <p className="name">{pin.user}</p>
+                  <p className="name">{pin.userNickname}</p>
                   {/* <p className="tag">{pin.tag}</p> */}
                 </div>
               </div>
@@ -128,7 +128,7 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                         className="avatar"
                       />
                       <div className="info">
-                        <p className="name-modal">{pin.user}</p>
+                        <p className="name-modal">{pin.userNickname}</p>
                         {/* <p className="tag">{pin.tag}</p> */}
                       </div>
                     </div>
