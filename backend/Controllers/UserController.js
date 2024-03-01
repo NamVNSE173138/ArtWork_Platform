@@ -108,6 +108,47 @@ module.exports = {
     }
   },
 
+  // getUserInfo: async (req, res, next) => {
+  //   try {
+  //     const token = req.headers;
+  //     const id = req.params;
+  //     console.log(token)
+  //     const userInfo = decodeToken(token);
+  //     console.log(userInfo)
+
+  //     res.send(userInfo)
+  //   } catch (error) {
+
+  //   }
+  // },
+
+  getUserInfo: async (req, res, next) => {
+    try {
+      const { token } = req.headers;
+      console.log(token)
+
+      const userInfo = decodeToken(token);
+      const data = {
+        id: userInfo.data.checkEmail._id,
+        email: userInfo.data.checkEmail.email,
+        password: userInfo.data.checkEmail.password,
+        nickname: userInfo.data.checkEmail.nickname,
+        avatar: userInfo.data.checkEmail.avatar
+
+      }
+      console.log(data)
+      if (!userInfo) {
+        return res.status(401).json({ message: 'Invalid or expired token' });
+      }
+
+      res.json(data);
+    } catch (error) {
+      // Handle errors
+      console.error('Error in getUserInfo:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  },
+
   countUser: async (req, res, next) => {
     try {
       const results = await User.find({ role: 'user' })
