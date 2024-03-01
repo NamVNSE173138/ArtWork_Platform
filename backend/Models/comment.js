@@ -17,6 +17,7 @@ const CommentSchema = new Schema({
     numOfLike: {
         type: Number,
         required: true,
+        default: 0,
     },
 }, {
     timestamps: true

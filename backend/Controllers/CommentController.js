@@ -55,6 +55,7 @@ module.exports = {
             console.log(error.message)
         }
     },
+
     updateComment: async (req, res, next) => {
         try {
             const id = req.params.id
@@ -72,6 +73,7 @@ module.exports = {
             }
         }
     },
+    
     deleteComment: async (req, res, next) => {
         try {
             const id = req.params.id

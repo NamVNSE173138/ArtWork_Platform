@@ -8,3 +8,12 @@ Content-Type: application/json
 
 ###
 GET http://localhost:5000/users/65dd84d774d3e453a071fb9a
+
+###
+POST http://localhost:5000/users/login
+Content-Type: application/json
+
+{
+    "email": "email@gmail.com",
+    "password" : "12345"
+}

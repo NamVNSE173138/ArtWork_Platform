@@ -44,7 +44,7 @@ interface Comment {
 export default function Artwork() {
     const { Text, Title } = Typography
     const { id } = useParams()
-    const userToken = sessionStorage.getItem("USER")
+    const userToken = localStorage.getItem("USER")
 
     const navigate = useNavigate()
     const [currentUser, setCurrentUser] = useState<User>()
@@ -89,10 +89,13 @@ export default function Artwork() {
     const [commentList, setCommentList] = useState([])
 
     const fetchCurrentUserData = async () => {
-        await axios.get(`http://localhost:5000/users`)
-            .then((res: any) => {
-                console.log("Current user: ", res.data)
-                // setCurrentUser(res.data)
+        await axios.get(`http://localhost:5000/users/getUserInfo`, {
+            headers: {
+                token: userToken //userToken = localStorage("USER")
+            }
+        })
+            .then((res) => {
+                setCurrentUser(res.data)
             })
             .catch((err) => console.log(err))
     }
@@ -149,7 +152,11 @@ export default function Artwork() {
                         <div className={styles.info}>
                             <img src="https://i.pinimg.com/564x/30/2f/d4/302fd4ae9a9786bf3b637f7cbe1ae7b6.jpg" alt="artist avatar" className="avatar" />
                             <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '100%' }}>
-                                <Text strong id={styles.artistName}>{artist.nickname}</Text>
+                                <Text strong id={styles.userName}
+                                    onClick={() => navigate(`/profile/${artist._id}`)}
+                                    style={{ textDecoration: 'underline' }}>
+                                    {artist.nickname}
+                                </Text>
                                 <p style={{ minWidth: 'fit-content' }}>{nFormatter(artist.numOfFollower, 1)} Followers</p>
                             </span>
                         </div>
@@ -165,10 +172,13 @@ export default function Artwork() {
                                 renderItem={(comment: Comment, index) => (
                                     <List.Item className={styles.singleComment}>
                                         <div>
-                                            <Avatar src="" alt='' size={45} style={{ marginRight: '1%' }} />
+                                            <span style={{ minWidth: 'max-content' }}>
+                                                <Avatar src="" alt='' size={45} style={{ marginRight: '1%' }} />
+                                            </span>
                                             <div className={styles.commentInfo}>
                                                 <Text>
-                                                    {comment.text}
+                                                    <Text strong id={styles.userName} onClick={() => navigate(`/profile/${comment.user}`)}>{comment.user}</Text>
+                                                    &ensp;{comment.text}
                                                 </Text>
                                                 <Text style={{ fontSize: '80%', alignSelf: 'flex-start' }}>{moment().startOf('hour').fromNow()}</Text>
                                             </div>
@@ -188,11 +198,13 @@ export default function Artwork() {
                             onSubmit={onCommentFormSubmit}
                         >
                             <div className={styles.formInput}>
+                                <span style={{ minWidth: 'max-content' }}>
+                                    <Avatar src={currentUser?.avatar} alt='' size={40} style={{ marginRight: '2%' }} />
+                                </span>
                                 <Space.Compact style={{ width: '100%' }}>
-                                    <Input type='text' id={styles.input} name="text"
-                                        placeholder="Say out your thought..."
-                                        prefix={<Avatar src="" alt='' size={40} style={{ marginRight: '2%' }} />}
-                                    />
+                                    <input type='text' id={styles.input} name="text"
+                                        placeholder="Say out your thought..." />
+                                    <input type='hidden' name='user' value={currentUser?._id} />
                                     <Button type="primary" htmlType="submit" id={styles.submitButton}>
                                         <SendOutlined />
                                     </Button>
@@ -211,9 +223,6 @@ export default function Artwork() {
                         <Button className="report-btn" size="large">
                             Report
                         </Button>
-                    </div>
-                    <div style={{ textAlign: 'center', marginTop: '2%' }}>
-                        <SafetyOutlined /> Free to use under the ArtAttack License
                     </div>
                 </div>
             </div>
