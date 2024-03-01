@@ -6,7 +6,7 @@ const User = require('../Models/user.js');
 module.exports = {
   getAllUsers: async (req, res, next) => {
     try {
-      const results = await User.find({});
+      const results = await User.find({}, { __v: 0 });
       res.send(results);
     } catch (error) {
       console.log(error.message);
@@ -54,7 +54,7 @@ module.exports = {
   findUserById: async (req, res, next) => {
     const id = req.params.id;
     try {
-      const user = await User.findById(id);
+      const user = await User.findById(id, { __v: 0 });
       if (!user) {
         throw createError(404, 'User does not exist.');
       }
