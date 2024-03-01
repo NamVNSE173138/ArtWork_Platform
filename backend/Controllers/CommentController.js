@@ -28,6 +28,24 @@ module.exports = {
             }
         }
     },
+
+    findCommentByArtworkId: async (req, res, next) => {
+        try {
+            const id = req.params.id
+            const comment = await Comment.find({ artwork: id }, { __v: 0 })
+            if (!comment) {
+                throw createError(404, "Comment does not exist")
+            } else {
+                res.send(comment)
+            }
+        } catch (error) {
+            console.log(error.message)
+            if (error instanceof mongoose.CastError) {
+                return next(createError(400, "Invalid comment id"))
+            }
+        }
+    },
+
     postNewComment: async (req, res, next) => {
         try {
             const comment = new Comment(req.body)
