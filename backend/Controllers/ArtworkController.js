@@ -1,8 +1,6 @@
 const createError = require("http-errors");
 const mongoose = require("mongoose");
-
 const Artwork = require("../Models/artwork");
-const User = require('../Models/user')
 
 module.exports = {
   getAllArtwork: async (req, res, next) => {
@@ -27,7 +25,7 @@ module.exports = {
   findArtworkById: async (req, res, next) => {
     const id = req.params.id;
     try {
-      const product = await Artwork.findById(id).populate('user', 'email nickname role');
+      const product = await Artwork.findById(id, { __v: 0 });
       if (!product) {
         throw createError(404, "Artwork does not exist.");
       }
@@ -80,14 +78,4 @@ module.exports = {
       next(error);
     }
   },
-
-  countArtwork: async (req, res, next) => {
-    try {
-      const results = await Artwork.find({})
-      const total = results.length;
-      res.send({ total });
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
 };

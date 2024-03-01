@@ -29,6 +29,7 @@ import {
   StarOutlined,
 } from "@ant-design/icons";
 import "./ArtistList.css";
+import TextArea from "antd/es/input/TextArea";
 
 const ArtistList = () => {
   const [userData, setUserData] = useState([]);
@@ -74,7 +75,7 @@ const ArtistList = () => {
 
   //tag
   const { token } = theme.useToken();
-  const [tags, setTags] = useState(["abstact", "shapes", "anminals"]);
+  const [tags, setTags] = useState(["Ex: Tree"]);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [editInputIndex, setEditInputIndex] = useState(-1);
@@ -167,12 +168,12 @@ const ArtistList = () => {
               <Modal
                 mask={false}
                 open={open}
-                title="Title"
+                title="Request Form"
                 onOk={handleOk}
                 onCancel={handleCancel}
                 footer={[
                   <Button key="back" onClick={handleCancel}>
-                    Return
+                    Cancel
                   </Button>,
                   <Button
                     key="submit"
@@ -181,15 +182,6 @@ const ArtistList = () => {
                     onClick={handleOk}
                   >
                     Submit
-                  </Button>,
-                  <Button
-                    key="link"
-                    href="https://google.com"
-                    type="primary"
-                    loading={loading}
-                    onClick={handleOk}
-                  >
-                    Search on Google
                   </Button>,
                 ]}
               >
@@ -292,38 +284,8 @@ const ArtistList = () => {
                     name="description"
                     rules={[{ required: true, message: "Please input!" }]}
                   >
-                    <Descriptions />
+                    <TextArea />
                   </Form.Item>
-
-                  {/* <Form.Item
-                    label="Cascader"
-                    name="Cascader"
-                    rules={[{ required: true, message: "Please input!" }]}
-                  >
-                    <Cascader />
-                  </Form.Item>
-
-                  <Form.Item
-                    label="TreeSelect"
-                    name="TreeSelect"
-                    rules={[{ required: true, message: "Please input!" }]}
-                  >
-                    <TreeSelect />
-                  </Form.Item>
-
-                  <Form.Item
-                    label="DatePicker"
-                    name="DatePicker"
-                    rules={[{ required: true, message: "Please input!" }]}
-                  >
-                    <DatePicker />
-                  </Form.Item>
-
-                  <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-                    <Button type="primary" htmlType="submit">
-                      Submit
-                    </Button>
-                  </Form.Item> */}
                 </Form>
               </Modal>
             </div>

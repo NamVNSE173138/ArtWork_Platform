@@ -1,18 +1,59 @@
-import { Avatar, Rate, Space, Table, Typography } from "antd";
+import { Avatar, Space, Table, Typography, Modal } from "antd";
 import { useEffect, useState } from "react";
-import { getInventory, getOrders } from "../../../api/index";
+import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import { deleteArtwork, getArtwork, updateArtwork } from "../../../api/index";
+
+interface ArtworkRecord {
+  imageUrl: string;
+  artworkName: string;
+  artworkId: string;
+  price: number;
+  tags: string[];
+  describe: string;
+  _id: string;
+}
+
+interface ApproveData {
+  status?: boolean;
+}
 
 function Request() {
-  const [loading, setLoading] = useState(false);
-  const [dataSource, setDataSource] = useState([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dataSource, setDataSource] = useState<ArtworkRecord[]>([]);
+  const [approveData, setApproveData] = useState<ApproveData>({
+    status: true,
+  });
 
   useEffect(() => {
     setLoading(true);
-    getOrders().then((res) => {
-      setDataSource(res.products);
+    getArtwork().then((res) => {
+      setDataSource(res.filter((item: any) => item.status === false));
       setLoading(false);
     });
   }, []);
+
+  const handleApprove = (record: any) => {
+    let approve = { ...approveData, id: record };
+    setApproveData(approve);
+    Modal.confirm({
+      title: "APPROVE THIS ARTWORK?",
+      okText: "Confirm",
+      onOk: () => {
+        updateArtwork(record, approveData);
+      },
+    });
+  };
+
+  const handleDisapprove = (record: any) => {
+    Modal.confirm({
+      title: "DECLINE THIS REQUEST?",
+      okText: "Confirm",
+      okType: "danger",
+      onOk: () => {
+        deleteArtwork(record);
+      },
+    });
+  };
 
   return (
     <Space size={20} direction="vertical">
@@ -22,31 +63,54 @@ function Request() {
         loading={loading}
         columns={[
           {
-            title: "Title",
-            dataIndex: "title",
+            title: "Thumbnail",
+            dataIndex: "imageUrl",
+            render: (link: string) => (
+              <Avatar shape="square" src={link} size={50} />
+            ),
           },
           {
-            title: "Price",
-            dataIndex: "price",
-            render: (value) => <span>${value}</span>,
+            title: "User",
+            dataIndex: "userId",
           },
           {
-            title: "DiscountedPrice",
-            dataIndex: "discountedPrice",
-            render: (value) => <span>${value}</span>,
+            title: "Description",
+            dataIndex: "description",
           },
           {
-            title: "Quantity",
-            dataIndex: "quantity",
+            title: "Status",
+            dataIndex: "status",
+            render: (status) => String(status),
           },
           {
-            title: "Total",
-            dataIndex: "total",
+            title: "Action",
+            dataIndex: "_id",
+            align: "center",
+            render: (record: any) => {
+              return (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: "20px",
+                  }}
+                >
+                  <CheckCircleOutlined
+                    style={{ color: "#52c41a" }}
+                    onClick={() => handleApprove(record)}
+                  />
+                  <CloseCircleOutlined
+                    style={{ color: "red" }}
+                    onClick={() => handleDisapprove(record)}
+                  />
+                </div>
+              );
+            },
           },
         ]}
         dataSource={dataSource}
         pagination={{
-          pageSize: 6,
+          pageSize: 5,
         }}
       ></Table>
     </Space>

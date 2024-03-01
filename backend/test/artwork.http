@@ -1,16 +1,17 @@
 ###
-GET http://localhost:5000/artworks
+GET http://localhost:5000/artworks/65dedaaa5d802712814d3f87
 
 ###
 POST http://localhost:5000/artworks
 Content-Type: application/json
 
 {
-    "userId": "65d44930ff3096c11cabd85e",
+    "user": "65d44930ff3096c11cabd85e",
     "name": "Beautiful Coast",
     "tags": "Scenery",
     "numOfLike": 26,
     "price": 2000,
     "description": "Cool",
     "imageUrl": "https://i0.wp.com/theluxurytravelexpert.com/wp-content/uploads/2019/03/best-coastlines-world.jpg?fit=1300%2C731&ssl=1",
+    "status": true
 }

@@ -1,4 +1,3 @@
-// Home.tsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
@@ -33,7 +32,7 @@ interface ArtworkResponse {
 }
 
 const SignupForm: React.FC = () => {
-  const currentUser = localStorage.getItem("USER")
+  const userToken = localStorage.getItem("USER")
   const [pins, setPins] = useState<Pin[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const getImages = async () => {
@@ -41,7 +40,7 @@ const SignupForm: React.FC = () => {
       const response = await axios.get<ArtworkResponse>(
         "http://localhost:5000/artworks "
       );
-      console.log(response.data);
+      console.log("Image:", response.data);
 
       return response.data;
     } catch (error) {
@@ -88,10 +87,10 @@ const SignupForm: React.FC = () => {
   };
   useEffect(() => {
     getNewPins();
-    if (currentUser) {
-      console.log("User data: ", currentUser)
+    if (userToken) {
+      console.log("Decoded token: ", userToken)
     } else {
-      console.log("No user found")
+      console.log("No token found")
     }
   }, []);
 

@@ -11,6 +11,8 @@ import {
   Form,
   Input,
   message,
+  Badge,
+  Typography,
 } from "antd";
 import {
   EditOutlined,
@@ -20,18 +22,25 @@ import {
 import type { TabsProps } from "antd";
 import "./Profile.css"; // Create this stylesheet for additional styling if needed
 import Contributed from "../ContributedArtwork/ContributedArtwork";
-import axios from "axios";
+import Favorite from "../Favorite/Favorite";
 const { Meta } = Card;
+const { Text } = Typography
 const items: TabsProps["items"] = [
   {
     key: "1",
-    label: "Favourite Artwork",
-    children: <Contributed />,
+    label:
+      <Badge count={100} overflowCount={99} offset={[15, 0]} showZero>
+        <Text>Favorited</Text>
+      </Badge>,
+    children: <Favorite />,
   },
   {
     key: "2",
-    label: "Contributed Artwork",
-    children: "Content of Tab Pane 2",
+    label:
+      <Badge count={1} overflowCount={999} offset={[15, 0]} showZero>
+        <Text>Contributed</Text>
+      </Badge>,
+    children: <Contributed />,
   },
 ];
 
@@ -134,7 +143,7 @@ const ProfilePage: React.FC = () => {
       </Row>
       <Row gutter={16} style={{ marginTop: 20 }}>
         <Col span={24}>
-          <Tabs defaultActiveKey="1" items={items} size="large" type="card" />
+          <Tabs defaultActiveKey="1" items={items} size="large" type="card" tabBarGutter={20} centered />
         </Col>
       </Row>
     </div>

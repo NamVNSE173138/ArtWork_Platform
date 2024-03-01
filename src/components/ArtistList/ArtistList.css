@@ -23,3 +23,8 @@
     text-decoration: none;
     color: #0F1035;
 }
+
+:where(.css-dev-only-do-not-override-dkbvqv).ant-form-item .ant-form-item-label>label {
+
+    font-size: 14px !important;
+}

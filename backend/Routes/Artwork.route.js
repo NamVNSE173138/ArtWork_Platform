@@ -5,8 +5,6 @@ const artworkController = require("../Controllers/ArtworkController");
 
 router.get("/", artworkController.getAllArtwork);
 
-router.get("/count", artworkController.countArtwork);
-
 router.post("/", artworkController.createNewArtwork);
 
 router.get("/:id", artworkController.findArtworkById);

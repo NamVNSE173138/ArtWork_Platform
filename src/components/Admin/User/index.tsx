@@ -13,6 +13,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   SolutionOutlined,
+  StopOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getUser, deleteUser, updateUser, getUserId } from "../../../api/index";
@@ -29,6 +30,10 @@ interface EditFormData {
   nickname?: string;
   email?: string;
   role?: string;
+  status?: boolean;
+}
+
+interface BanData {
   status?: boolean;
 }
 
@@ -55,6 +60,9 @@ function Users() {
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [searchInput, setSearchInput] = useState<string>();
+  const [banData, setBanData] = useState<BanData>({
+    status: false,
+  });
   const [editFormData, setEditFormData] = useState<EditFormData | null>({
     nickname: "",
     email: "",
@@ -79,6 +87,19 @@ function Users() {
       onOk: () => {
         setLoading(true);
         deleteUser(record).then(() => setLoading(false));
+      },
+    });
+  };
+
+  const banUser = (record: User) => {
+    let ban = { ...banData, id: record };
+    setTestRecord(record);
+    Modal.confirm({
+      title: "BAN THIS ACCOUNT?",
+      okText: "Ban",
+      okType: "danger",
+      onOk: () => {
+        updateUser(record, ban);
       },
     });
   };
@@ -167,12 +188,14 @@ function Users() {
           {
             title: "Action",
             dataIndex: "_id",
+            align: "center",
             render: (record: User) => {
               return (
                 <div
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
+                    fontSize: "20px"
                   }}
                 >
                   <SolutionOutlined
@@ -185,9 +208,10 @@ function Users() {
                       onEditUser(record);
                     }}
                   />
-                  <DeleteOutlined
+                  <StopOutlined
                     onClick={() => {
-                      onDeleteUser(record);
+                      // onDeleteUser(record);
+                      banUser(record);
                     }}
                     style={{ color: "red" }}
                   />
