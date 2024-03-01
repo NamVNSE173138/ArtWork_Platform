@@ -67,6 +67,8 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   let navigate = useNavigate();
   const { userId } = useParams();
+  console.log("userId:", userId);
+
   // const [startIndex, setStartIndex] = useState(0);
   // const [nextClickCount, setNextClickCount] = useState(0);
   // const responsiveTagCount = 3;
@@ -87,7 +89,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     setSearchTerm(value);
     onSubmit(value);
   };
-  
+
   return (
     <nav className="navbar">
       <div className="first-line">

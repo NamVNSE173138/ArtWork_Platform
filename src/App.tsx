@@ -2,7 +2,7 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Home from "./page/Home";
 import Upload from "./page/Upload";
-import Profile from "./page/Profile";
+
 import Admin from "./page/Admin/Admin";
 import SignIn from "./page/Authentication/SignIn";
 import EmailSignup from "./page/Authentication/EmailSignup";
@@ -15,7 +15,7 @@ import FavoriteList from "./page/FavoriteList/FavoriteList";
 import ArtistList from "./page/ArtistList";
 import ArtistProfile from "./components/ArtistProfile/ArtistProfile";
 import ArtworkRequest from "./page/ArtworkRequest";
-
+import ProfilePage from "./components/Profile/Profile";
 function App() {
   return (
     <Routes>
@@ -27,7 +27,7 @@ function App() {
       <Route path="/forgot" element={<Forgot />} />
       <Route path="/reset/:id" element={<Reset />} />
       <Route path="/upload" element={<Upload />} />
-      <Route path="/profile/:userId" element={<Profile />} />
+      <Route path="/profile/:userId" element={<ProfilePage />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/home" element={<Home />} />
       <Route path="/artwork/:id" element={<Artwork />} />

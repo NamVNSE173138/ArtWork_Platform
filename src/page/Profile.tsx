@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
-import Profile from "../components/Profile/Profile";
+import ProfilePage from "../components/Profile/Profile";
+import { useParams } from "react-router-dom";
 
 interface Pin {
   _id: string;
@@ -97,7 +98,7 @@ const SignupForm: React.FC = () => {
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />
-      <Profile />
+      <ProfilePage />
     </>
   );
 };
