@@ -13,4 +13,5 @@ Content-Type: application/json
     "price": 2000,
     "description": "Cool",
     "imageUrl": "https://i0.wp.com/theluxurytravelexpert.com/wp-content/uploads/2019/03/best-coastlines-world.jpg?fit=1300%2C731&ssl=1",
+    "status": true
 }
