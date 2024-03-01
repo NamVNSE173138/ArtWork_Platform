@@ -5,3 +5,6 @@ Content-Type: application/json
 {
     "password": "11111"
 }
+
+###
+GET http://localhost:5000/users/65dd84d774d3e453a071fb9a

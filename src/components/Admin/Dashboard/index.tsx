@@ -1,20 +1,12 @@
 import {
-  ContactsOutlined,
   PictureOutlined,
   SolutionOutlined,
   UserOutlined,
+  WarningOutlined,
 } from "@ant-design/icons";
 import { Card, Space, Statistic, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
-import {
-  countArtist,
-  countArtwork,
-  countUser,
-  getArtwork,
-  getOrders,
-  getRevenue,
-  getUser,
-} from "../../../api/index";
+import { getArtwork, getOrders, getRevenue, getUser } from "../../../api/index";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -25,6 +17,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { getReportWithUserAndArtwork } from "../../../api/report/reportAPI";
 
 ChartJS.register(
   CategoryScale,
@@ -36,25 +29,23 @@ ChartJS.register(
 );
 
 function Dashboard(): JSX.Element {
-  const [orders, setOrders] = useState<number>(0);
-  const [inventory, setInventory] = useState<number>(0);
+  const [requests, setRequests] = useState<number>(0);
+  const [artworks, setArtworks] = useState<number>(0);
   const [users, setUsers] = useState<number>(0);
-  const [artists, setArtists] = useState<number>(0);
-  const [revenue, setRevenue] = useState<number>(0);
+  const [reports, setReports] = useState<number>(0);
 
   useEffect(() => {
-    getOrders().then((res: any) => {
-      setOrders(res.total);
-      setRevenue(res.discountedTotal);
+    getArtwork().then((res: any) => {
+      setRequests(res.filter((count: any) => count.status === false).length);
     });
     getArtwork().then((res: any) => {
-      setInventory(res.length);
+      setArtworks(res.length);
     });
     getUser().then((res: any) => {
       setUsers(res.length);
     });
-    countArtist().then((res: any) => {
-      setArtists(res.total);
+    getReportWithUserAndArtwork().then((res: any) => {
+      setReports(res.length);
     });
   }, []);
 
@@ -75,7 +66,7 @@ function Dashboard(): JSX.Element {
             />
           }
           title={"Requests"}
-          value={orders}
+          value={requests}
         />
         <DashboardCard
           icon={
@@ -90,7 +81,7 @@ function Dashboard(): JSX.Element {
             />
           }
           title={"Artworks"}
-          value={inventory}
+          value={artworks}
         />
         <DashboardCard
           icon={
@@ -109,7 +100,7 @@ function Dashboard(): JSX.Element {
         />
         <DashboardCard
           icon={
-            <ContactsOutlined
+            <WarningOutlined
               style={{
                 color: "red",
                 backgroundColor: "rgba(255,0,0,0.25)",
@@ -119,8 +110,8 @@ function Dashboard(): JSX.Element {
               }}
             />
           }
-          title={"Artist"}
-          value={artists}
+          title={"Reports"}
+          value={reports}
         />
       </Space>
       <Space>

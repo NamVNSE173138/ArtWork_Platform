@@ -7,10 +7,6 @@ router.get('/', userController.getAllUsers);
 
 router.post('/', userController.createNewUser);
 
-router.get('/count', userController.countUser);
-
-router.get('/artcount', userController.countArtist);
-
 router.post('/login', userController.userLogin);
 
 router.get('/:id', userController.findUserById);

@@ -12,7 +12,7 @@ const artworkSchema = new Schema(
       required: true,
     },
     tags: {
-      type: String,
+      type: [String],
       required: true,
     },
     numOfLike: {
@@ -30,6 +30,10 @@ const artworkSchema = new Schema(
     imageUrl: {
       type: String,
       require: true,
+    },
+    status: {
+      type: Boolean,
+      require: true
     },
     userNickname: String,
   },
@@ -50,5 +54,6 @@ artworkSchema.pre('save', async function (next) {
     next(error);
   }
 });
+
 const Artwork = mongoose.model("Artwork", artworkSchema);
 module.exports = Artwork;

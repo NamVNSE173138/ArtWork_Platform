@@ -107,25 +107,5 @@ module.exports = {
       next(error);
     }
   },
-
-  countUser: async (req, res, next) => {
-    try {
-      const results = await User.find({ role: 'user' })
-      const total = results.length;
-      res.send({ total });
-    } catch (error) {
-      console.log(error.message);
-    }
-  },
-
-  countArtist: async (req, res, next) => {
-    try {
-      const results = await User.find({ role: 'artist' })
-      const total = results.length;
-      res.send({ total });
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
 };
 

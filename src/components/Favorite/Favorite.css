@@ -1,21 +1,5 @@
-   /* Contributed.css */
-
-   .contributed_wrapper {
-       display: flex;
-       justify-content: center;
-       width: 100%;
-       height: 100%;
-       margin-top: 15px;
-       /* Additional styles specific to Contributed */
-   }
-
-   .contributed_container {
-       column-count: 3 !important;
-       column-gap: 5px;
-       margin: 0 auto;
-       height: 100%;
-       max-width: none !important;
-       /* Additional styles specific to Contributed */
+   .image {
+       max-width: 20rem;
    }
 
    @media (max-width: 767px) {

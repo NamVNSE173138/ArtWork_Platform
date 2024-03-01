@@ -1,14 +1,14 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const RequestSchema = new Schema({
+const ReportSchema = new Schema({
   artwork: {
     type: Schema.Types.ObjectId,
-    ref: 'artworks',
+    ref: 'Artwork',
   },
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'users',
+    ref: 'User',
   },
   description: {
     type: String,
@@ -22,6 +22,6 @@ const RequestSchema = new Schema({
   timestamps: true
 })
 
-const Request = mongoose.model('Request', RequestSchema)
+const Report = mongoose.model('Report', ReportSchema)
 
-module.exports = Request
+module.exports = Report

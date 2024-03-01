@@ -123,8 +123,6 @@ export default function EmailSignup() {
     var decoded: OtherLoginResponse
     if (credentialResponse.credential) {
       decoded = jwtDecode(credentialResponse.credential)
-      console.log("SIGNIN SUCCESSFULLY. Google login user's email:", decoded.email)
-
       await fetch("http://localhost:5000/users")
         .then(res => res.json())
         .then(data => {
@@ -153,7 +151,7 @@ export default function EmailSignup() {
           }
         })
         .catch(err => console.log(err))
-      navigate('/')
+      navigate('/home')
     } else {
       console.log("Not found data")
     }
@@ -193,7 +191,7 @@ export default function EmailSignup() {
         }
       })
       .catch(err => console.log(err))
-    navigate('/')
+    navigate('/home')
   };
 
   return (

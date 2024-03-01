@@ -13,6 +13,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   SolutionOutlined,
+  StopOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getUser, deleteUser, updateUser, getUserId } from "../../../api/index";
@@ -187,12 +188,14 @@ function Users() {
           {
             title: "Action",
             dataIndex: "_id",
+            align: "center",
             render: (record: User) => {
               return (
                 <div
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
+                    fontSize: "20px"
                   }}
                 >
                   <SolutionOutlined
@@ -205,7 +208,7 @@ function Users() {
                       onEditUser(record);
                     }}
                   />
-                  <DeleteOutlined
+                  <StopOutlined
                     onClick={() => {
                       // onDeleteUser(record);
                       banUser(record);

@@ -151,7 +151,7 @@ export default function SignUp() {
           }
         })
         .catch((err) => console.log(err));
-      navigate("/");
+      navigate("/home");
     } else {
       console.log("Not found data");
     }
@@ -196,7 +196,7 @@ export default function SignUp() {
         }
       })
       .catch((err) => console.log(err));
-    navigate("/");
+    navigate("/home");
   };
 
   const formRef = useRef(null);
@@ -283,7 +283,7 @@ export default function SignUp() {
             setTimeout(() => {
               setOpen(false);
               setIsLoading(false);
-              navigate("/");
+              navigate("/signin", { state: { noti: "create" } });
             }, 2000);
           })
           .catch((err: any) => {
