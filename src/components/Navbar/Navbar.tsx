@@ -87,8 +87,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     setSearchTerm(value);
     onSubmit(value);
   };
-
-
+  
   return (
     <nav className="navbar">
       <div className="first-line">

@@ -31,7 +31,11 @@ const artworkSchema = new Schema(
       type: String,
       require: true,
     },
-    userNickname: String,
+    status: {
+      type: Boolean,
+      required: true,
+      default: false,
+    }
   },
   {
     timestamps: true,

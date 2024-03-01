@@ -27,7 +27,7 @@ module.exports = {
   findArtworkById: async (req, res, next) => {
     const id = req.params.id;
     try {
-      const product = await Artwork.findById(id).populate('user', 'email nickname role');
+      const product = await Artwork.findById(id, { __v: 0 });
       if (!product) {
         throw createError(404, "Artwork does not exist.");
       }

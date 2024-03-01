@@ -10,6 +10,8 @@ router.post('/', lockApi, CommentController.postNewComment)
 
 router.get('/:id', CommentController.findCommentById)
 
+router.get('/artwork/:id', CommentController.findCommentByArtworkId)
+
 router.patch('/:id', CommentController.updateComment)
 
 router.delete('/:id', CommentController.deleteComment)

@@ -1,30 +1,22 @@
 import React, { useState } from "react";
-import Pin, { PinProps } from "./Pin";
+import { PinProps } from "./Pin";
 import "./Mainboard.css";
 import "./Pin.css";
-import { Button, FloatButton, Modal, Space, message } from "antd";
+import { Button, FloatButton, message } from "antd";
 import {
-  CalendarOutlined,
   DownloadOutlined,
   HeartFilled,
   PlusOutlined,
-  SafetyOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 interface MainboardProps {
   pins: PinProps[];
 }
 
 const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
+  const navigate = useNavigate()
   const [modalIndex, setModalIndex] = useState(-1);
-
-  const showModal = (index: number) => {
-    setModalIndex(index);
-  };
-
-  const hideModal = () => {
-    setModalIndex(-1);
-  };
 
   const handleLike = () => {
     message.success("Liked!");
@@ -105,89 +97,8 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
               <img
                 src={pin.imageUrl}
                 alt="pin"
-                onClick={() => showModal(index)}
+                onClick={() => navigate(`/artwork/${pin._id}`)}
               />
-              <Modal
-                style={{ top: 20 }}
-                open={modalIndex === index}
-                onCancel={hideModal}
-                footer={null}
-                width={1233}
-                centered
-                mask={false}
-              >
-                <div className="modal-content">
-                  <div className="top-modal">
-                    <div className="artist-info-modal">
-                      <img
-                        src="https://i.pinimg.com/564x/30/2f/d4/302fd4ae9a9786bf3b637f7cbe1ae7b6.jpg"
-                        alt="artist avatar"
-                        className="avatar"
-                      />
-                      <div className="info">
-                        <p className="name-modal">{pin.userNickname}</p>
-                        {/* <p className="tag">{pin.tag}</p> */}
-                      </div>
-                    </div>
-                    <div className="modal-btns">
-                      <Button
-                        size="large"
-                        className="like-modal-btn"
-                        icon={<HeartFilled />}
-                        onClick={handleLike}
-                      />
-                      <Button
-                        size="large"
-                        className="add-modal-btn"
-                        icon={<PlusOutlined />}
-                        onClick={handleAdd}
-                      />
-                      <Button
-                        size="large"
-                        className="download-btn"
-                        icon={<DownloadOutlined />}
-                        onClick={handleDownload}
-                      >
-                        Download
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="image-container">
-                    <img className="img-modal" src={pin.imageUrl} alt="pin" />
-                  </div>
-                  <div className="bottom-section">
-                    {/* <div className="download-count">
-                      Downloads
-                      <br /> <span>{pin.downloads}</span>
-                    </div> */}
-                    <div className="actions">
-                      <Button
-                        className="share-btn"
-                        size="large"
-                        onClick={handleShare}
-                      >
-                        Share
-                      </Button>
-                      <Button
-                        className="report-btn"
-                        size="large"
-                        onClick={handleReport}
-                      >
-                        Report
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="img-detail">
-                    {/* <span>
-                      <CalendarOutlined /> Published {pin.createAt}
-                    </span> */}
-                    <br />
-                    <span>
-                      <SafetyOutlined /> Free to use under the ArtAttack License
-                    </span>
-                  </div>
-                </div>
-              </Modal>
             </div>
           </div>
         ))}
