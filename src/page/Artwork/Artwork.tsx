@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import styles from "./Artwork.module.css"
-import { List, Button, Avatar, Typography } from 'antd'
-import { SafetyOutlined, HeartFilled, DownloadOutlined } from '@ant-design/icons'
+import { List, Button, Avatar, Typography, Input, Space } from 'antd'
+import { SafetyOutlined, HeartFilled, DownloadOutlined, SendOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { useNavigate, useParams } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
 import axios from 'axios'
 import nFormatter from '../../assistants/Formatter'
-
+import { Field, Form, Formik, useFormik } from 'formik'
+import moment from 'moment'
 interface User {
     _id: string,
     email: string,
@@ -43,7 +44,10 @@ interface Comment {
 export default function Artwork() {
     const { Text, Title } = Typography
     const { id } = useParams()
+    const userToken = sessionStorage.getItem("USER")
+
     const navigate = useNavigate()
+    const [currentUser, setCurrentUser] = useState<User>()
     const [artwork, setArtwork] = useState<Artwork>({
         _id: '',
         user: {
@@ -82,16 +86,23 @@ export default function Artwork() {
         updateAt: '',
     })
 
-    const [commentList, setCommentList] = useState<[Comment]>()
+    const [commentList, setCommentList] = useState([])
+
+    const fetchCurrentUserData = async () => {
+        await axios.get(`http://localhost:5000/users`)
+            .then((res: any) => {
+                console.log("Current user: ", res.data)
+                // setCurrentUser(res.data)
+            })
+            .catch((err) => console.log(err))
+    }
 
     const fetchArtworkData = async () => {
         await axios.get(`http://localhost:5000/artworks/${id}`)
             .then((res: any) => {
-                console.log("Artwork data: ", res.data)
                 setArtwork(res.data)
                 axios.get(`http://localhost:5000/users/${res.data.user}`)
                     .then((res: any) => {
-                        console.log("Artist: ", res.data)
                         setArtist(res.data)
                     })
                     .catch((err) => console.log(err))
@@ -108,9 +119,20 @@ export default function Artwork() {
     }
 
     useEffect(() => {
+        fetchCurrentUserData()
         fetchArtworkData()
         fetchCommentList()
     }, [])
+
+    const commentFormInitialValues: Comment = {
+        user: '',
+        text: '',
+        numOfLike: 0,
+    }
+
+    const onCommentFormSubmit = (values: Comment) => {
+        console.log("Values: ", values.text)
+    }
 
     return (
         <>
@@ -121,20 +143,21 @@ export default function Artwork() {
                 <div className={styles.rightSection}>
                     <div className={styles.titleSection}>
                         <Title>{artwork.name}</Title>
-                        <Text>03/01/2024</Text>
+                        <Text>{moment().startOf('hour').fromNow()}</Text>
                     </div>
                     <div className={styles.artistSection}>
                         <div className={styles.info}>
                             <img src="https://i.pinimg.com/564x/30/2f/d4/302fd4ae9a9786bf3b637f7cbe1ae7b6.jpg" alt="artist avatar" className="avatar" />
                             <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '100%' }}>
-                                <p className="name-modal">{artist.nickname}</p>
-                                <p>{nFormatter(artist.numOfFollower, 1)} Followers</p>
+                                <Text strong id={styles.artistName}>{artist.nickname}</Text>
+                                <p style={{ minWidth: 'fit-content' }}>{nFormatter(artist.numOfFollower, 1)} Followers</p>
                             </span>
                         </div>
-                        <Button type="primary" shape="round" size="large">Follow</Button>
+                        <Button type="primary" shape="round" size="large" id={styles.followButton}><PlusCircleOutlined /> Follow</Button>
                     </div>
                     <div className={styles.commentSection}>
-                        <div>
+                        {(commentList.length > 0)
+                            ?
                             <List
                                 itemLayout="horizontal"
                                 dataSource={commentList}
@@ -142,12 +165,40 @@ export default function Artwork() {
                                 renderItem={(comment: Comment, index) => (
                                     <List.Item className={styles.singleComment}>
                                         <div>
-
+                                            <Avatar src="" alt='' size={45} style={{ marginRight: '1%' }} />
+                                            <div className={styles.commentInfo}>
+                                                <Text>
+                                                    {comment.text}
+                                                </Text>
+                                                <Text style={{ fontSize: '80%', alignSelf: 'flex-start' }}>{moment().startOf('hour').fromNow()}</Text>
+                                            </div>
                                         </div>
                                     </List.Item>
                                 )}
                             />
-                        </div>
+                            :
+                            <div>
+                                <Text>There is no comment on this yet. Start sharing your thoughts on this.</Text>
+                            </div>
+                        }
+                    </div>
+                    <div className={styles.commentTypeSection}>
+                        <Formik
+                            initialValues={commentFormInitialValues}
+                            onSubmit={onCommentFormSubmit}
+                        >
+                            <div className={styles.formInput}>
+                                <Space.Compact style={{ width: '100%' }}>
+                                    <Input type='text' id={styles.input} name="text"
+                                        placeholder="Say out your thought..."
+                                        prefix={<Avatar src="" alt='' size={40} style={{ marginRight: '2%' }} />}
+                                    />
+                                    <Button type="primary" htmlType="submit" id={styles.submitButton}>
+                                        <SendOutlined />
+                                    </Button>
+                                </Space.Compact>
+                            </div>
+                        </Formik>
                     </div>
                     <div className={styles.buttonGroup}>
                         <Button size="large" className="like-modal-btn" icon={<HeartFilled />} />

@@ -3,26 +3,24 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
+    gap: 5%;
     width: 95%;
     margin: 3% auto;
-    border-radius: 5%;
     min-height: 70vh;
-    border: solid 1px;
+    box-shadow: 5px 7px 8px 10px #d3d3d3;
 }
 
 .leftSection {
     width: 100%;
-    border: solid 1px green;
     text-align: center;
     height: 100%;
+    margin-left: 1%;
 }
 
 .rightSection {
-    border: solid 1px blue;
     width: 100%;
-    min-height: 100%;
     max-height: 100%;
-    max-height: 100%;
+    height: 90%;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -32,7 +30,8 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-evenly;
+    gap: 10%;
 }
 
 .image {
@@ -45,9 +44,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 50%;
     text-overflow: ellipsis;
-    overflow: hidden;
+    overflow: visible;
+    gap: 3%;
 }
 
 .artistSection {
@@ -55,8 +54,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    margin: 0 2%;
-    border: solid 1px red;
+    margin: 0 10%;
 }
 
 .commentSection {
@@ -65,6 +63,10 @@
     max-height: 300px;
     width: 95%;
     margin: 0 auto;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    position: relative;
+
 }
 
 .buttonGroup {
@@ -76,8 +78,63 @@
     margin-top: 2%;
 }
 
+#followButton {
+    font-size: 120%;
+    display: flex;
+    align-items: center;
+    padding: 4% 3%;
+    background-color: #1b80c3;
+}
+
+#followButton:hover {
+    background-color: #145c8c;
+}
+
+#artistName {
+    font-size: 120%;
+}
+
+#artistName:hover {
+
+}
+
 .singleComment {
     height: 80px;
     max-height: 100px;
-    border: solid 2px #000;
+    box-shadow: 2px 2px 2px 2px #d3d3d3;
+    margin: 2% auto;
+    width: 90%;
+    border-radius: 2%;
+}
+
+.singleComment div {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 2%;
+}
+
+.commentTypeSection {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 80%;
+    margin: 0 auto;
+    white-space: nowrap;
+}
+
+.commentTypeSection #input {
+    min-width: 500px;
+    white-space: wrap;
+}
+
+.commentTypeSection #submitButton {
+    height: inherit;
+}
+
+.commentInfo {
+    max-width: fit-content;
+    display: flex;
+    flex-direction: column;
 }

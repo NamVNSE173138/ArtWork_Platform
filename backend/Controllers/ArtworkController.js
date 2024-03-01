@@ -5,7 +5,7 @@ const Artwork = require("../Models/artwork");
 module.exports = {
   getAllArtwork: async (req, res, next) => {
     try {
-      const results = await Artwork.find({});
+      const results = await Artwork.find({}, { __v: 0 });
       res.send(results);
     } catch (error) {
       console.log(error.message);
