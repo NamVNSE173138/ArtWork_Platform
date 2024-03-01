@@ -1,18 +1,35 @@
-import { Avatar, Rate, Space, Table, Typography } from "antd";
+import { Avatar, Space, Table, Typography, Modal } from "antd";
 import { useEffect, useState } from "react";
-import { getInventory, getOrders } from "../../../api/index";
+import { getRequest, updateRequest } from "../../../api/requestAPI/requestAPI";
+import { EditOutlined } from "@ant-design/icons";
 
 function Request() {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
+  const [approveData, setApproveData] = useState({
+    status: true,
+  });
 
   useEffect(() => {
     setLoading(true);
-    getOrders().then((res) => {
-      setDataSource(res.products);
+    getRequest().then((res) => {
+      setDataSource(res);
       setLoading(false);
     });
   }, []);
+
+  const handleApprove = (record: any) => {
+    let approve = { ...approveData, id: record };
+    console.log("ID ARTWORK REQUESTED: ", record);
+    console.log("APPROVE DATA: ", approve);
+    Modal.confirm({
+      title: "APPROVE THIS ARTWORK?",
+      okText: "Confirm",
+      onOk: () => {
+        updateRequest(record, approve);
+      },
+    });
+  };
 
   return (
     <Space size={20} direction="vertical">
@@ -22,31 +39,43 @@ function Request() {
         loading={loading}
         columns={[
           {
-            title: "Title",
-            dataIndex: "title",
+            title: "Thumbnail",
+            dataIndex: "attachment",
+            render: (link: string) => (
+              <Avatar shape="square" src={link} size={50} />
+            ),
           },
           {
-            title: "Price",
-            dataIndex: "price",
-            render: (value) => <span>${value}</span>,
+            title: "User",
+            dataIndex: "userId",
+            // render: (user) => (
+
+            // )
           },
           {
-            title: "DiscountedPrice",
-            dataIndex: "discountedPrice",
-            render: (value) => <span>${value}</span>,
+            title: "Description",
+            dataIndex: "description",
           },
           {
-            title: "Quantity",
-            dataIndex: "quantity",
+            title: "Status",
+            dataIndex: "status",
+            render: (status) => String(status),
           },
           {
-            title: "Total",
-            dataIndex: "total",
+            title: "Action",
+            dataIndex: "_id",
+            render: (record: any) => {
+              return (
+                <>
+                  <EditOutlined onClick={() => handleApprove(record)} />
+                </>
+              );
+            },
           },
         ]}
         dataSource={dataSource}
         pagination={{
-          pageSize: 6,
+          pageSize: 5,
         }}
       ></Table>
     </Space>

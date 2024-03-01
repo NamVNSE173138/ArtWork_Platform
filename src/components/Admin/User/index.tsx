@@ -32,6 +32,10 @@ interface EditFormData {
   status?: boolean;
 }
 
+interface BanData {
+  status?: boolean;
+}
+
 const options: SelectProps["options"] = [
   {
     value: "user",
@@ -55,6 +59,9 @@ function Users() {
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [searchInput, setSearchInput] = useState<string>();
+  const [banData, setBanData] = useState<BanData>({
+    status: false,
+  });
   const [editFormData, setEditFormData] = useState<EditFormData | null>({
     nickname: "",
     email: "",
@@ -79,6 +86,19 @@ function Users() {
       onOk: () => {
         setLoading(true);
         deleteUser(record).then(() => setLoading(false));
+      },
+    });
+  };
+
+  const banUser = (record: User) => {
+    let ban = { ...banData, id: record };
+    setTestRecord(record);
+    Modal.confirm({
+      title: "BAN THIS ACCOUNT?",
+      okText: "Ban",
+      okType: "danger",
+      onOk: () => {
+        updateUser(record, ban);
       },
     });
   };
@@ -187,7 +207,8 @@ function Users() {
                   />
                   <DeleteOutlined
                     onClick={() => {
-                      onDeleteUser(record);
+                      // onDeleteUser(record);
+                      banUser(record);
                     }}
                     style={{ color: "red" }}
                   />

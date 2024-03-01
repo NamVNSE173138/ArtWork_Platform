@@ -148,34 +148,54 @@ const Artwork: React.FC = () => {
             pageSize: 5,
           }}
         />
+        <Modal
+          title="Artwork Information"
+          open={modalVisible}
+          onCancel={closeModal}
+          footer={null}
+          width={1000}
+          centered
+        >
+          {selectedRequest && (
+            <Table
+              dataSource={selectedRequest}
+              columns={[
+                {
+                  title: "Artwork",
+                  dataIndex: "name",
+                  key: "name",
+                },
+                {
+                  title: "Artist",
+                  dataIndex: "user",
+                  key: "user",
+                },
+                {
+                  title: "Tags",
+                  dataIndex: "tags",
+                  key: "tags",
+                },
+                {
+                  title: "Likes",
+                  dataIndex: "numOfLike",
+                  key: "likes",
+                },
+                {
+                  title: "Price",
+                  dataIndex: "price",
+                  key: "price",
+                },
+                {
+                  title: "Description",
+                  dataIndex: "description",
+                  key: "description",
+                },
+              ]}
+              pagination={false}
+            />
+          )}
+        </Modal>
       </div>
-      <Modal
-        title="Artwork Information"
-        open={modalVisible}
-        onCancel={closeModal}
-        footer={null}
-        width={1000}
-        centered
-      >
-        {selectedRequest && (
-          <Table
-            dataSource={[selectedRequest]}
-            columns={[
-              {
-                title: "Artwork",
-                dataIndex: "name",
-                key: "name",
-              },
-              {
-                title: "Artist",
-                dataIndex: "artistId",
-                key: "artist",
-              },
-            ]}
-            pagination={false}
-          />
-        )}
-      </Modal>
     </Space>
   );
 };

@@ -10,6 +10,7 @@ import {
   countArtist,
   countArtwork,
   countUser,
+  getArtwork,
   getOrders,
   getRevenue,
   getUser,
@@ -46,11 +47,11 @@ function Dashboard(): JSX.Element {
       setOrders(res.total);
       setRevenue(res.discountedTotal);
     });
-    countArtwork().then((res: any) => {
-      setInventory(res.total);
+    getArtwork().then((res: any) => {
+      setInventory(res.length);
     });
-    countUser().then((res: any) => {
-      setUsers(res.total);
+    getUser().then((res: any) => {
+      setUsers(res.length);
     });
     countArtist().then((res: any) => {
       setArtists(res.total);
