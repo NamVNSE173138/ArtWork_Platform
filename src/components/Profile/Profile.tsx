@@ -23,6 +23,7 @@ import type { TabsProps } from "antd";
 import "./Profile.css"; // Create this stylesheet for additional styling if needed
 import Contributed from "../ContributedArtwork/ContributedArtwork";
 import Favorite from "../Favorite/Favorite";
+import { useParams } from "react-router-dom";
 const { Meta } = Card;
 const { Text } = Typography
 const items: TabsProps["items"] = [
@@ -46,7 +47,7 @@ const items: TabsProps["items"] = [
 
 const ProfilePage: React.FC = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
-
+  const { id } = useParams();
   const showEditModal = () => {
     setEditModalVisible(true);
   };

@@ -1,28 +1,26 @@
 import { Avatar, Space, Table, Typography, Modal, Input } from "antd";
 import { useEffect, useState } from "react";
 import { getArtwork, getArtworkId, deleteArtwork } from "../../../api/index";
-import { SolutionOutlined, StopOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  SolutionOutlined,
+} from "@ant-design/icons";
+import {
+  deleteReport,
+  getReportWithUserAndArtwork,
+} from "../../../api/report/reportAPI";
 
-interface ArtworkRecord {
-  imageUrl: string;
-  artworkName: string;
-  artworkId: string;
-  price: number;
-  tags: string[];
-  describe: string;
-  _id: string;
-}
-
-const Artwork: React.FC = () => {
+const Report: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>();
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [dataSource, setDataSource] = useState<ArtworkRecord[]>([]);
+  const [dataSource, setDataSource] = useState([]);
 
   useEffect(() => {
     setLoading(true);
-    getArtwork().then((res: ArtworkRecord[]) => {
+    getReportWithUserAndArtwork().then((res) => {
       setDataSource(res);
       setLoading(false);
     });
@@ -39,11 +37,11 @@ const Artwork: React.FC = () => {
     setModalVisible(false);
   };
 
-  const onDeleteArtwork = (record: ArtworkRecord) => {
+  const onDeleteArtwork = (record: any) => {
     console.log(record);
     Modal.confirm({
-      title: "Are you sure, you want to delete this artwork?",
-      okText: "Yes",
+      title: "CONFIRM DELETE THIS ARTWORK?",
+      okText: "Confirm",
       okType: "danger",
       onOk: () => {
         deleteArtwork(record);
@@ -51,19 +49,26 @@ const Artwork: React.FC = () => {
     });
   };
 
+  const onDeleteReport = (record: any) => {
+    Modal.confirm({
+      title: "DECLINE THIS REPORT?",
+      okText: "Confirm",
+      onOk: () => {
+        deleteReport(record);
+      },
+    });
+  };
+
   const handleSearch = (searchText: string) => {
     setSearchInput(searchText);
-    getArtwork().then((res) => {
+    getReportWithUserAndArtwork().then((res) => {
       if (searchText === "") {
         setDataSource(res);
       } else {
         setDataSource(
           res.filter(
             (item: any) =>
-              (item.name?.toLowerCase() || "").includes(
-                searchText.toLowerCase()
-              ) ||
-              (item.tags?.toLowerCase() || "").includes(
+              (item.user.nickname?.toLowerCase() || "").includes(
                 searchText.toLowerCase()
               ) ||
               (item.description?.toLowerCase() || "").includes(
@@ -77,52 +82,45 @@ const Artwork: React.FC = () => {
 
   return (
     <Space size={20} direction="vertical">
-      {/* <Typography.Title level={4}>Artwork</Typography.Title> */}
+      {/* <Typography.Title level={4}>Reports</Typography.Title> */}
       <div style={{ overflowX: "auto" }}>
         <Input.Search
-          placeholder="Search by name, tag, description..."
+          placeholder="Search by name, description..."
           value={searchInput}
           onChange={(e) => handleSearch(e.target.value)}
           enterButton
           style={{ width: "500px", margin: "10px 0px 10px 0px" }}
         />
-        <Table<ArtworkRecord>
+        <Table
           style={{ width: "1250px", minWidth: "100%" }}
           loading={loading}
           columns={[
             {
               title: "Thumbnail",
-              dataIndex: "imageUrl",
-              render: (link: string) => (
-                <Avatar shape="square" src={link} size={50} />
-              ),
+              dataIndex: "artwork",
+              render: (link: any) => {
+                return <Avatar shape="square" size={50} src={link.imageUrl} />;
+              },
             },
             {
               title: "Name",
-              dataIndex: "name",
-            },
-            {
-              title: "Artist",
               dataIndex: "user",
-            },
-            {
-              title: "Price",
-              dataIndex: "price",
-              render: (value: number) => <span>${value}</span>,
-            },
-            {
-              title: "Tags",
-              dataIndex: "tags",
+              render: (name: any) => <span>{name.nickname}</span>,
             },
             {
               title: "Description",
               dataIndex: "description",
             },
             {
+              title: "Status",
+              dataIndex: "status",
+              render: (status) => String(status),
+            },
+            {
               title: "Action",
               dataIndex: "_id",
               align: "center",
-              render: (record: ArtworkRecord) => (
+              render: (record: any) => (
                 <div
                   style={{
                     display: "flex",
@@ -134,10 +132,17 @@ const Artwork: React.FC = () => {
                     onClick={() => {
                       handleCardClick(record);
                     }}
+                    style={{ color: "blue" }}
                   />
-                  <StopOutlined
+                  <CheckCircleOutlined
                     onClick={() => {
                       onDeleteArtwork(record);
+                    }}
+                    style={{ color: "green" }}
+                  />
+                  <CloseCircleOutlined
+                    onClick={() => {
+                      onDeleteReport(record);
                     }}
                     style={{ color: "red" }}
                   />
@@ -151,7 +156,7 @@ const Artwork: React.FC = () => {
           }}
         />
         <Modal
-          title="Artwork Information"
+          title="Report Information"
           open={modalVisible}
           onCancel={closeModal}
           footer={null}
@@ -163,7 +168,7 @@ const Artwork: React.FC = () => {
               dataSource={[selectedRequest]}
               columns={[
                 {
-                  title: "Artwork",
+                  title: "Username",
                   dataIndex: "name",
                   key: "name",
                 },
@@ -183,11 +188,6 @@ const Artwork: React.FC = () => {
                   key: "likes",
                 },
                 {
-                  title: "Price",
-                  dataIndex: "price",
-                  key: "price",
-                },
-                {
                   title: "Description",
                   dataIndex: "description",
                   key: "description",
@@ -202,4 +202,4 @@ const Artwork: React.FC = () => {
   );
 };
 
-export default Artwork;
+export default Report;
