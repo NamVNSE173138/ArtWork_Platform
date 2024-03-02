@@ -22,17 +22,17 @@ interface User {
 }
 
 interface Artwork {
-    _id: string,
-    user: User,
-    name: string,
-    tags: [string],
-    numOfLike: number,
-    price: number,
-    description: string,
-    imageUrl: string,
-    status: boolean,
-    createAt?: string,
-    updateAt?: string,
+  _id: string;
+  user: User;
+  name: string;
+  tags: [string];
+  numOfLike: number;
+  price: number;
+  description: string;
+  imageUrl: string;
+  status: boolean;
+  createAt?: string;
+  updateAt?: string;
 }
 
 interface Comment {
