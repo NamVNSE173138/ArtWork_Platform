@@ -5,7 +5,7 @@ const Comment = require('../Models/comment')
 module.exports = {
     getAllComments: async (req, res, next) => {
         try {
-            const results = await Comment.find({}, { __v: 0 })
+            const results = await Comment.find({}, { __v: 0 }).sort({ "created_at": -1 })
             res.send(results)
         } catch (error) {
             console.log(error.message)
@@ -32,7 +32,7 @@ module.exports = {
     findCommentByArtworkId: async (req, res, next) => {
         try {
             const id = req.params.id
-            const comment = await Comment.find({ artwork: id }, { __v: 0 })
+            const comment = await Comment.find({ artwork: id }, { __v: 0 }).sort({ "createdAt": -1 })
             if (!comment) {
                 throw createError(404, "Comment does not exist")
             } else {
@@ -73,7 +73,7 @@ module.exports = {
             }
         }
     },
-    
+
     deleteComment: async (req, res, next) => {
         try {
             const id = req.params.id

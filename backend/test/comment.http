@@ -6,9 +6,9 @@ POST http://localhost:5000/comments
 Content-Type: application/json
 
 {
-    "artwork": "65b7d7d561e839c5836c00d8",
-    "user": "65ded6bc9c0add1827f8cdca",
-    "text": "U a cai hinh nay xau vai thang nao tao ra cai hinh nay vay quat do phac minh k thich cai hinh nay ti nao",
+    "artwork": "65def66256354cd5bbaa6555",
+    "user": "65d44930ff3096c11cabd85e",
+    "text": "sao lai co mot cai hinh ma no dep voai ca chuong nhu the nay duoc nhi o mai got that la tuyet voi",
     "numOfLike": 26
 }
 
