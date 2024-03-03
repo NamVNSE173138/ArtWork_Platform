@@ -6,7 +6,7 @@ import {
 } from "@ant-design/icons";
 import { Card, Space, Statistic, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { getArtwork, getOrders, getRevenue, getUser } from "../../../api/index";
+import { getArtwork, getRevenue, getUser } from "../../../api/index";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -144,9 +144,10 @@ function DashboardCard({
 function RecentRequest(): JSX.Element {
   const [dataSource, setDataSource] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
   useEffect(() => {
     setLoading(true);
-    getUser().then((res: any) => {
+    getArtwork().then((res: any) => {
       setDataSource(res.splice(0, 3));
       setLoading(false);
     });

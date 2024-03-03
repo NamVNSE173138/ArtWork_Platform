@@ -91,7 +91,7 @@ function Request() {
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
+                    justifyContent: "space-evenly",
                     fontSize: "20px",
                   }}
                 >
