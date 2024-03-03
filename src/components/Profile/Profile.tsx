@@ -24,7 +24,7 @@ import "./Profile.css"; // Create this stylesheet for additional styling if need
 import Contributed from "../ContributedArtwork/ContributedArtwork";
 import Favorite from "../Favorite/Favorite";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import axios from 'axios';
 const { Meta } = Card;
 const { Text } = Typography;
 const items: TabsProps["items"] = [

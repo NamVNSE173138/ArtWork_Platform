@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from 'axios';
 import Navbar from "../components/Navbar/Navbar";
 import ProfilePage from "../components/Profile/Profile";
 import { useParams } from "react-router-dom";
