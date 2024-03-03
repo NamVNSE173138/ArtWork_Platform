@@ -66,7 +66,7 @@ function Request() {
             title: "Thumbnail",
             dataIndex: "imageUrl",
             render: (link: string) => (
-              <Avatar shape="square" src={link} size={50} />
+              <Avatar shape="square" src={link} size={48} />
             ),
           },
           {

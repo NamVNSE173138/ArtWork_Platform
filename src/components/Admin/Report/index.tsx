@@ -99,7 +99,7 @@ const Report: React.FC = () => {
               title: "Thumbnail",
               dataIndex: "artwork",
               render: (link: any) => {
-                return <Avatar shape="square" size={50} src={link.imageUrl} />;
+                return <Avatar shape="square" size={48} src={link.imageUrl} />;
               },
             },
             {
