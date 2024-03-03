@@ -161,7 +161,7 @@ const ArtistList = () => {
       className="artist-list"
       itemLayout="vertical"
       size="large"
-      pagination={{ pageSize: 3 }}
+      pagination={{ pageSize: 6 }}
       dataSource={artistData}
       renderItem={(item: any) => (
         <List.Item key={item._id}>
