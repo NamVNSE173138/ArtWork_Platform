@@ -51,13 +51,29 @@ const ArtistList = () => {
   const handleCancel = () => {
     setOpen(false);
   };
+  interface UserData {
+    id: string;
+    email: string;
+    nickname: string;
+    role: string;
+    numOfFollower: number;
+    avatar: string;
+    password: string;
+    status: boolean;
+    createAt?: string;
+    updateAt?: string;
+  }
+  const [artistData, setArtistData] = useState<UserData[]>([]);
   useEffect(() => {
     // Fetch data from API
-    fetch("http://localhost:5000/users?role=user")
+    fetch("http://localhost:5000/users") // Fetch all users
       .then((response) => response.json())
-      .then((data) => {
+      .then((data: UserData[]) => {
+        // Define type for data as UserData[]
         console.log("Fetched data:", data); // Log fetched data to see its structure
-        setUserData(data);
+        // Filter users by role "artist"
+        const artistUsers = data.filter((user) => user.role === "artist");
+        setArtistData(artistUsers);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
@@ -141,11 +157,12 @@ const ArtistList = () => {
 
   return (
     <List
+      grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 2, xl: 3, xxl: 3 }}
       className="artist-list"
       itemLayout="vertical"
       size="large"
       pagination={{ pageSize: 3 }}
-      dataSource={userData}
+      dataSource={artistData}
       renderItem={(item: any) => (
         <List.Item key={item._id}>
           <Card style={{ width: "100%" }} actions={[]}>
@@ -156,7 +173,15 @@ const ArtistList = () => {
                   <Link to={`/artistList/${item._id}`}>{item.nickname}</Link>
                 </div>
               }
-              description={<div>{item.numOfFollower}</div>}
+              description={
+                <>
+                  <span style={{ fontSize: "16px", fontWeight: "bold" }}>
+                    Follower: {item.numOfFollower}
+                  </span>
+                  <br />
+                  <i>{item.bio}</i>
+                </>
+              }
             />
             <div className="artist-action">
               <Button className="btn-fl" icon={<PlusCircleOutlined />}>

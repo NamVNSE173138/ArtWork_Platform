@@ -208,6 +208,15 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                     to={`/profile/${currentUser.id}`}
                     onClick={toggleNav}
                   >
+                    <img
+                      alt="avatar"
+                      style={{
+                        height: "30px",
+                        borderRadius: "20px",
+                        marginRight: "5px",
+                      }}
+                      src={currentUser.avatar}
+                    />
                     {currentUser.nickname}
                   </Link>
                 </li>
