@@ -25,22 +25,24 @@ import Contributed from "../ContributedArtwork/ContributedArtwork";
 import Favorite from "../Favorite/Favorite";
 import { useParams } from "react-router-dom";
 const { Meta } = Card;
-const { Text } = Typography
+const { Text } = Typography;
 const items: TabsProps["items"] = [
   {
     key: "1",
-    label:
+    label: (
       <Badge count={100} overflowCount={99} offset={[15, 0]} showZero>
         <Text>Favorited</Text>
-      </Badge>,
+      </Badge>
+    ),
     children: <Favorite />,
   },
   {
     key: "2",
-    label:
+    label: (
       <Badge count={1} overflowCount={999} offset={[15, 0]} showZero>
         <Text>Contributed</Text>
-      </Badge>,
+      </Badge>
+    ),
     children: <Contributed />,
   },
 ];
@@ -48,6 +50,8 @@ const items: TabsProps["items"] = [
 const ProfilePage: React.FC = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const { id } = useParams();
+  console.log(id);
+
   const showEditModal = () => {
     setEditModalVisible(true);
   };
@@ -144,7 +148,14 @@ const ProfilePage: React.FC = () => {
       </Row>
       <Row gutter={16} style={{ marginTop: 20 }}>
         <Col span={24}>
-          <Tabs defaultActiveKey="1" items={items} size="large" type="card" tabBarGutter={20} centered />
+          <Tabs
+            defaultActiveKey="1"
+            items={items}
+            size="large"
+            type="card"
+            tabBarGutter={20}
+            centered
+          />
         </Col>
       </Row>
     </div>
