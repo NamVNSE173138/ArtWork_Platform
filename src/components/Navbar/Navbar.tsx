@@ -11,7 +11,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import axios from 'axios';
 
 const { Search } = Input;
 const { Option } = Select;
