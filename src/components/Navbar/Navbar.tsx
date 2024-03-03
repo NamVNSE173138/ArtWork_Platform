@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Navbar.css"; // Assuming you have a corresponding CSS file
-import { Input, Space, Button, Select, Tag, Popover } from "antd";
-import Logo from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
+import { Input, Space, Button, Select, Tag, Popover, Spin } from "antd";
+import Logo from "../../assets/image/logo.jpg";
+import LogoDark from "https://art.art/wp-content/themes/art/new/img/logo_DotArt.svg";
 import {
+  LoadingOutlined,
   LogoutOutlined,
   MenuOutlined,
   SearchOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -51,8 +54,6 @@ const content = (
   </div>
 );
 
-
-
 const tags = [
   "Minimalism",
   "Wallpapers",
@@ -64,91 +65,181 @@ const tags = [
 interface NavbarProps {
   onSubmit: (term: string) => void; // Define the type for the onSubmit prop
 }
+interface User {
+  id: string;
+  email: string;
+  nickname: string;
+  role: string;
+  numOfFollower: number;
+  avatar: string;
+  password: string;
+  status: boolean;
+  createAt?: string;
+  updateAt?: string;
+}
 const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   let navigate = useNavigate();
-  const { userId } = useParams();
-  console.log("userId:", userId);
+  const userToken = localStorage.getItem("USER");
+  console.log(userToken);
+  const [isLoadingLogOut, setIsLoadingLogOut] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const [toggleMenu, setToggleMenu] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User>({
+    id: "",
+    email: "",
+    password: "",
+    nickname: "",
+    role: "",
+    numOfFollower: 0,
+    avatar: "",
+    status: false,
+    createAt: "",
+    updateAt: "",
+  });
 
-  // const [startIndex, setStartIndex] = useState(0);
-  // const [nextClickCount, setNextClickCount] = useState(0);
-  // const responsiveTagCount = 3;
-  const isLogin = localStorage.getItem("USER");
-  console.log(isLogin);
   const handleLogout = () => {
-    localStorage.removeItem("USER");
-    navigate("/");
+    setIsLoadingLogOut(true);
+
+    setTimeout(() => {
+      localStorage.removeItem("USER");
+      setIsLoadingLogOut(false);
+      navigate("/signin");
+    }, 2000);
   };
+
   const onSearch = (value: string) => {
     console.log("Search value:", value);
     // Call the onSubmit prop passed from the parent component
     onSubmit(value);
   };
-  const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
     onSubmit(value);
   };
 
+  const toggleNav = () => {
+    setToggleMenu(!toggleMenu);
+  };
+
+  useEffect(() => {
+    const changeWidth = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", changeWidth);
+
+    return () => {
+      window.removeEventListener("resize", changeWidth);
+    };
+  }, []);
+
+  const fetchCurrentUserData = async () => {
+    setIsLoading(true);
+    await axios
+      .get(`http://localhost:5000/users/getUserInfo`, {
+        headers: {
+          token: userToken, //userToken = localStorage("USER")
+        },
+      })
+      .then((res) => {
+        console.log("Current user: ", res.data);
+        setCurrentUser(res.data);
+        setIsLoading(false);
+      })
+      .catch((err) => console.log(err));
+  };
+  useEffect(() => {
+    fetchCurrentUserData();
+  }, []);
+  useEffect(() => {
+    console.log("Current user: ", currentUser);
+  }, [currentUser]);
   return (
-    <nav className="navbar">
-      <div className="first-line">
-        <div className="logo">
-          <Link to={"/home"}>
-            <img src={Logo} alt="Logo" />
-          </Link>
-          <Input
-            size="large"
-            className="search-box"
-            prefix={<SearchOutlined />}
-            placeholder="Search "
-            onChange={(e) => handleSearch(e.target.value)}
-          />
+    <div className="navbar-home">
+      <div className="title">
+        <div className="title-title">
+          <img alt="logo" className="brand-title" src={Logo} />
         </div>
-        <div style={{ display: "flex" }}>
-          <div className="user-actions">
-            {!isLogin ? (
+        <MenuOutlined className="toggle-burger" onClick={toggleNav} />
+      </div>
+      {(toggleMenu || screenWidth > 768) && (
+        <nav className="navbar-links">
+          <ul>
+            <li>
+              <Search
+                placeholder="input search text"
+                allowClear
+                onSearch={onSearch}
+                style={{ width: 600 }}
+              />
+            </li>
+            {!userToken ? (
               <>
-                <Link className="link-btn-nav" to={"/signin"}>
-                  <Button className="btn-nav" size="large">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link className="link-btn-nav" to={"/signup/email"}>
-                  <Button className="btn-nav" size="large">
+                <li>
+                  <Link
+                    id="signup"
+                    className="item"
+                    to="/signup"
+                    onClick={toggleNav}
+                  >
                     Sign Up
-                  </Button>
-                </Link>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    id="projet"
+                    className="item"
+                    to="/signin"
+                    onClick={toggleNav}
+                  >
+                    Sign In
+                  </Link>
+                </li>
               </>
             ) : (
               <>
-                <Link className="link-btn-nav" to={`/profile/${userId}`}>
-                  <Button className="btn-nav" size="large">
-                    <UserOutlined /> Profile
-                  </Button>
-                </Link>
-                <Button
-                  className="btn-nav link-btn-nav"
-                  size="large"
-                  onClick={handleLogout}
-                >
-                  <LogoutOutlined />
-                  Log out
-                </Button>
+                <li>
+                  <Link
+                    id="profile"
+                    className="item"
+                    to={`/profile/${currentUser.id}`}
+                    onClick={toggleNav}
+                  >
+                    {currentUser.nickname}
+                  </Link>
+                </li>
+                <li>
+                  <div
+                    id="projet"
+                    className="item"
+                    // to="/signin"
+                    onClick={() => {
+                      toggleNav();
+                      handleLogout();
+                    }}
+                  >
+                    {isLoadingLogOut ? (
+                      <Spin
+                        style={{ marginRight: "5px", color: "#444950" }}
+                        indicator={
+                          <LoadingOutlined style={{ fontSize: 24 }} spin />
+                        }
+                      />
+                    ) : (
+                      <LogoutOutlined />
+                    )}{" "}
+                    Log Out
+                  </div>
+                </li>
               </>
             )}
-          </div>
-          <Popover
-            placement="bottomRight"
-            // title={text}
-            content={content}
-            trigger="click"
-          >
-            <Button size="large" icon={<MenuOutlined />} />
-          </Popover>
-        </div>
-      </div>
-    </nav>
+          </ul>
+        </nav>
+      )}
+    </div>
   );
 };
 

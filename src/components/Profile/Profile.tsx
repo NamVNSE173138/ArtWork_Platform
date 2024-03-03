@@ -24,6 +24,7 @@ import "./Profile.css"; // Create this stylesheet for additional styling if need
 import Contributed from "../ContributedArtwork/ContributedArtwork";
 import Favorite from "../Favorite/Favorite";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 const { Meta } = Card;
 const { Text } = Typography;
 const items: TabsProps["items"] = [
@@ -46,7 +47,18 @@ const items: TabsProps["items"] = [
     children: <Contributed />,
   },
 ];
-
+interface User {
+  id: string;
+  email: string;
+  nickname: string;
+  role: string;
+  numOfFollower: number;
+  avatar: string;
+  password: string;
+  status: boolean;
+  createAt?: string;
+  updateAt?: string;
+}
 const ProfilePage: React.FC = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const { id } = useParams();
@@ -64,7 +76,42 @@ const ProfilePage: React.FC = () => {
     // Handle logic for saving edited profile data
     setEditModalVisible(false);
   };
-  const isLogin = localStorage.getItem("USER");
+  const userToken = localStorage.getItem("USER");
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User>({
+    id: "",
+    email: "",
+    password: "",
+    nickname: "",
+    role: "",
+    numOfFollower: 0,
+    avatar: "",
+    status: false,
+    createAt: "",
+    updateAt: "",
+  });
+  const fetchCurrentUserData = async () => {
+    setIsLoading(true);
+    await axios
+      .get(`http://localhost:5000/users/getUserInfo`, {
+        headers: {
+          token: userToken, //userToken = localStorage("USER")
+        },
+      })
+      .then((res) => {
+        console.log("Current user: ", res.data);
+        setCurrentUser(res.data);
+        setIsLoading(false);
+      })
+      .catch((err) => console.log(err));
+  };
+  useEffect(() => {
+    fetchCurrentUserData();
+  }, []);
+  useEffect(() => {
+    console.log("Current user: ", currentUser);
+  }, [currentUser]);
 
   const handleShareProfile = () => {
     // Copy URL to clipboard
@@ -95,11 +142,11 @@ const ProfilePage: React.FC = () => {
                 avatar={
                   <Avatar src="https://plus.unsplash.com/premium_photo-1677101221533-52b45823a2dc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2F0fGVufDB8fDB8fHww" />
                 }
-                title="User's nickname"
+                title={currentUser.nickname}
                 description={
                   <>
-                    Web Developer <br />
-                    <i>sport</i>
+                    {currentUser.email} <br />
+                    <i>Role: {currentUser.role}</i>
                   </>
                 }
               />
