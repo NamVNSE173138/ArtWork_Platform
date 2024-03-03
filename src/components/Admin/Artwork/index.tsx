@@ -63,9 +63,6 @@ const Artwork: React.FC = () => {
               (item.name?.toLowerCase() || "").includes(
                 searchText.toLowerCase()
               ) ||
-              (item.tags?.toLowerCase() || "").includes(
-                searchText.toLowerCase()
-              ) ||
               (item.description?.toLowerCase() || "").includes(
                 searchText.toLowerCase()
               )
@@ -126,7 +123,7 @@ const Artwork: React.FC = () => {
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
+                    justifyContent: "space-evenly",
                     fontSize: "20px",
                   }}
                 >
