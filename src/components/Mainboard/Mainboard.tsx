@@ -6,7 +6,7 @@ import { Button, Divider, FloatButton, Skeleton, message } from "antd";
 import { DownloadOutlined, HeartFilled, PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-
+import { saveAs } from "file-saver";
 interface MainboardProps {
   pins: PinProps[];
 }
@@ -36,15 +36,15 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
     message.success("Added!");
   };
 
-  const handleDownload = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const imageUrl = pins[modalIndex].imageUrl;
+  const handleDownload = (
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    pin: PinProps
+  ) => {
+    const imageUrl = pin.imageUrl;
+    const name = pin.name;
     message.success("Downloading...");
-    const link = document.createElement("a");
-    link.href = imageUrl;
-    link.download = "image.jpg";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    console.log(imageUrl, " ", name);
+    saveAs(imageUrl, `${name}.png`);
   };
 
   const handleShare = () => {
@@ -102,7 +102,7 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                     size="large"
                     className="download-btn"
                     icon={<DownloadOutlined />}
-                    onClick={handleDownload}
+                    onClick={(event) => handleDownload(event, pin)}
                   />
                 </div>
                 <div className="artist-info">
@@ -113,7 +113,6 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                   />
                   <div className="info">
                     <p className="name">{pin.userNickname}</p>
-                    {/* <p className="tag">{pin.tag}</p> */}
                   </div>
                 </div>
                 <img

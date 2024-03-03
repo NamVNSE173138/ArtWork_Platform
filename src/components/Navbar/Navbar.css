@@ -1,6 +1,4 @@
-/* Navbar.css */
-
-.navbar {
+/* .navbar {
     background-color: #EEF5FF;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: inherit !important;
@@ -17,7 +15,6 @@
     display: flex;
     align-items: center;
     flex: 1;
-    /* Added */
 }
 
 .logo img {
@@ -33,9 +30,7 @@
     max-width: 800px;
 }
 
-/* .search-box .ant-input-group-wrapper {
-    width: 300px;
-} */
+
 
 .search-box .ant-input {
     border-radius: 20px;
@@ -100,4 +95,117 @@
 
 .link-btn-nav {
     text-decoration: none;
+} */
+
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@100;200;300;400;500;600;700&display=swap");
+
+.navbar-home {
+    display: flex;
+    position: fixed !important;
+    z-index: 9999;
+    top: 0;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    width: 100%;
+    background: white;
+    color: #1a2027;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px,
+        rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+}
+
+.brand-title {
+    height: 80px;
+    width: auto;
+    padding-left: 20px;
+}
+
+.toggle-burger {
+    display: none;
+    font-size: 24px;
+}
+
+.navbar-links {
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.navbar-links ul {
+    margin-top: 12px;
+    display: flex;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100%;
+}
+
+
+
+.navbar-links ul li {
+    padding-right: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    list-style-type: none;
+}
+
+.navbar-links ul li .item {
+    padding: 10px;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #444950;
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: bolder;
+}
+
+.navbar-links ul li .item:hover {
+    background: #f8f8f8;
+    transition: 0.3s;
+    border-radius: 10px;
+}
+
+@media (max-width: 767px) {
+    .navbar-home {
+        flex-direction: column;
+        position: fixed !important
+    }
+
+    .title {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .toggle-burger {
+        display: block;
+        margin-right: 20px;
+    }
+
+    .navbar-links {
+        width: 100%;
+    }
+
+    .navbar-links ul {
+        margin-top: 0 !important;
+        display: block;
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        flex-direction: column;
+        background: white;
+    }
+
+    .navbar-links ul li {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        transition: 0.5s;
+        margin-top: 80px;
+        font-size: 18px;
+    }
+
+    .navbar-links ul li .item:hover {
+        margin-left: 10px;
+        transition: 0.2s;
+    }
 }
