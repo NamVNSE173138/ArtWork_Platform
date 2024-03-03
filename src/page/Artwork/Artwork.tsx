@@ -10,11 +10,12 @@ import {
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
-import axios from "axios";
+import axios from 'axios';
 import nFormatter from "../../assistants/Formatter";
 import { FormikProps, Formik, useFormik } from "formik";
 import moment from "moment";
 import ReportForm from "../../components/ReportForm/ReportForm";
+import Favorite from "../../components/Favorite/Favorite";
 interface User {
   id: string;
   email: string;
@@ -46,6 +47,13 @@ interface Comment {
   user?: string;
   text: string;
   numOfLike: number;
+  createAt?: string;
+  updateAt?: string;
+}
+
+interface FavoriteList {
+  user?: User;
+  artwork?: Artwork;
   createAt?: string;
   updateAt?: string;
 }
@@ -107,8 +115,55 @@ export default function Artwork() {
     updateAt: "",
   });
 
+
   const [commentList, setCommentList] = useState<Comment[]>([]);
   const [newCommentIncoming, setNewCommentIncoming] = useState(false);
+
+  const [isLiked, setIsLiked] = useState(false); // State to track if artwork is liked
+  const [favoriteList, setFavoriteList] = useState<FavoriteList[]>([]);
+
+  const commentForm: FormikProps<Comment> = useFormik<Comment>({
+    initialValues: {
+      user: "",
+      text: "",
+      numOfLike: 0,
+    },
+    onSubmit: (values: Comment, { resetForm }) => {
+      setNewCommentIncoming(true);
+      axios
+        .post(
+          "http://localhost:5000/comments",
+          {
+            artwork: id,
+            user: currentUser.id,
+            text: values.text,
+            numOfLike: 0,
+          },
+          {
+            headers: {
+              token: userToken,
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(err));
+      resetForm();
+      setTimeout(() => {
+        setNewCommentIncoming(false);
+      }, 500);
+    },
+  });
+  useEffect(() => {
+    fetchCurrentUserData();
+    fetchArtworkData();
+  }, []);
+
+  useEffect(() => {
+    fetchCommentList();
+  }, [newCommentIncoming]);
 
   const fetchCurrentUserData = async () => {
     setIsLoading(true);
@@ -152,50 +207,28 @@ export default function Artwork() {
       .catch((err) => console.log(err));
   };
 
-  useEffect(() => {
-    fetchCurrentUserData();
-    fetchArtworkData();
-  }, []);
-
-  useEffect(() => {
-    fetchCommentList();
-  }, [newCommentIncoming]);
-
-  const commentForm: FormikProps<Comment> = useFormik<Comment>({
-    initialValues: {
-      user: "",
-      text: "",
-      numOfLike: 0,
-    },
-    onSubmit: (values: Comment, { resetForm }) => {
-      setNewCommentIncoming(true);
-      axios
-        .post(
-          "http://localhost:5000/comments",
-          {
-            artwork: id,
-            user: currentUser.id,
-            text: values.text,
-            numOfLike: 0,
-          },
-          {
-            headers: {
-              token: userToken,
-            },
+  const likeArtwork = async () => {
+    try {
+      // Make a POST request to likeArtwork API endpoint
+      const response = await axios.post(
+        `http://localhost:5000/artworks/favoriteList/${artwork._id}`,
+        {},
+        {
+          headers: {
+            token: localStorage.getItem("USER") // Assuming user token is stored in localStorage
           }
-        )
-        .then((res) => {
-          console.log(res.data);
-          setIsLoading(false);
-        })
-        .catch((err) => console.log(err));
-      resetForm();
-      setTimeout(() => {
-        setNewCommentIncoming(false);
-      }, 500);
-    },
-  });
+        }
+      );
+      console.log(response.data);
+      setIsLiked(true); // Set isLiked state to true after successfully liking the artwork
+      setFavoriteList([...favoriteList, artwork]); // Add artwork to favorite list
+    } catch (error: any) {
+      console.error("Error liking artwork:", error.message);
+      // Handle error
+    }
 
+
+  };
   return (
     <>
       <div className={styles.artworkContainer}>
@@ -345,6 +378,8 @@ export default function Artwork() {
                   size="large"
                   className="like-modal-btn"
                   icon={<HeartFilled />}
+                  onClick={likeArtwork} // Call likeArtwork function when button is clicked
+                  disabled={isLiked}
                 />
                 <Button
                   size="large"
