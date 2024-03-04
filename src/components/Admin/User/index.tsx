@@ -2,7 +2,6 @@ import {
   Avatar,
   Space,
   Table,
-  Typography,
   Modal,
   Input,
   Switch,
@@ -10,7 +9,6 @@ import {
   SelectProps,
 } from "antd";
 import {
-  DeleteOutlined,
   EditOutlined,
   SolutionOutlined,
   StopOutlined,
@@ -78,18 +76,18 @@ function Users() {
     });
   }, []);
 
-  const onDeleteUser = (record: User) => {
-    console.log(record);
-    Modal.confirm({
-      title: "Are you sure, you want to delete this user?",
-      okText: "Yes",
-      okType: "danger",
-      onOk: () => {
-        setLoading(true);
-        deleteUser(record).then(() => setLoading(false));
-      },
-    });
-  };
+  // const onDeleteUser = (record: User) => {
+  //   console.log(record);
+  //   Modal.confirm({
+  //     title: "Are you sure, you want to delete this user?",
+  //     okText: "Yes",
+  //     okType: "danger",
+  //     onOk: () => {
+  //       setLoading(true);
+  //       deleteUser(record).then(() => setLoading(false));
+  //     },
+  //   });
+  // };
 
   const banUser = (record: User) => {
     let ban = { ...banData, id: record };
@@ -195,7 +193,7 @@ function Users() {
                   style={{
                     display: "flex",
                     justifyContent: "space-evenly",
-                    fontSize: "20px"
+                    fontSize: "20px",
                   }}
                 >
                   <SolutionOutlined

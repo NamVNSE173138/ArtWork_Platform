@@ -1,6 +1,6 @@
 import { Avatar, Space, Table, Typography, Modal, Input } from "antd";
 import { useEffect, useState } from "react";
-import { getArtwork, getArtworkId, deleteArtwork } from "../../../api/index";
+import { getArtworkId, deleteArtwork } from "../../../api/index";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
