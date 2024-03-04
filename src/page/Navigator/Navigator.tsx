@@ -5,6 +5,7 @@ import HomeImg from "../../assets/image/Home.png";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import styles from "./styles.module.css";
 import { useNavigate } from "react-router-dom";
+import Logo from "../../assets/image/logo.jpg";
 
 export default function Navigator() {
   const navigate = useNavigate()
@@ -52,6 +53,9 @@ export default function Navigator() {
             <Text strong className={styles.primaryHeading}>
               ART FROM THE SOUL, ART FOR THE SOUL
             </Text>
+          </span>
+          <span className={styles.navbarLogo}>
+            <img src={Logo} alt="art" onClick={() => { window.location.reload() }} />
           </span>
           <span className={styles.buttonGroup}>
             <button

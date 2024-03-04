@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import styles from "./Artwork.module.css";
-import { List, Button, Avatar, Typography, Spin, Space } from "antd";
+import { List, Button, Avatar, Typography, Spin, Badge } from "antd";
 import {
   LoadingOutlined,
   HeartFilled,
   DownloadOutlined,
   SendOutlined,
   PlusCircleOutlined,
+  LikeOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
@@ -25,8 +26,8 @@ interface User {
   avatar: string;
   password: string;
   status: boolean;
-  createAt?: string;
-  updateAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface Artwork {
@@ -39,16 +40,18 @@ interface Artwork {
   description: string;
   imageUrl: string;
   status: boolean;
-  createAt?: string;
-  updateAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface Comment {
-  user?: string;
+  user?: User;
   text: string;
   numOfLike: number;
-  createAt?: string;
-  updateAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  nickname?: string,
+  avatar?: string,
 }
 
 interface FavoriteList {
@@ -64,6 +67,10 @@ export default function Artwork() {
   const userToken = localStorage.getItem("USER");
   const [isLoading, setIsLoading] = useState(false);
 
+  const onSearchSubmit = async (term: string) => {
+    console.log(term)
+  };
+
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<User>({
     id: "",
@@ -74,9 +81,10 @@ export default function Artwork() {
     numOfFollower: 0,
     avatar: "",
     status: false,
-    createAt: "",
-    updateAt: "",
+    createdAt: "",
+    updatedAt: "",
   });
+
   const [artwork, setArtwork] = useState<Artwork>({
     _id: "",
     user: {
@@ -88,8 +96,8 @@ export default function Artwork() {
       avatar: "",
       password: "",
       status: false,
-      createAt: "",
-      updateAt: "",
+      createdAt: "",
+      updatedAt: "",
     },
     name: "",
     tags: [""],
@@ -98,8 +106,8 @@ export default function Artwork() {
     description: "",
     imageUrl: "",
     status: false,
-    createAt: "",
-    updateAt: "",
+    createdAt: "",
+    updatedAt: "",
   });
 
   const [artist, setArtist] = useState<User>({
@@ -111,8 +119,8 @@ export default function Artwork() {
     avatar: "",
     password: "",
     status: false,
-    createAt: "",
-    updateAt: "",
+    createdAt: "",
+    updatedAt: "",
   });
 
 
@@ -124,7 +132,18 @@ export default function Artwork() {
 
   const commentForm: FormikProps<Comment> = useFormik<Comment>({
     initialValues: {
-      user: "",
+      user: {
+        id: "",
+        email: "",
+        nickname: "",
+        role: "",
+        numOfFollower: 0,
+        avatar: "",
+        password: "",
+        status: false,
+        createdAt: "",
+        updatedAt: "",
+      },
       text: "",
       numOfLike: 0,
     },
@@ -156,14 +175,6 @@ export default function Artwork() {
       }, 500);
     },
   });
-  useEffect(() => {
-    fetchCurrentUserData();
-    fetchArtworkData();
-  }, []);
-
-  useEffect(() => {
-    fetchCommentList();
-  }, [newCommentIncoming]);
 
   const fetchCurrentUserData = async () => {
     setIsLoading(true);
@@ -174,7 +185,6 @@ export default function Artwork() {
         },
       })
       .then((res) => {
-        console.log("Current user: ", res.data);
         setCurrentUser(res.data);
         setIsLoading(false);
       })
@@ -186,6 +196,7 @@ export default function Artwork() {
     await axios
       .get(`http://localhost:5000/artworks/${id}`)
       .then((res: any) => {
+        console.log("Artwork:", res.data)
         setArtwork(res.data);
         axios
           .get(`http://localhost:5000/users/${res.data.user}`)
@@ -198,11 +209,11 @@ export default function Artwork() {
       .catch((err) => console.log(err));
   };
 
-  const fetchCommentList = async () => {
-    await axios
-      .get(`http://localhost:5000/comments/artwork/${id}`)
+  const fetchCommentListData = async () => {
+    await axios.get(`http://localhost:5000/comments/artwork/${id}`)
       .then((res) => {
-        setCommentList(res.data);
+        console.log("Comment list: ", res.data)
+        setCommentList(res.data)
       })
       .catch((err) => console.log(err));
   };
@@ -231,11 +242,20 @@ export default function Artwork() {
       console.error("Error liking artwork:", error.message);
       // Handle error
     }
-
-
   };
+
+  useEffect(() => {
+    fetchCurrentUserData();
+    fetchArtworkData();
+  }, []);
+
+  useEffect(() => {
+    fetchCommentListData();
+  }, [newCommentIncoming]);
+
   return (
     <>
+      <Navbar onSubmit={onSearchSubmit} />
       <div className={styles.artworkContainer}>
         {isLoading ? (
           <Spin
@@ -254,7 +274,7 @@ export default function Artwork() {
                   {artwork.name}
                 </Title>
                 <Text style={{ minWidth: "max-content" }}>
-                  {moment().startOf("hour").fromNow()}
+                  {moment(artwork.createdAt).fromNow()}
                 </Text>
               </div>
               <div className={styles.artistSection}>
@@ -300,39 +320,39 @@ export default function Artwork() {
                     itemLayout="horizontal"
                     dataSource={[...commentList]}
                     loading={newCommentIncoming}
-                    className={styles.commentListContainer}
                     size="small"
                     renderItem={(comment: Comment) => (
                       <List.Item className={styles.singleComment}>
-                        <div>
+                        <div className={styles.singleCommentSection}>
                           <span style={{ minWidth: "max-content" }}>
                             <Avatar
-                              src={comment.user}
+                              src={comment.user?.avatar}
                               alt=""
                               size={45}
                               style={{ marginRight: "1%" }}
                             />
                           </span>
                           <div className={styles.commentInfo}>
-                            <Text className={styles.commentText}>
+                            <Text className={styles.commentText} style={{ fontSize: '90%' }}>
                               <Text
                                 strong
                                 id={styles.userName}
                                 onClick={() =>
-                                  navigate(`/profile/${comment.user}`)
+                                  navigate(`/profile/${comment.user?.id}`)
                                 }
                               >
-                                {comment.user}
+                                {comment.user?.nickname}
                               </Text>
                               &ensp;{comment.text}
                             </Text>
-                            <Text
-                              style={{
-                                fontSize: "80%",
-                                alignSelf: "flex-start",
-                              }}
-                            >
-                              {moment().startOf("hour").fromNow()}
+                            <Text className={styles.commentAction}>
+                              <Text style={{ fontSize: '78%', minWidth: 'fit-content' }}>
+                                {moment(comment.createdAt).fromNow()}
+                              </Text>
+                              <span className={styles.commentLikeButton}>
+                                {comment.numOfLike > 0 ? <Text style={{ color: '#FFFFFF', fontSize: '90%' }}>{nFormatter(comment.numOfLike, 1)}</Text> : null}
+                                <LikeOutlined />
+                              </span>
                             </Text>
                           </div>
                         </div>
@@ -340,10 +360,9 @@ export default function Artwork() {
                     )}
                   />
                 ) : (
-                  <div>
-                    <Text>
-                      There is no comment on this yet. Start sharing your
-                      thoughts on this.
+                  <div style={{ margin: '10px auto' }}>
+                    <Text italic>
+                      There is no comment on this yet. Start sharing your thoughts on this.
                     </Text>
                   </div>
                 )}
@@ -383,7 +402,7 @@ export default function Artwork() {
                   size="large"
                   className="like-modal-btn"
                   icon={<HeartFilled />}
-                  onClick={likeArtwork} // Call likeArtwork function when button is clicked
+                  onClick={likeArtwork}
                   disabled={isLiked}
                 />
                 <Button
@@ -401,7 +420,7 @@ export default function Artwork() {
             </div>
           </>
         )}
-      </div>
+      </div >
     </>
   );
 }

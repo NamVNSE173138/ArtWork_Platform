@@ -26,6 +26,22 @@
     width: 100%;
 }
 
+.navbarLogo {
+    max-width: min-content;
+    max-height: inherit;
+}
+
+.navbarLogo img {
+    width: 60px;
+    max-height: inherit;
+    border-radius: 10px;
+    margin: auto;
+}
+
+.navbarLogo:hover {
+    cursor: pointer;
+}
+
 .navbar .primaryHeading {
     font-family: "Protest Revolution", sans-serif;
     font-weight: 400;
