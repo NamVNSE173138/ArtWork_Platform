@@ -13,4 +13,6 @@ router.patch("/:id", artworkController.updateArtwork);
 
 router.delete("/:id", artworkController.deleteArtwork);
 
+router.post("/favoriteList/:id", artworkController.likeArtwork);
+
 module.exports = router;

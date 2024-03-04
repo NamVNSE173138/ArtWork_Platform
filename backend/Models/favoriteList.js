@@ -4,7 +4,11 @@ const Schema = mongoose.Schema
 const FavoriteListSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
+    },
+    artwork: {
+        type: Schema.Types.ObjectId,
+        ref: 'Artwork',
     },
 }, {
     timestamps: true

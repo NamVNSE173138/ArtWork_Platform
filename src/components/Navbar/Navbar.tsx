@@ -11,7 +11,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import axios from 'axios';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -208,6 +208,15 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                     to={`/profile/${currentUser.id}`}
                     onClick={toggleNav}
                   >
+                    <img
+                      alt="avatar"
+                      style={{
+                        height: "30px",
+                        borderRadius: "20px",
+                        marginRight: "5px",
+                      }}
+                      src={currentUser.avatar}
+                    />
                     {currentUser.nickname}
                   </Link>
                 </li>

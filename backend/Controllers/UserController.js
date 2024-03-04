@@ -129,12 +129,13 @@ module.exports = {
 
       const userInfo = decodeToken(token);
       const data = {
-        id: userInfo.data.checkEmail._id,
-        email: userInfo.data.checkEmail.email,
-        password: userInfo.data.checkEmail.password,
-        nickname: userInfo.data.checkEmail.nickname,
-        avatar: userInfo.data.checkEmail.avatar
-
+        id: userInfo?.data?.checkEmail?._id,
+        email: userInfo?.data?.checkEmail?.email,
+        password: userInfo?.data?.checkEmail?.password,
+        nickname: userInfo?.data?.checkEmail?.nickname,
+        avatar: userInfo?.data?.checkEmail?.avatar,
+        role: userInfo?.data?.checkEmail?.role,
+        numOfFollower: userInfo?.data?.checkEmail?.numOfFollower
       }
       console.log(data)
       if (!userInfo) {

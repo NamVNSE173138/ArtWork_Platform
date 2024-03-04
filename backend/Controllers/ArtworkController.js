@@ -1,7 +1,8 @@
 const createError = require("http-errors");
 const mongoose = require("mongoose");
 const Artwork = require("../Models/artwork");
-
+const FavoriteList = require("../Models/favoriteList");
+const { decodeToken } = require('../Config/config.js')
 module.exports = {
   getAllArtwork: async (req, res, next) => {
     try {
@@ -78,4 +79,26 @@ module.exports = {
       next(error);
     }
   },
+
+  likeArtwork: async (req, res, next) => {
+    const { id } = req.params;
+    const { token } = req.headers;
+    try {
+      console.log("artworkId", id);
+      const userInfo = decodeToken(token);
+      const userId = userInfo?.data?.checkEmail?._id
+      console.log("userId", userId);
+      const checkLikeExist = await FavoriteList.find({ id, userId })
+
+      if (checkLikeExist.length == 0) {
+        const favoriteList = new FavoriteList(req.body)
+        const result = await favoriteList.save()
+        res.send(result)
+      } else {
+        console.log("you liked artwork");
+      }
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
 };
