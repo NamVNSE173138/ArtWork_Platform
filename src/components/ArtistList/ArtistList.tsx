@@ -30,7 +30,7 @@ import {
   StarOutlined,
 } from "@ant-design/icons";
 import "./ArtistList.css";
-import TextArea from "antd/es/input/TextArea";
+import TextArea from 'antd/es/input/TextArea';
 
 const ArtistList = () => {
   const [userData, setUserData] = useState([]);
