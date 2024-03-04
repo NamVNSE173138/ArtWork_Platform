@@ -32,7 +32,7 @@ module.exports = {
     findCommentByArtworkId: async (req, res, next) => {
         try {
             const id = req.params.id
-            const comment = await Comment.find({ artwork: id }, { __v: 0 }).sort({ "createdAt": -1 })
+            const comment = await Comment.find({ artwork: id }, { __v: 0 }).populate('user').sort({ "createdAt": -1 })
             if (!comment) {
                 throw createError(404, "Comment does not exist")
             } else {

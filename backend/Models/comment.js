@@ -4,11 +4,11 @@ const Schema = mongoose.Schema
 const CommentSchema = new Schema({
     artwork: {
         type: Schema.Types.ObjectId,
-        ref: 'artworks',
+        ref: 'Artwork',
     },
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
     },
     text: {
         type: String,

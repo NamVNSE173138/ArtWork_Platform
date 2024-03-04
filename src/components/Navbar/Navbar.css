@@ -209,3 +209,36 @@
         transition: 0.2s;
     }
 }
+
+.dropdown-item {
+    text-decoration: none;
+    font-size: 130%;
+}
+
+.dropdown-item:hover {
+    cursor: pointer;
+}
+
+#user-section:hover {
+    cursor: pointer;
+}
+
+#logout {
+    color: red;
+    font-size: 130%;
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#logout p {
+    margin: auto;
+}
+
+#logout:hover {
+    color: #FFF;
+    background-color: rgb(233, 43, 43);
+}
