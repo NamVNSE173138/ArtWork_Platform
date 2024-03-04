@@ -8,6 +8,7 @@ import {
   DatePicker,
   Descriptions,
   Form,
+  FormInstance,
   Input,
   InputNumber,
   InputRef,
@@ -45,12 +46,24 @@ const ArtistList = () => {
     setTimeout(() => {
       setLoading(false);
       setOpen(false);
+      const formData = formRef.current?.getFieldsValue();
+      console.log(
+        "Name of artwork:",
+        formData.name,
+        ",Tag:",
+        tags,
+        ",Prices:",
+        formData.prices,
+        ", Description:",
+        formData.description
+      );
     }, 3000);
   };
 
   const handleCancel = () => {
     setOpen(false);
   };
+  const formRef = useRef<FormInstance>(null);
   interface UserData {
     id: string;
     email: string;
@@ -91,7 +104,7 @@ const ArtistList = () => {
 
   //tag
   const { token } = theme.useToken();
-  const [tags, setTags] = useState(["Ex: Tree"]);
+  const [tags, setTags] = useState<string[]>([]);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [editInputIndex, setEditInputIndex] = useState(-1);
@@ -208,12 +221,14 @@ const ArtistList = () => {
                   >
                     Submit
                   </Button>,
+                  <Button key="id">{item._id}</Button>,
                 ]}
               >
                 <Form
                   {...formItemLayout}
                   // variant="filled"
                   style={{ maxWidth: 600 }}
+                  ref={formRef}
                 >
                   <Form.Item
                     label="Name of artwork"
