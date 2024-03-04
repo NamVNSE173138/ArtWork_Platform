@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Navbar.css"; // Assuming you have a corresponding CSS file
-import { Input, Space, Button, Select, Tag, Popover, Spin } from "antd";
+import { Input, Space, Button, Select, Tag, Popover, Spin, Dropdown } from "antd";
+import type { MenuProps } from 'antd';
 import Logo from "../../assets/image/logo.jpg";
 import LogoDark from "https://art.art/wp-content/themes/art/new/img/logo_DotArt.svg";
 import {
@@ -109,6 +110,41 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     }, 2000);
   };
 
+  const items: MenuProps['items'] = [
+    {
+      label: <div style={{ height: '20px' }}></div>,
+      key: 0,
+    },
+    {
+      label: <Link
+        id="profile"
+        className="dropdown-item"
+        to={`/profile/${currentUser.id}`}
+      >
+        <strong>View profile</strong>
+      </Link>,
+      key: 1,
+    },
+    {
+      type: 'divider',
+    },
+    {
+      label: isLoadingLogOut
+        ?
+        <Spin
+          style={{ marginRight: "5px", color: "#444950" }}
+          indicator={
+            <LoadingOutlined style={{ fontSize: 24 }} spin />
+          }
+        />
+        :
+        <div id="logout" onClick={handleLogout}>
+          <p><LogoutOutlined /> Logout</p>
+        </div>,
+      key: 2,
+    }
+  ]
+
   const onSearch = (value: string) => {
     console.log("Search value:", value);
     // Call the onSubmit prop passed from the parent component
@@ -161,7 +197,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     <div className="navbar-home">
       <div className="title">
         <div className="title-title">
-          <img alt="logo" className="brand-title" src={Logo} />
+          <img alt="logo" className="brand-title" src={Logo} onClick={() => { navigate('/home') }} style={{ cursor: 'pointer' }} />
         </div>
         <MenuOutlined className="toggle-burger" onClick={toggleNav} />
       </div>
@@ -170,7 +206,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
           <ul>
             <li>
               <Search
-                placeholder="input search text"
+                placeholder="Search..."
                 allowClear
                 onSearch={onSearch}
                 style={{ width: 600 }}
@@ -190,7 +226,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                 </li>
                 <li>
                   <Link
-                    id="projet"
+                    id="project"
                     className="item"
                     to="/signin"
                     onClick={toggleNav}
@@ -202,7 +238,24 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
             ) : (
               <>
                 <li>
-                  <Link
+                  <Dropdown menu={{ items }}>
+                    <a onClick={(e) => e.preventDefault()}>
+                      <Space id='user-section'>
+                        <img
+                          alt="avatar"
+                          style={{
+                            height: "30px",
+                            borderRadius: "20px",
+                            marginRight: "5px",
+                          }}
+                          src={currentUser.avatar}
+                        />
+                        {currentUser.nickname}
+                      </Space>
+                    </a>
+                  </Dropdown>
+
+                  {/* <Link
                     id="profile"
                     className="item"
                     to={`/profile/${currentUser.id}`}
@@ -218,11 +271,11 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                       src={currentUser.avatar}
                     />
                     {currentUser.nickname}
-                  </Link>
+                  </Link> */}
                 </li>
-                <li>
+                {/* <li>
                   <div
-                    id="projet"
+                    id="project"
                     className="item"
                     // to="/signin"
                     onClick={() => {
@@ -242,7 +295,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                     )}{" "}
                     Log Out
                   </div>
-                </li>
+                </li> */}
               </>
             )}
           </ul>
