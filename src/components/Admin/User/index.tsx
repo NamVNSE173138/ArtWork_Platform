@@ -201,11 +201,11 @@ function Users() {
                       handleCardClick(record);
                     }}
                   />
-                  <EditOutlined
+                  {/* <EditOutlined
                     onClick={() => {
                       onEditUser(record);
                     }}
-                  />
+                  /> */}
                   <StopOutlined
                     onClick={() => {
                       // onDeleteUser(record);
