@@ -220,19 +220,29 @@ export default function Artwork() {
 
   const likeArtwork = async () => {
     try {
+      console.log("dfbnkdjbskdhbkh");
+      console.log(localStorage.getItem("USER"));
+
+      console.log("user", currentUser.id);
+      if (!currentUser || !currentUser.id) {
+        console.error('Current user data is not available');
+        return;
+      }
       // Make a POST request to likeArtwork API endpoint
       const response = await axios.post(
-        `http://localhost:5000/artworks/favoriteList/${artwork._id}`,
-        {},
+        `http://localhost:5000/artworks/favoriteList/${artwork._id}`, { user: currentUser.id },
         {
           headers: {
-            token: localStorage.getItem("USER") // Assuming user token is stored in localStorage
-          }
+            Authorization: userToken,
+          },
         }
       );
-      console.log(response.data);
-      setIsLiked(true); // Set isLiked state to true after successfully liking the artwork
-      setFavoriteList([...favoriteList, artwork]); // Add artwork to favorite list
+      console.log("Response:", response.data);
+      if (response.status == 200) {
+        console.log("favorite", response.data);
+        setIsLiked(true); // Set isLiked state to true after successfully liking the artwork
+        setFavoriteList([...favoriteList, artwork]); // Add artwork to favorite list
+      }
     } catch (error: any) {
       console.error("Error liking artwork:", error.message);
       // Handle error
