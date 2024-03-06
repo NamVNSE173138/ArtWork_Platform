@@ -74,7 +74,7 @@ const ProfilePage: React.FC = () => {
           <Text>Favorited</Text>
         </Badge>
       ),
-      children: <Favorite favoriteList={favoriteList} />,
+      children: <Favorite />,
     },
     {
       key: "2",
@@ -226,7 +226,6 @@ const ProfilePage: React.FC = () => {
           />
         </Col>
       </Row>
-      <Favorite favoriteList={favoriteList} />
     </div>
   );
 };
