@@ -226,7 +226,6 @@ const ProfilePage: React.FC = () => {
           />
         </Col>
       </Row>
-      <Favorite />
     </div>
   );
 };
