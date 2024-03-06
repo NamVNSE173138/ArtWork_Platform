@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { PinProps } from "./Pin";
-import "./Mainboard.css";
-import "./Pin.css";
+// import "./Mainboard.css";
+// import "./Pin.css";
+import "./test.css";
 import { Button, Divider, FloatButton, Skeleton, message } from "antd";
 import { DownloadOutlined, HeartFilled, PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { saveAs } from "file-saver";
+import Box from "@mui/material/Box";
+import Masonry from "@mui/lab/Masonry";
 interface MainboardProps {
   pins: PinProps[];
 }
@@ -79,7 +82,7 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
         hasMore={hasMore}
         loader={<p>loading ...</p>}
       >
-        <div className="mainboard_container">
+        {/* <div className="mainboard_container">
           {dataSource.map((pin, index) => (
             <div className="Wrapper" key={index}>
               <div className="image">
@@ -123,7 +126,64 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
               </div>
             </div>
           ))}
-        </div>
+          </div> */}
+        <Box sx={{ width: 1500, minHeight: 829, overflow: "hidden" }}>
+          <Masonry columns={5} spacing={2}>
+            {dataSource.map((pin, index) => (
+              <div className="Wrapper" key={index}>
+                <div className="top-btn">
+                  <Button
+                    size="large"
+                    className="like-btn"
+                    icon={<HeartFilled />}
+                    onClick={handleLike}
+                  />
+                  <Button
+                    size="large"
+                    className="add-btn"
+                    icon={<PlusOutlined />}
+                    onClick={handleAdd}
+                  />
+                </div>
+                <div className="bottom-btn">
+                  <Button
+                    size="large"
+                    className="download-btn"
+                    icon={<DownloadOutlined />}
+                    onClick={(event) => handleDownload(event, pin)}
+                  />
+                </div>
+                <div
+                  className="artist-info"
+                  // style={{ position: "absolute", bottom: "10px", left: "10px" }}
+                >
+                  <img
+                    src="https://i.pinimg.com/564x/30/2f/d4/302fd4ae9a9786bf3b637f7cbe1ae7b6.jpg"
+                    alt="artist avatar"
+                    className="avatar"
+                  />
+                  <div className="info">
+                    <p className="name">{pin.userNickname}</p>
+                  </div>
+                </div>
+                <img
+                  // srcSet={`${pin.imageUrl}?w=162&auto=format&dpr=2 2x`}
+                  src={pin.imageUrl}
+                  alt={pin.name}
+                  onClick={() => navigate(`/artwork/${pin._id}`)}
+                  // loading="lazy"
+                  // style={{
+                  //   display: "block",
+                  //   width: "100%",
+                  //   cursor: "pointer",
+                  //   position: "relative",
+                  // }}
+                  className="image"
+                />
+              </div>
+            ))}
+          </Masonry>
+        </Box>
       </InfiniteScroll>
       <FloatButton.BackTop />
     </div>

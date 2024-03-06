@@ -10,14 +10,14 @@
     box-sizing: border-box;
     cursor: pointer;
     width: 260px;
-
-    img {
+    border-radius: 16px;
+    /* img {
         display: flex;
         width: 100%;
-        /* cursor: zoom-in; */
+        cursor: zoom-in;
         border-radius: 16px;
         object-fit: cover;
-    }
+    } */
 }
 
 @media (max-width: 767px) {
@@ -54,6 +54,7 @@
     position: absolute;
     cursor: pointer;
     transition: opacity 0.3s ease;
+    z-index: 1;
 }
 
 .top-btn {
@@ -95,6 +96,7 @@
     display: flex;
     align-items: center;
     padding: 8px;
+    z-index: 1;
 }
 
 .info {
@@ -103,13 +105,9 @@
 
 .image-container img {
     max-width: 100%;
-    /* Adjust this value based on your design preference */
     height: auto;
-    /* Maintain aspect ratio */
     display: block;
-    /* Remove default inline behavior */
     margin: 0 auto;
-    /* Center the image */
     height: 580px;
 }
 
