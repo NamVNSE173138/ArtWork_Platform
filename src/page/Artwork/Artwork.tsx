@@ -226,15 +226,16 @@ export default function Artwork() {
       // Make a POST request to likeArtwork API endpoint
       const response = await axios.post(
         `http://localhost:5000/artworks/favoriteList/${artwork._id}`,
-        {},
+        { user: currentUser.id },
         {
           headers: {
-            Authorization: localStorage.getItem("USER") // Assuming user token is stored in localStorage
-          }
+            Authorization: userToken,
+          },
         }
       );
+      console.log("user", currentUser.id);
       if (response.status == 200) {
-        console.log(response.data);
+        console.log("favorite", response.data);
         setIsLiked(true); // Set isLiked state to true after successfully liking the artwork
         setFavoriteList([...favoriteList, artwork]); // Add artwork to favorite list
       }

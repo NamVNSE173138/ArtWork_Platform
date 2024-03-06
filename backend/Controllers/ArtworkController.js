@@ -84,14 +84,13 @@ module.exports = {
     const { id } = req.params;
     const { token } = req.headers;
     try {
-      console.log("artworkId", id);
+
       const userInfo = decodeToken(token);
       const userId = userInfo?.data?.checkEmail?._id
-      console.log("userId", userId);
-      const checkLikeExist = await FavoriteList.find({ id, userId })
+      const checkLikeExist = await FavoriteList.find({ artwork: id, user: userId })
 
       if (checkLikeExist.length == 0) {
-        const favoriteList = new FavoriteList(req.body)
+        const favoriteList = new FavoriteList({ user: userId, artwork: id })
         const result = await favoriteList.save()
         res.send(result)
       } else {
@@ -99,6 +98,19 @@ module.exports = {
       }
     } catch (error) {
       console.log(error.message)
+    }
+  },
+
+  getUserFavoriteList: async (req, res, next) => {
+    const { token } = req.headers;
+    try {
+      const userInfo = decodeToken(token);
+      const userId = userInfo?.data?.checkEmail?._id;
+      console.log(userId);
+      const artwork = await FavoriteList.find({ user: userId }).populate('artwork', 'imageUrl');
+      res.send({ message: "ok", data: artwork })
+    } catch (error) {
+      console.log(error.message);
     }
   }
 };
