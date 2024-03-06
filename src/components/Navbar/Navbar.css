@@ -1,102 +1,3 @@
-/* .navbar {
-    background-color: #EEF5FF;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: inherit !important;
-}
-
-.first-line {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    justify-content: space-between;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    flex: 1;
-}
-
-.logo img {
-    width: 40px;
-    margin-left: 10px;
-    height: auto;
-    margin-right: 10px;
-    border-radius: 30px;
-}
-
-.search-box {
-    margin-left: 20px;
-    max-width: 800px;
-}
-
-
-
-.search-box .ant-input {
-    border-radius: 20px;
-}
-
-.search-box .ant-btn {
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-}
-
-.user-actions {
-    display: flex;
-    align-items: center;
-}
-
-.user-actions>* {
-    margin-right: 10px;
-}
-
-.menu-button {
-    margin-left: auto;
-}
-
-.menu {
-    text-align: center;
-}
-
-.menu ul {
-    padding-inline-start: 0;
-}
-
-.menu li {
-    list-style-type: none;
-    padding: 4px;
-    color: #767676;
-}
-
-.menu li:hover {
-    color: #000000;
-}
-
-.menu p {
-    font-weight: bold;
-    font-size: 17px;
-}
-
-.menu-part {
-    margin: 0 30px;
-}
-
-.btn-nav {
-    margin-left: 0.75rem;
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-nav svg {
-    font-size: 20px;
-}
-
-.link-btn-nav {
-    text-decoration: none;
-} */
-
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@100;200;300;400;500;600;700&display=swap");
 
 .navbar-home {
@@ -106,12 +7,21 @@
     top: 0;
     justify-content: space-between;
     align-items: center;
-    height: 80px;
+    height: 60px;
     width: 100%;
     background: white;
     color: #1a2027;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px,
         rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+}
+
+.logo-container {
+    height: 100%;
+}
+
+#logo {
+    width: 100%;
+    height: 100%;
 }
 
 .brand-title {
@@ -137,8 +47,6 @@
     justify-content: center !important;
     height: 100%;
 }
-
-
 
 .navbar-links ul li {
     padding-right: 20px;
@@ -241,4 +149,8 @@
 #logout:hover {
     color: #FFF;
     background-color: rgb(233, 43, 43);
+}
+
+.dropdown-menu {
+    border: solid 1px red;
 }
