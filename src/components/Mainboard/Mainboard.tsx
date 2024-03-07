@@ -171,7 +171,7 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                   src={pin.imageUrl}
                   alt={pin.name}
                   onClick={() => navigate(`/artwork/${pin._id}`)}
-                  // loading="lazy"
+                  loading="lazy"
                   // style={{
                   //   display: "block",
                   //   width: "100%",
