@@ -2,7 +2,6 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Home from "./page/Home";
 import Upload from "./page/Upload";
-
 import Admin from "./page/Admin/Admin";
 import SignIn from "./page/Authentication/SignIn";
 import EmailSignup from "./page/Authentication/EmailSignup";
@@ -16,6 +15,8 @@ import ArtistList from "./page/ArtistList";
 import ArtistProfile from "./components/ArtistProfile/ArtistProfile";
 import ArtworkRequest from "./page/ArtworkRequest";
 import ProfilePage from "./components/Profile/Profile";
+import NotificationPage from "./page/NotificationPage/test";
+
 function App() {
   return (
     <Routes>
@@ -35,6 +36,8 @@ function App() {
       <Route path="/artistList" element={<ArtistList />} />
       <Route path="/artistList/:_id" element={<ArtistProfile />} />
       <Route path="/artworkRequest" element={<ArtworkRequest />} />
+
+      <Route path="/notifications" element={<NotificationPage />} />
     </Routes>
   );
 }
