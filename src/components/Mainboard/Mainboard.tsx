@@ -7,6 +7,8 @@ import { DownloadOutlined, HeartFilled, PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { saveAs } from "file-saver";
+import axios from 'axios';
+
 interface MainboardProps {
   pins: PinProps[];
 }
@@ -23,13 +25,137 @@ interface DataType {
   createAt: Date;
   updatedAt: Date;
 }
+interface User {
+  id: string;
+  email: string;
+  nickname: string;
+  role: string;
+  numOfFollower: number;
+  avatar: string;
+  password: string;
+  status: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+interface FavoriteList {
+  user?: User;
+  artwork?: Artwork;
+  createAt?: string;
+  updateAt?: string;
+}
+
+interface Artwork {
+  _id: string;
+  user: User;
+  name: string;
+  tags: [string];
+  numOfLike: number;
+  price: number;
+  description: string;
+  imageUrl: string;
+  status: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
 const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
   const navigate = useNavigate();
   const [modalIndex, setModalIndex] = useState(-1);
   // console.log(pins);
+  const userToken = localStorage.getItem("USER");
+  const [isLiked, setIsLiked] = useState(false); // State to track if artwork is liked
+  const [favoriteList, setFavoriteList] = useState<FavoriteList[]>([]);
 
-  const handleLike = () => {
-    message.success("Liked!");
+  const [isLoading, setIsLoading] = useState(false);
+
+
+  const [currentUser, setCurrentUser] = useState<User>({
+    id: "",
+    email: "",
+    password: "",
+    nickname: "",
+    role: "",
+    numOfFollower: 0,
+    avatar: "",
+    status: false,
+    createdAt: "",
+    updatedAt: "",
+  });
+
+  const fetchCurrentUserData = async () => {
+    setIsLoading(true);
+    await axios
+      .get(`http://localhost:5000/users/getUserInfo`, {
+        headers: {
+          token: userToken, //userToken = localStorage("USER")
+        },
+      })
+      .then((res) => {
+        console.log("Current user: ", res.data);
+        setCurrentUser(res.data);
+        setIsLoading(false);
+      })
+      .catch((err) => console.log(err));
+  };
+  useEffect(() => {
+    fetchCurrentUserData();
+  }, []);
+  useEffect(() => {
+    console.log("Current user: ", currentUser);
+  }, [currentUser]);
+
+  const [artwork, setArtwork] = useState<Artwork>({
+    _id: "",
+    user: {
+      id: "",
+      email: "",
+      nickname: "",
+      role: "",
+      numOfFollower: 0,
+      avatar: "",
+      password: "",
+      status: false,
+      createdAt: "",
+      updatedAt: "",
+    },
+    name: "",
+    tags: [""],
+    numOfLike: 0,
+    price: 0,
+    description: "",
+    imageUrl: "",
+    status: false,
+    createdAt: "",
+    updatedAt: "",
+  });
+  const likeArtwork = async (pinId: string) => {
+    try {
+      console.log("dfbnkdjbskdhbkh");
+      console.log(localStorage.getItem("USER"));
+
+      console.log("user", currentUser.id);
+      if (!currentUser || !currentUser.id) {
+        console.error('Current user data is not available');
+        return;
+      }
+      const response = await axios.post(
+        `http://localhost:5000/artworks/favoriteList/${pinId}`, { user: currentUser.id },
+        {
+          headers: {
+            Authorization: userToken,
+          },
+        }
+      );
+      console.log("Response:", response.data);
+      if (response.status == 200) {
+        console.log("favorite", response.data);
+        setIsLiked(true);
+        setFavoriteList([...favoriteList, { user: response.data.currentUser, artwork: response.data.artwork }]);
+      }
+    } catch (error: any) {
+      console.error("Error liking artwork:", error.message);
+      // Handle error
+    }
   };
 
   const handleAdd = () => {
@@ -88,7 +214,8 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                     size="large"
                     className="like-btn"
                     icon={<HeartFilled />}
-                    onClick={handleLike}
+                    onClick={() => likeArtwork(pin._id)}
+                    disabled={isLiked}
                   />
                   <Button
                     size="large"
