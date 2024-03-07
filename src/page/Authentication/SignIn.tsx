@@ -14,7 +14,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import FacebookLogin from "react-facebook-login";
 import FacebookIcon from "../../assets/icons/facebook.png";
-import logo from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
+import logo from "../../assets/image/logo-transparent.png";
 import { generatePassword } from "../../assistants/Generators";
 
 interface User {
@@ -97,6 +97,7 @@ export default function Signin() {
   }, []);
 
   const onGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    setIsLoading(true)
     var decoded: OtherLoginResponse;
     if (credentialResponse.credential) {
       decoded = jwtDecode(credentialResponse.credential);
@@ -112,7 +113,24 @@ export default function Signin() {
             (account: User) => account.email === decoded.email
           );
           if (foundUserByEmail) {
-            console.log("Email is already registered.");
+            axios.post("http://localhost:5000/users/login",
+              {
+                email: foundUserByEmail.email,
+                password: foundUserByEmail.password
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              })
+              .then((res) => {
+                localStorage.setItem("USER", res.data);
+                setTimeout(() => {
+                  setIsLoading(false)
+                  navigate("/home");
+                }, 2000);
+              })
+              .catch((err) => console.log("Error when try to sign in by Google: ", err))
           } else {
             var registerUser = {
               email: decoded.email,
@@ -120,25 +138,38 @@ export default function Signin() {
               nickname: decoded.name,
               role: "user",
               numOfFollower: 0,
-              avatar: "unset",
+              avatar: "https://static.vecteezy.com/system/resources/previews/020/911/740/original/user-profile-icon-profile-avatar-user-icon-male-icon-face-icon-profile-icon-free-png.png",
               status: true,
             };
-            axios
-              .post("http://localhost:5000/users", registerUser)
+            axios.post("http://localhost:5000/users", registerUser)
+              .then((res) => {
+                console.log("A new account has been created by email ", decoded.email);
+              })
               .catch((err: any) => {
                 console.log("Error: ", err.response.data);
               });
-            console.log(
-              "A new account has been created by email ",
-              decoded.email
-            );
-            setTimeout(() => {
-              setIsLoading(false);
-            }, 2000);
+
+            axios.post("http://localhost:5000/users/login",
+              {
+                email: registerUser.email,
+                password: registerUser.password
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              })
+              .then((res) => {
+                localStorage.setItem("USER", res.data);
+                setTimeout(() => {
+                  setIsLoading(false)
+                  navigate("/home");
+                }, 2000);
+              })
+              .catch((err) => console.log("Error when try to sign in by Google: ", err))
           }
         })
         .catch((err) => console.log(err));
-      navigate("/home");
     } else {
       console.log("Not found data");
     }
@@ -148,87 +179,16 @@ export default function Signin() {
     console.log("Failed to login with Google");
   };
 
-  const responseFacebook = async (response: OtherLoginResponse) => {
-    console.log("Facebook login credentials: ", response);
-    await fetch("http://localhost:5000/users")
-      .then((res) => res.json())
-      .then((data) => {
-        var foundUserByEmail = data.find(
-          (account: User) => account.email === response.email
-        );
-        if (foundUserByEmail) {
-          console.log("Email is already registered.");
-        } else {
-          var registerUser = {
-            email: response.email,
-            password: generatePassword(30, ""),
-            nickname: response.name,
-            role: "user",
-            numOfFollower: 0,
-            avatar: "unset",
-            status: true,
-          };
-          axios
-            .post("http://localhost:5000/users", registerUser)
-            .catch((err: any) => {
-              console.log("Error: ", err.response.data);
-            });
-          console.log(
-            "A new account has been created by Facebook email: ",
-            response.email
-          );
-          setTimeout(() => {
-            setIsLoading(false);
-            navigate("/home");
-          }, 2000);
-        }
-      })
-      .catch((err) => console.log(err));
-  };
-
-  // const loginForm = useFormik({
-  //   initialValues: {
-  //     email: location.state?.email,
-  //     password: ''
-  //   },
-  //   validationSchema: Yup.object({
-  //     email: Yup.string().email().required(),
-  //     password: Yup.string().required(),
-  //   }),
-  //   onSubmit: async (values) => {
-  //     setIsLoading(true)
-  //     await fetch('http://localhost:5000/users/login')
-  //       .then(res => res.json())
-  //       .then(data => {
-  //         var loginUser = data.find((account: User) => (account.email === values.email) && (account.password === values.password))
-  //         if (loginUser) {
-  //           setTimeout(() => {
-  //             navigate('/')
-  //           }, 2000)
-  //         }
-  //         else {
-  //           setTimeout(() => {
-  //             setIsLoading(false)
-  //             toast.error("Incorrect credentials. Please try again.")
-  //           }, 1000)
-  //         }
-  //       })
-  //       .catch(err => {
-  //         toast.error("Cannot connect to the server. Please try again later.")
-  //         console.log(err)
-  //         setIsLoading(false)
-  //       })
-  //   }
-  // })
-
   const loginForm = useFormik({
+    validateOnChange: false,
+    validateOnBlur: false,
     initialValues: {
       email: location.state?.email || "",
       password: "",
     },
     validationSchema: Yup.object({
-      email: Yup.string().email().required(),
-      password: Yup.string().required(),
+      email: Yup.string().email().required(''),
+      password: Yup.string().required(''),
     }),
     onSubmit: async (values) => {
       setIsLoading(true);
@@ -273,54 +233,7 @@ export default function Signin() {
       }
     },
   });
-  const [pins, setPins] = useState<Pin[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [image, setImage] = useState([]);
-  useEffect(() => {
-    fetch("http://localhost:5000/artworks")
-      .then((response) => response.json())
-      .then((res) => {
-        setImage(res);
-        console.log(res);
-      });
-  }, []);
-  // console.log(image);
 
-  const getImages = async () => {
-    try {
-      const response = await axios.get<ArtworkResponse>(
-        "http://localhost:5000/artworks"
-      );
-      console.log("reponse: ", response);
-      console.log(response.data);
-
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching artwork:", error);
-      throw error;
-    }
-  };
-
-  const getNewPins = async () => {
-    setLoading(true);
-
-    try {
-      const res = await getImages();
-
-      // Check if res.data is defined and is an array before sorting
-      const pinData = Array.isArray(res.data) ? res.data : [];
-
-      setPins(pinData);
-    } catch (error) {
-      console.error("Error fetching new pins:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getNewPins();
-  }, []);
   return (
     <>
       <div className="container">
@@ -332,8 +245,7 @@ export default function Signin() {
           <Image
             className=""
             src={logo}
-            height={100}
-            width={100}
+            width={300}
             preview={false}
           />
           <form onSubmit={loginForm.handleSubmit}>
@@ -383,28 +295,10 @@ export default function Signin() {
           </Divider>
           <div className="otherLogin">
             <GoogleLogin
-              size="large"
-              type="icon"
-              logo_alignment="center"
+              size="medium"
+              type="standard"
               onSuccess={onGoogleSuccess}
               onError={onGoogleError}
-            />
-            <FacebookLogin
-              appId="1059535368457585"
-              autoLoad={false}
-              fields="name,email"
-              callback={responseFacebook}
-              size="small"
-              cssClass="my-facebook-button-class"
-              textButton=""
-              icon={
-                <Image
-                  src={FacebookIcon}
-                  width={20}
-                  preview={false}
-                  height={22}
-                />
-              }
             />
           </div>
           <ToastContainer

@@ -10,8 +10,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup';
 import emailjs from '@emailjs/browser';
 import { generateCode } from "../../assistants/Generators";
-// import Reset from "./Reset";
-import logo from '../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png'
+import logo from "../../assets/image/logo-transparent.png";
 
 interface User {
     _id?: string,
@@ -130,13 +129,11 @@ export default function Forgot() {
             <div className="left-container">
                 <Image src={randomImage} width={400} preview={false} />
             </div>
-            <Divider type="vertical" />
             <div className="right-container row" style={{ padding: "20px 0" }}>
                 <Image
                     className=""
                     src={logo}
-                    height={100}
-                    width={100}
+                    width={300}
                     preview={false}
                 />
                 <form ref={formRef} onSubmit={emailForm.handleSubmit}>

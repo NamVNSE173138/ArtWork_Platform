@@ -74,7 +74,8 @@ const userSchema = new Schema({
   },
   bio: {
     type: String,
-    required: true
+    required: false,
+    default: '',
   },
 }, {
   timestamps: true

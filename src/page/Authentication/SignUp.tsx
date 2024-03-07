@@ -14,7 +14,7 @@ import FacebookLogin from "react-facebook-login";
 import FacebookIcon from "../../assets/icons/facebook.png";
 import emailjs from "@emailjs/browser";
 import axios from "axios";
-import logo from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
+import logo from "../../assets/image/logo-transparent.png";
 import { generatePassword, generateCode } from "../../assistants/Generators";
 
 interface User {
@@ -110,6 +110,7 @@ export default function SignUp() {
   };
 
   const onGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    setIsLoading(true)
     var decoded: OtherLoginResponse;
     if (credentialResponse.credential) {
       decoded = jwtDecode(credentialResponse.credential);
@@ -125,7 +126,24 @@ export default function SignUp() {
             (account: User) => account.email === decoded.email
           );
           if (foundUserByEmail) {
-            console.log("Email is already registered.");
+            axios.post("http://localhost:5000/users/login",
+              {
+                email: foundUserByEmail.email,
+                password: foundUserByEmail.password
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              })
+              .then((res) => {
+                localStorage.setItem("USER", res.data);
+                setTimeout(() => {
+                  setIsLoading(false)
+                  navigate("/home");
+                }, 2000);
+              })
+              .catch((err) => console.log("Error when try to sign in by Google: ", err))
           } else {
             var registerUser = {
               email: decoded.email,
@@ -133,25 +151,38 @@ export default function SignUp() {
               nickname: decoded.name,
               role: "user",
               numOfFollower: 0,
-              avatar: "unset",
+              avatar: "https://static.vecteezy.com/system/resources/previews/020/911/740/original/user-profile-icon-profile-avatar-user-icon-male-icon-face-icon-profile-icon-free-png.png",
               status: true,
             };
-            axios
-              .post("http://localhost:5000/users", registerUser)
+            axios.post("http://localhost:5000/users", registerUser)
+              .then((res) => {
+                console.log("A new account has been created by email ", decoded.email);
+              })
               .catch((err: any) => {
                 console.log("Error: ", err.response.data);
               });
-            console.log(
-              "A new account has been created by email ",
-              decoded.email
-            );
-            setTimeout(() => {
-              setIsLoading(false);
-            }, 2000);
+
+            axios.post("http://localhost:5000/users/login",
+              {
+                email: registerUser.email,
+                password: registerUser.password
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              })
+              .then((res) => {
+                localStorage.setItem("USER", res.data);
+                setTimeout(() => {
+                  setIsLoading(false)
+                  navigate("/home");
+                }, 2000);
+              })
+              .catch((err) => console.log("Error when try to sign in by Google: ", err))
           }
         })
         .catch((err) => console.log(err));
-      navigate("/home");
     } else {
       console.log("Not found data");
     }
@@ -159,44 +190,6 @@ export default function SignUp() {
 
   const onGoogleError = () => {
     console.log("Failed to login with Google");
-  };
-
-  const responseFacebook = async (response: any) => {
-    console.log("Facebook login credentials: ", response);
-    await fetch("http://localhost:5000/users")
-      .then((res) => res.json())
-      .then((data) => {
-        var foundUserByEmail = data.find(
-          (account: User) => account.email === response.email
-        );
-        if (foundUserByEmail) {
-          console.log("Email is already registered.");
-        } else {
-          var registerUser = {
-            email: response.email,
-            password: generatePassword(30, ""),
-            nickname: response.name,
-            role: "user",
-            numOfFollower: 0,
-            avatar: "unset",
-            status: true,
-          };
-          axios
-            .post("http://localhost:5000/users", registerUser)
-            .catch((err: any) => {
-              console.log("Error: ", err.response.data);
-            });
-          console.log(
-            "A new account has been created by Facebook email: ",
-            response.email
-          );
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 2000);
-        }
-      })
-      .catch((err) => console.log(err));
-    navigate("/home");
   };
 
   const formRef = useRef(null);
@@ -229,15 +222,17 @@ export default function SignUp() {
   };
 
   const signUpForm = useFormik({
+    validateOnChange: false,
+    validateOnBlur: false,
     initialValues: initialSignUpValues,
     validationSchema: Yup.object({
       email: Yup.string()
         .email("Invalid email address")
-        .required("Please enter your email"),
+        .required(""),
       password: Yup.string()
         .min(5, "Password must contains within 5-18 symbols")
         .max(18, "Password must contains within 5-18 letters")
-        .required("Please enter your password"),
+        .required(""),
       confirm: Yup.string().test(
         "passwords-match",
         "Passwords does not match",
@@ -245,7 +240,7 @@ export default function SignUp() {
           return this.parent.password === value;
         }
       ),
-      nickname: Yup.string().required("Please enter your name"),
+      nickname: Yup.string().required(""),
     }),
     onSubmit: (values) => {
       setVerifyCode(values.code);
@@ -255,7 +250,7 @@ export default function SignUp() {
         nickname: values.nickname,
         role: "user",
         numOfFollower: 0,
-        avatar: "unset",
+        avatar: "https://static.vecteezy.com/system/resources/previews/020/911/740/original/user-profile-icon-profile-avatar-user-icon-male-icon-face-icon-profile-icon-free-png.png",
         status: true,
       });
       sendEmail();
@@ -297,54 +292,7 @@ export default function SignUp() {
       }
     },
   });
-  const [pins, setPins] = useState<Pin[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [image, setImage] = useState([]);
-  useEffect(() => {
-    fetch("http://localhost:5000/artworks")
-      .then((response) => response.json())
-      .then((res) => {
-        setImage(res);
-        console.log(res);
-      });
-  }, []);
-  // console.log(image);
 
-  const getImages = async () => {
-    try {
-      const response = await axios.get<ArtworkResponse>(
-        "http://localhost:5000/artworks"
-      );
-      console.log("reponse: ", response);
-      console.log(response.data);
-
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching artwork:", error);
-      throw error;
-    }
-  };
-
-  const getNewPins = async () => {
-    setLoading(true);
-
-    try {
-      const res = await getImages();
-
-      // Check if res.data is defined and is an array before sorting
-      const pinData = Array.isArray(res.data) ? res.data : [];
-
-      setPins(pinData);
-    } catch (error) {
-      console.error("Error fetching new pins:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getNewPins();
-  }, []);
   return (
     <>
       <div className="container">
@@ -356,8 +304,7 @@ export default function SignUp() {
           <Image
             className=""
             src={logo}
-            height={100}
-            width={100}
+            width={180}
             preview={false}
           />
           <form ref={formRef} onSubmit={signUpForm.handleSubmit}>
@@ -441,10 +388,10 @@ export default function SignUp() {
               <Button
                 type="primary"
                 htmlType="submit"
-                shape="default"
+                shape="round"
                 size="large"
+                style={{ width: '100%' }}
                 disabled={isLoading ? true : false}
-                style={{ display: "inline-block", width: "70%" }}
               >
                 {isLoading ? <LoadingOutlined /> : <p>Sign up</p>}
               </Button>
@@ -459,25 +406,8 @@ export default function SignUp() {
             <GoogleLogin
               onSuccess={onGoogleSuccess}
               onError={onGoogleError}
-              size="large"
-              type="icon"
-            />
-            <FacebookLogin
-              appId="1059535368457585"
-              autoLoad={false}
-              fields="name,email"
-              callback={responseFacebook}
-              size="small"
-              cssClass="my-facebook-button-class"
-              textButton=""
-              icon={
-                <Image
-                  src={FacebookIcon}
-                  width={20}
-                  preview={false}
-                  height={22}
-                />
-              }
+              size="medium"
+              type="standard"
             />
             <Modal
               title="Email sent"
