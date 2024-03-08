@@ -108,7 +108,7 @@ export default function Navigator() {
                   Share your dedicated artworks to everyone and live an artist's life.
                 </p>
               </span>
-              <button onClick={() => parallax.current.scrollTo(2)} className={styles.primaryButton}>
+              <button onClick={() => navigate('/upload')} className={styles.primaryButton}>
                 START
                 <ArrowRightOutlined style={{ fontSize: '75%', display: 'inline', marginLeft: '10%' }} />
               </button>
@@ -129,7 +129,7 @@ export default function Navigator() {
                   Thousands of artists are ready to make your dream come true.
                 </p>
               </span>
-              <button className={styles.primaryButton} onClick={() => { navigate('/') }}>
+              <button className={styles.primaryButton} onClick={() => { navigate('/artistList') }}>
                 START
                 <ArrowRightOutlined style={{ fontSize: '75%', display: 'inline', marginLeft: '10%' }} />
               </button>

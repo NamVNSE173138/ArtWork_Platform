@@ -169,170 +169,172 @@ const ArtistList = () => {
   };
 
   return (
-    <List
-      grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 2, xl: 3, xxl: 3 }}
-      className="artist-list"
-      itemLayout="vertical"
-      size="large"
-      pagination={{ pageSize: 6 }}
-      dataSource={artistData}
-      renderItem={(item: any) => (
-        <List.Item key={item._id}>
-          <Card style={{ width: "100%" }} actions={[]}>
-            <Card.Meta
-              avatar={<Avatar src={item.avatar} />}
-              title={
-                <div className="nickname">
-                  <Link to={`/artistList/${item._id}`}>{item.nickname}</Link>
-                </div>
-              }
-              description={
-                <>
-                  <span style={{ fontSize: "16px", fontWeight: "bold" }}>
-                    Follower: {item.numOfFollower}
-                  </span>
-                  <br />
-                  <i>{item.bio}</i>
-                </>
-              }
-            />
-            <div className="artist-action">
-              <Button className="btn-fl" icon={<PlusCircleOutlined />}>
-                Follow
-              </Button>
-              <Button className="btn-fl" onClick={showModal}>
-                Request to make artwork
-              </Button>
-              <Modal
-                mask={false}
-                open={open}
-                title="Request Form"
-                onOk={handleOk}
-                onCancel={handleCancel}
-                footer={[
-                  <Button key="back" onClick={handleCancel}>
-                    Cancel
-                  </Button>,
-                  <Button
-                    key="submit"
-                    type="primary"
-                    loading={loading}
-                    onClick={handleOk}
-                  >
-                    Submit
-                  </Button>,
-                  <Button key="id">{item._id}</Button>,
-                ]}
-              >
-                <Form
-                  {...formItemLayout}
-                  // variant="filled"
-                  style={{ maxWidth: 600 }}
-                  ref={formRef}
+    <>
+      <List
+        grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 2, xl: 3, xxl: 3 }}
+        className="artist-list"
+        itemLayout="vertical"
+        size="large"
+        pagination={{ pageSize: 6 }}
+        dataSource={artistData}
+        renderItem={(item: any) => (
+          <List.Item key={item._id}>
+            <Card style={{ width: "100%" }} actions={[]}>
+              <Card.Meta
+                avatar={<Avatar src={item.avatar} />}
+                title={
+                  <div className="nickname">
+                    <Link to={`/artistList/${item._id}`}>{item.nickname}</Link>
+                  </div>
+                }
+                description={
+                  <>
+                    <span style={{ fontSize: "16px", fontWeight: "bold" }}>
+                      Follower: {item.numOfFollower}
+                    </span>
+                    <br />
+                    <i>{item.bio}</i>
+                  </>
+                }
+              />
+              <div className="artist-action">
+                <Button className="btn-fl" icon={<PlusCircleOutlined />}>
+                  Follow
+                </Button>
+                <Button className="btn-fl" onClick={showModal}>
+                  Request to make artwork
+                </Button>
+                <Modal
+                  mask={false}
+                  open={open}
+                  title="Request Form"
+                  onOk={handleOk}
+                  onCancel={handleCancel}
+                  footer={[
+                    <Button key="back" onClick={handleCancel}>
+                      Cancel
+                    </Button>,
+                    <Button
+                      key="submit"
+                      type="primary"
+                      loading={loading}
+                      onClick={handleOk}
+                    >
+                      Submit
+                    </Button>,
+                    <Button key="id">{item._id}</Button>,
+                  ]}
                 >
-                  <Form.Item
-                    label="Name of artwork"
-                    name="name"
-                    rules={[{ required: true, message: "Please input!" }]}
+                  <Form
+                    {...formItemLayout}
+                    // variant="filled"
+                    style={{ maxWidth: 600 }}
+                    ref={formRef}
                   >
-                    <Input />
-                  </Form.Item>
+                    <Form.Item
+                      label="Name of artwork"
+                      name="name"
+                      rules={[{ required: true, message: "Please input!" }]}
+                    >
+                      <Input />
+                    </Form.Item>
 
-                  <Form.Item
-                    label="Tag"
-                    name="tag"
-                    rules={[{ required: true, message: "Please input!" }]}
-                  >
-                    <Space size={[0, 8]} wrap>
-                      {tags.map((tag, index) => {
-                        if (editInputIndex === index) {
-                          return (
-                            <Input
-                              ref={editInputRef}
+                    <Form.Item
+                      label="Tag"
+                      name="tag"
+                      rules={[{ required: true, message: "Please input!" }]}
+                    >
+                      <Space size={[0, 8]} wrap>
+                        {tags.map((tag, index) => {
+                          if (editInputIndex === index) {
+                            return (
+                              <Input
+                                ref={editInputRef}
+                                key={tag}
+                                size="small"
+                                style={tagInputStyle}
+                                value={editInputValue}
+                                onChange={handleEditInputChange}
+                                onBlur={handleEditInputConfirm}
+                                onPressEnter={handleEditInputConfirm}
+                              />
+                            );
+                          }
+                          const isLongTag = tag.length > 20;
+                          const tagElem = (
+                            <Tag
                               key={tag}
-                              size="small"
-                              style={tagInputStyle}
-                              value={editInputValue}
-                              onChange={handleEditInputChange}
-                              onBlur={handleEditInputConfirm}
-                              onPressEnter={handleEditInputConfirm}
-                            />
-                          );
-                        }
-                        const isLongTag = tag.length > 20;
-                        const tagElem = (
-                          <Tag
-                            key={tag}
-                            closable={index !== 0}
-                            style={{ userSelect: "none" }}
-                            onClose={() => handleClose(tag)}
-                          >
-                            <span
-                              onDoubleClick={(e) => {
-                                if (index !== 0) {
-                                  setEditInputIndex(index);
-                                  setEditInputValue(tag);
-                                  e.preventDefault();
-                                }
-                              }}
+                              closable={index !== 0}
+                              style={{ userSelect: "none" }}
+                              onClose={() => handleClose(tag)}
                             >
-                              {isLongTag ? `${tag.slice(0, 20)}...` : tag}
-                            </span>
-                          </Tag>
-                        );
-                        return isLongTag ? (
-                          <Tooltip title={tag} key={tag}>
-                            {tagElem}
-                          </Tooltip>
+                              <span
+                                onDoubleClick={(e) => {
+                                  if (index !== 0) {
+                                    setEditInputIndex(index);
+                                    setEditInputValue(tag);
+                                    e.preventDefault();
+                                  }
+                                }}
+                              >
+                                {isLongTag ? `${tag.slice(0, 20)}...` : tag}
+                              </span>
+                            </Tag>
+                          );
+                          return isLongTag ? (
+                            <Tooltip title={tag} key={tag}>
+                              {tagElem}
+                            </Tooltip>
+                          ) : (
+                            tagElem
+                          );
+                        })}
+                        {inputVisible ? (
+                          <Input
+                            ref={inputRef}
+                            type="text"
+                            size="small"
+                            style={tagInputStyle}
+                            value={inputValue}
+                            onChange={handleInputChange}
+                            onBlur={handleInputConfirm}
+                            onPressEnter={handleInputConfirm}
+                          />
                         ) : (
-                          tagElem
-                        );
-                      })}
-                      {inputVisible ? (
-                        <Input
-                          ref={inputRef}
-                          type="text"
-                          size="small"
-                          style={tagInputStyle}
-                          value={inputValue}
-                          onChange={handleInputChange}
-                          onBlur={handleInputConfirm}
-                          onPressEnter={handleInputConfirm}
-                        />
-                      ) : (
-                        <Tag
-                          style={tagPlusStyle}
-                          icon={<PlusOutlined />}
-                          onClick={showInput}
-                        >
-                          New Tag
-                        </Tag>
-                      )}
-                    </Space>
-                  </Form.Item>
+                          <Tag
+                            style={tagPlusStyle}
+                            icon={<PlusOutlined />}
+                            onClick={showInput}
+                          >
+                            New Tag
+                          </Tag>
+                        )}
+                      </Space>
+                    </Form.Item>
 
-                  <Form.Item
-                    label="Prices"
-                    name="prices"
-                    rules={[{ required: true, message: "Please input!" }]}
-                  >
-                    <Input />
-                  </Form.Item>
+                    <Form.Item
+                      label="Prices"
+                      name="prices"
+                      rules={[{ required: true, message: "Please input!" }]}
+                    >
+                      <Input />
+                    </Form.Item>
 
-                  <Form.Item
-                    label="Des"
-                    name="description"
-                    rules={[{ required: true, message: "Please input!" }]}
-                  >
-                    <TextArea />
-                  </Form.Item>
-                </Form>
-              </Modal>
-            </div>
-          </Card>
-        </List.Item>
-      )}
-    />
+                    <Form.Item
+                      label="Des"
+                      name="description"
+                      rules={[{ required: true, message: "Please input!" }]}
+                    >
+                      <TextArea />
+                    </Form.Item>
+                  </Form>
+                </Modal>
+              </div>
+            </Card>
+          </List.Item>
+        )}
+      />
+    </>
   );
 };
 
