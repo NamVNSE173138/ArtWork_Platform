@@ -84,7 +84,7 @@ export default function Signin() {
 
   useEffect(() => {
     if (location.state) {
-      if (location.state?.noti === "signup") {
+      if (location.state?.noti === "already") {
         toast.warning("Your email has been registered before. Please enter your password to sign in.")
       }
       if (location.state?.noti === "reset") {
@@ -227,12 +227,11 @@ export default function Signin() {
         }
       } catch (error) {
         // Handle network or other errors
-        toast.error("Cannot connect to the server. Please try again later.");
-        console.error(error);
+        toast.error("Incorrect credentials. Please try again.");
         setIsLoading(false);
       }
-    },
-  });
+    }
+  })
 
   return (
     <>

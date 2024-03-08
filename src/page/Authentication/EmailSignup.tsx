@@ -111,7 +111,7 @@ export default function EmailSignup() {
               setIsLoading(false);
             }, 2000);
             setTimeout(() => {
-              navigate("/signin", { state: { email: values.email } });
+              navigate("/signin", { state: { email: values.email, noti: "already" } });
             }, 2000);
           } else {
             navigate("/signup", { state: { email: values.email } });
