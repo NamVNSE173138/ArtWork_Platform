@@ -1,3 +1,7 @@
+h1 {
+    margin-top: 100px;
+}
+
 .btn-fl {
     display: flex;
     align-items: center;
@@ -13,7 +17,7 @@
 .artist-list {
     height: 433px;
 
-    margin: 100px 40px 0 40px;
+    margin: 20px 40px 0 40px;
 }
 
 .artist-action {
