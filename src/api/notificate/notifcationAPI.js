@@ -1,12 +1,20 @@
 import { toast } from "react-toastify";
-
-export const getReportWithUserAndArtwork = () => {
-  return fetch(`http://localhost:5000/notifications/user/artwork`).then((res) => res.json());
-}
+import axios from "axios";
 
 export const getAllNotification = () => {
   return fetch(`http://localhost:5000/notifications`).then((res) => res.json());
 }
+
+export const markNotificationAsRead = async (id) => {
+  try {
+    const response = await axios.patch(`http://localhost:5000/notifications/${id}`);
+    console.log('Notification marked as read:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error marking notification as read:', error);
+    throw error;
+  }
+};
 
 export const getReportId = (id) => {
   return fetch(`http://localhost:5000/notifications/${id}`).then((res) => res.json());
@@ -31,29 +39,7 @@ export const createReport = (data) => {
     });
 }
 
-export const updateReport = (id, data) => {
-  return fetch(`http://localhost:5000/notifications/${id}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  })
-    .then(res => {
-      if (!res.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return res.json();
-    })
-    .then(responseData => {
-      console.log("Update successful", responseData);
-    })
-    .catch(error => {
-      console.error('There was a problem with the updateUser request:', error);
-    });
-}
-
-export const deleteReport = (id) => {
+export const deleteNotification = (id) => {
   return fetch(`http://localhost:5000/notifications/${id}`, {
     method: 'DELETE',
   })

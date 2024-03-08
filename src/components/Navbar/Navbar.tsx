@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./Navbar.css"; // Assuming you have a corresponding CSS file
-import { Input, Space, Button, Select, Tag, Popover, Spin, Dropdown } from "antd";
-import type { MenuProps } from 'antd';
+import {
+  Input,
+  Space,
+  Button,
+  Select,
+  Tag,
+  Popover,
+  Spin,
+  Dropdown,
+} from "antd";
+import type { MenuProps } from "antd";
 import Logo from "../../assets/image/logo.jpg";
 import LogoDark from "https://art.art/wp-content/themes/art/new/img/logo_DotArt.svg";
 import {
@@ -12,57 +21,9 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 
 const { Search } = Input;
-const { Option } = Select;
-const text = <span>Title</span>;
-
-const content = (
-  <div className="menu" style={{ display: "flex" }}>
-    {/* Company Column */}
-    <div className="menu-part">
-      <p>Company</p>
-      <ul>
-        <li style={{ listStyleType: "none" }}>Who We Are?</li>
-        <li>Join the Team</li>
-        <li>Blog</li>
-        <li>Contact Us</li>
-        <li>Help Center</li>
-      </ul>
-    </div>
-
-    {/* Community Column */}
-    <div className="menu-part">
-      <p>Community</p>
-      <ul>
-        <li>Become an Artist</li>
-        <li>Collections</li>
-        <li>Trends</li>
-        <li>Statistics</li>
-      </ul>
-    </div>
-
-    {/* Product Column */}
-    <div className="menu-part">
-      <p>Product</p>
-      <ul>
-        <li>Pictures</li>
-        <li>Backgrounds</li>
-        <li>Wallpapers</li>
-      </ul>
-    </div>
-  </div>
-);
-
-const tags = [
-  "Minimalism",
-  "Wallpapers",
-  "3D Renders",
-  "Nature",
-  "Architecture & Interiors",
-  // ... other tags
-];
 interface NavbarProps {
   onSubmit: (term: string) => void; // Define the type for the onSubmit prop
 }
@@ -110,40 +71,62 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     }, 2000);
   };
 
-  const items: MenuProps['items'] = [
+  const items: MenuProps["items"] = [
     {
-      label: <div style={{ height: '20px' }}></div>,
+      label: <div style={{ height: "10px" }}></div>,
       key: 0,
     },
     {
-      label: <Link
-        id="profile"
-        className="dropdown-item"
-        to={`/profile/${currentUser.id}`}
-      >
-        <strong>View profile</strong>
-      </Link>,
+      label: (
+        <Link
+          id="profile"
+          className="dropdown-item"
+          to={`/profile/${currentUser.id}`}
+        >
+          <strong>View profile</strong>
+        </Link>
+      ),
       key: 1,
     },
     {
-      type: 'divider',
+      label: (
+        <Link
+          id="profile"
+          className="dropdown-item"
+          to={`/notifications`}
+        >
+          <strong>Notifications</strong>
+        </Link>
+      ),
+      key: 2,
     },
     {
-      label: isLoadingLogOut
-        ?
+      label: (
+        <Link id="profile" className="dropdown-item" to={`/forgot`}>
+          <strong>Reset password</strong>
+        </Link>
+      ),
+      key: 3,
+    },
+    {
+      type: "divider",
+    },
+    {
+      label: isLoadingLogOut ? (
         <Spin
           style={{ marginRight: "5px", color: "#444950" }}
-          indicator={
-            <LoadingOutlined style={{ fontSize: 24 }} spin />
-          }
+          indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
         />
-        :
+      ) : (
         <div id="logout" onClick={handleLogout}>
-          <p><LogoutOutlined /> Logout</p>
-        </div>,
-      key: 2,
-    }
-  ]
+          <p>
+            <LogoutOutlined /> Logout
+          </p>
+        </div>
+      ),
+      key: 4,
+    },
+  ];
 
   const onSearch = (value: string) => {
     console.log("Search value:", value);
@@ -195,11 +178,17 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   }, [currentUser]);
   return (
     <div className="navbar-home">
-      <div className="title">
-        <div className="title-title">
-          <img alt="logo" className="brand-title" src={Logo} onClick={() => { navigate('/home') }} style={{ cursor: 'pointer' }} />
-        </div>
-        <MenuOutlined className="toggle-burger" onClick={toggleNav} />
+      <div className="logo-container">
+        <img
+          id="logo"
+          alt="logo"
+          className="brand-title"
+          src={Logo}
+          onClick={() => {
+            navigate("/home");
+          }}
+          style={{ cursor: "pointer" }}
+        />
       </div>
       {(toggleMenu || screenWidth > 768) && (
         <nav className="navbar-links">
@@ -240,7 +229,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                 <li>
                   <Dropdown menu={{ items }}>
                     <a onClick={(e) => e.preventDefault()}>
-                      <Space id='user-section'>
+                      <Space id="user-section">
                         <img
                           alt="avatar"
                           style={{
