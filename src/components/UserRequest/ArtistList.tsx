@@ -30,7 +30,7 @@ import {
   StarOutlined,
 } from "@ant-design/icons";
 import "./ArtistList.css";
-import TextArea from 'antd/es/input/TextArea';
+import TextArea from "antd/es/input/TextArea";
 
 const ArtistList = () => {
   const navigate = useNavigate()
@@ -166,12 +166,13 @@ const ArtistList = () => {
 
   return (
     <>
+      <h1>Choose an artist</h1>
       <List
         grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 2, xl: 3, xxl: 3 }}
         className="artist-list"
         itemLayout="vertical"
         size="large"
-        pagination={{ pageSize: 6 }}
+        // pagination={{ pageSize: 6 }}
         dataSource={artistData}
         renderItem={(item: any) => (
           <List.Item key={item._id}>

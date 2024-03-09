@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./Navbar.css"; // Assuming you have a corresponding CSS file
-import { Input, Space, Button, Select, Tag, Popover, Spin, Dropdown } from "antd";
-import type { MenuProps } from 'antd';
+import {
+  Input,
+  Space,
+  Button,
+  Select,
+  Tag,
+  Popover,
+  Spin,
+  Dropdown,
+} from "antd";
+import type { MenuProps } from "antd";
 import Logo from "../../assets/image/logo.jpg";
 import LogoDark from "https://art.art/wp-content/themes/art/new/img/logo_DotArt.svg";
 import {
@@ -12,7 +21,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 
 const { Search } = Input;
 interface NavbarProps {
@@ -33,7 +42,6 @@ interface User {
 const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   let navigate = useNavigate();
   const userToken = localStorage.getItem("USER");
-  console.log(userToken);
   const [isLoadingLogOut, setIsLoadingLogOut] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -58,54 +66,54 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     setTimeout(() => {
       localStorage.removeItem("USER");
       setIsLoadingLogOut(false);
-      window.location.reload()
+      window.location.reload();
     }, 2000);
   };
 
-  const items: MenuProps['items'] = [
+  const items: MenuProps["items"] = [
     {
-      label: <div style={{ height: '10px' }}></div>,
+      label: <div style={{ height: "10px" }}></div>,
       key: 0,
     },
     {
-      label: <Link
-        id="profile"
-        className="dropdown-item"
-        to={`/profile/${currentUser.id}`}
-      >
-        <strong>View profile</strong>
-      </Link>,
+      label: (
+        <Link
+          id="profile"
+          className="dropdown-item"
+          to={`/profile/${currentUser.id}`}
+        >
+          <strong>View profile</strong>
+        </Link>
+      ),
       key: 1,
     },
     {
-      label: <Link
-        id="profile"
-        className="dropdown-item"
-        to={`/forgot`}
-      >
-        <strong>Reset password</strong>
-      </Link>,
+      label: (
+        <Link id="profile" className="dropdown-item" to={`/forgot`}>
+          <strong>Reset password</strong>
+        </Link>
+      ),
       key: 2,
     },
     {
-      type: 'divider',
+      type: "divider",
     },
     {
-      label: isLoadingLogOut
-        ?
+      label: isLoadingLogOut ? (
         <Spin
           style={{ marginRight: "5px", color: "#444950" }}
-          indicator={
-            <LoadingOutlined style={{ fontSize: 24 }} spin />
-          }
+          indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
         />
-        :
+      ) : (
         <div id="logout" onClick={handleLogout}>
-          <p><LogoutOutlined /> Logout</p>
-        </div>,
+          <p>
+            <LogoutOutlined /> Logout
+          </p>
+        </div>
+      ),
       key: 3,
-    }
-  ]
+    },
+  ];
 
   const onSearch = (value: string) => {
     console.log("Search value:", value);
@@ -161,7 +169,16 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   return (
     <div className="navbar-home">
       <div className="logo-container">
-        <img id="logo" alt="logo" className="brand-title" src={Logo} onClick={() => { navigate('/home') }} style={{ cursor: 'pointer' }} />
+        <img
+          id="logo"
+          alt="logo"
+          className="brand-title"
+          src={Logo}
+          onClick={() => {
+            navigate("/home");
+          }}
+          style={{ cursor: "pointer" }}
+        />
       </div>
       {(toggleMenu || screenWidth > 768) && (
         <nav className="navbar-links">
@@ -200,9 +217,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
             ) : (
               <>
                 <li>
-                  <Dropdown menu={{ items }} trigger={['click']}>
+                  <Dropdown menu={{ items }} trigger={["click"]}>
                     <a onClick={(e) => e.preventDefault()}>
-                      <Space id='user-section'>
+                      <Space id="user-section">
                         <img
                           alt="avatar"
                           style={{

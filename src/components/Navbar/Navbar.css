@@ -72,8 +72,8 @@
 
 @media (max-width: 767px) {
     .navbar-home {
-        flex-direction: column;
-        position: fixed !important
+        /* flex-direction: column;
+        position: fixed !important */
     }
 
     .title {
