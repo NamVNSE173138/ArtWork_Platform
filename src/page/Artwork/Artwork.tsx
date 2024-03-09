@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./Artwork.module.css";
-import { List, Button, Avatar, Typography, Spin, Badge } from "antd";
+import { List, Button, Avatar, Typography, Spin, Badge, Flex } from "antd";
 import {
   LoadingOutlined,
   HeartFilled,
@@ -8,6 +8,7 @@ import {
   SendOutlined,
   PlusCircleOutlined,
   LikeOutlined,
+  LikeFilled,
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
@@ -48,7 +49,6 @@ interface Artwork {
 interface Comment {
   user?: User;
   text: string;
-  numOfLike: number;
   createdAt?: string;
   updatedAt?: string;
   nickname?: string;
@@ -145,7 +145,6 @@ export default function Artwork() {
         updatedAt: "",
       },
       text: "",
-      numOfLike: 0,
     },
     onSubmit: (values: Comment, { resetForm }) => {
       setNewCommentIncoming(true);
@@ -336,48 +335,28 @@ export default function Artwork() {
                               src={comment.user?.avatar}
                               alt=""
                               size={45}
-                              style={{ marginRight: "1%" }}
                             />
                           </span>
                           <div className={styles.commentInfo}>
-                            <Text
-                              className={styles.commentText}
-                              style={{ fontSize: "90%" }}
-                            >
-                              <Text
-                                strong
-                                id={styles.userName}
-                                onClick={() =>
-                                  navigate(`/profile/${comment.user?.id}`)
-                                }
-                              >
-                                {comment.user?.nickname}
-                              </Text>
-                              &ensp;{comment.text}
-                            </Text>
-                            <Text className={styles.commentAction}>
-                              <Text
-                                style={{
-                                  fontSize: "78%",
-                                  minWidth: "fit-content",
-                                }}
-                              >
+                            <Flex vertical gap={6} style={{ marginLeft: '8px' }}>
+                              <Flex vertical className={styles.commentText} style={{ fontSize: '90%' }}>
+                                <Text
+                                  strong
+                                  id={styles.userName}
+                                  onClick={() =>
+                                    navigate(`/profile/${comment.user?.id}`)
+                                  }
+                                >
+                                  {comment.user?.nickname}
+                                </Text>
+                                <Text style={{ maxWidth: 'fit-content', paddingRight: '5px' }}>
+                                  {comment.text}
+                                </Text>
+                              </Flex>
+                              <Text style={{ fontSize: '70%', minWidth: 'fit-content' }}>
                                 {moment(comment.createdAt).fromNow()}
                               </Text>
-                              <span className={styles.commentLikeButton}>
-                                {comment.numOfLike > 0 ? (
-                                  <Text
-                                    style={{
-                                      color: "#FFFFFF",
-                                      fontSize: "90%",
-                                    }}
-                                  >
-                                    {nFormatter(comment.numOfLike, 1)}
-                                  </Text>
-                                ) : null}
-                                <LikeOutlined />
-                              </span>
-                            </Text>
+                            </Flex>
                           </div>
                         </div>
                       </List.Item>

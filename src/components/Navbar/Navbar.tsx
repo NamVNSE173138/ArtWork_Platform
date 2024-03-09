@@ -67,7 +67,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     setTimeout(() => {
       localStorage.removeItem("USER");
       setIsLoadingLogOut(false);
-      navigate("/signin");
+      window.location.reload()
     }, 2000);
   };
 
@@ -207,7 +207,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                   <Link
                     id="signup"
                     className="item"
-                    to="/signup"
+                    to="/signup/email"
                     onClick={toggleNav}
                   >
                     Sign Up
@@ -227,7 +227,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
             ) : (
               <>
                 <li>
-                  <Dropdown menu={{ items }}>
+                  <Dropdown menu={{ items }} trigger={['click']}>
                     <a onClick={(e) => e.preventDefault()}>
                       <Space id="user-section">
                         <img
@@ -243,48 +243,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                       </Space>
                     </a>
                   </Dropdown>
-
-                  {/* <Link
-                    id="profile"
-                    className="item"
-                    to={`/profile/${currentUser.id}`}
-                    onClick={toggleNav}
-                  >
-                    <img
-                      alt="avatar"
-                      style={{
-                        height: "30px",
-                        borderRadius: "20px",
-                        marginRight: "5px",
-                      }}
-                      src={currentUser.avatar}
-                    />
-                    {currentUser.nickname}
-                  </Link> */}
                 </li>
-                {/* <li>
-                  <div
-                    id="project"
-                    className="item"
-                    // to="/signin"
-                    onClick={() => {
-                      toggleNav();
-                      handleLogout();
-                    }}
-                  >
-                    {isLoadingLogOut ? (
-                      <Spin
-                        style={{ marginRight: "5px", color: "#444950" }}
-                        indicator={
-                          <LoadingOutlined style={{ fontSize: 24 }} spin />
-                        }
-                      />
-                    ) : (
-                      <LogoutOutlined />
-                    )}{" "}
-                    Log Out
-                  </div>
-                </li> */}
               </>
             )}
           </ul>

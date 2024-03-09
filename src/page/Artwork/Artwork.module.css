@@ -106,6 +106,7 @@
 #userName {
     font-size: 120%;
     color: #201c1c;
+    min-width: max-content;
 }
 
 #userName:hover {
@@ -179,7 +180,7 @@
     overflow-wrap: break-word;
     word-wrap: break-word;
     word-break: break-word;
-    max-width: fit-content;
+    max-width: 420px;
 }
 
 .commentAction {
@@ -196,6 +197,7 @@
 }
 
 .commentLikeButton {
+    font-size: 110%;
     border-radius: 5px;
     min-width: 25px;
     min-height: 20px;
@@ -206,6 +208,9 @@
     align-items: center;
     justify-content: center;
     gap: 3px;
-    background-color: #2e94d7;
-    color: #ffffff;
+    color: #000;
+}
+
+.commentLikeButton:hover {
+    text-decoration: underline;
 }
