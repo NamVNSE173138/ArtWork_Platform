@@ -24,12 +24,16 @@ import "./UploadForm.css";
 import Meta from "antd/es/card/Meta";
 import axios from "axios";
 import TextArea from "antd/es/input/TextArea";
+import { number } from "yup";
 interface ImageCard {
-  url: string;
+  user: string;
   name: string;
-  tags: string;
-  description: string;
+  tags: string[];
+  numberOfLike: number;
   price: number;
+  description: string;
+  url: string;
+  status: boolean;
 }
 interface User {
   id: string;
@@ -45,9 +49,6 @@ interface User {
 }
 const UploadImageForm: React.FC = () => {
   const [imageUrl, setImageUrl] = useState("");
-  const [imageName, setImageName] = useState("");
-  const [imageTags, setImageTags] = useState("");
-  const [imageDescription, setImageDescription] = useState("");
   const [imageCards, setImageCards] = useState<ImageCard[]>([]);
 
   const handleImageUpload = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -55,7 +56,16 @@ const UploadImageForm: React.FC = () => {
       if (imageCards.length < 10) {
         setImageCards([
           ...imageCards,
-          { url: imageUrl, name: "", tags: "", description: "", price: 0 },
+          {
+            url: imageUrl,
+            name: "",
+            tags: [],
+            description: "",
+            price: 0,
+            user: "",
+            status: true,
+            numberOfLike: 0,
+          },
         ]);
         setImageUrl("");
       } else {
@@ -73,20 +83,20 @@ const UploadImageForm: React.FC = () => {
   const handleCardInputChange = (
     index: number,
     key: ImageCardKey,
-    value: string | number
+    value: string | number | string[]
   ) => {
     const newImageCards = [...imageCards];
     if (
       typeof value === "string" &&
-      (key === "url" ||
-        key === "name" ||
-        key === "tags" ||
-        key === "description")
+      (key === "url" || key === "name" || key === "description")
     ) {
+      newImageCards[index][key] = value;
+    } else if (Array.isArray(value) && key === "tags") {
       newImageCards[index][key] = value;
     } else if (typeof value === "number" && key === "price") {
       newImageCards[index][key] = value;
     }
+
     setImageCards(newImageCards);
   };
 
@@ -112,6 +122,27 @@ const UploadImageForm: React.FC = () => {
   useEffect(() => {
     editInputRef.current?.focus();
   }, [editInputValue]);
+
+  //chatgpt
+  const handleTagInputChange = (
+    index: number,
+    tagIndex: number,
+    value: string
+  ) => {
+    const newImageCards = [...imageCards];
+    newImageCards[index].tags[tagIndex] = value;
+    setImageCards(newImageCards);
+  };
+  const handleAddTag = (index: number) => {
+    const newImageCards = [...imageCards];
+    newImageCards[index].tags.push("");
+    setImageCards(newImageCards);
+  };
+  const handleRemoveTag = (index: number, tagIndex: number) => {
+    const newImageCards = [...imageCards];
+    newImageCards[index].tags.splice(tagIndex, 1);
+    setImageCards(newImageCards);
+  };
 
   const handleClose = (removedTag: string, index: number) => {
     let newTags = [...tags];
@@ -187,7 +218,7 @@ const UploadImageForm: React.FC = () => {
         },
       })
       .then((res) => {
-        console.log("Current user: ", res.data);
+        // console.log("Current user: ", res.data);
         setCurrentUser(res.data);
         setIsLoading(false);
       })
@@ -197,24 +228,62 @@ const UploadImageForm: React.FC = () => {
     fetchCurrentUserData();
   }, []);
   useEffect(() => {
-    console.log("Current user: ", currentUser);
+    // console.log("Current user: ", currentUser);
   }, [currentUser]);
   //switch
   const [isFree, setIsFree] = useState(false);
-  const [price, setPrice] = useState<number>(0);
-  const handleSwitchChange = (checked: boolean) => {
-    setIsFree(!checked);
+  const [price, setPrice] = useState<number | string>("");
+  const handleSwitchChange = (checked: boolean, index: number) => {
+    const updatedIsFreeArray = [...isFreeArray];
+    updatedIsFreeArray[index] = !checked;
+    setIsFreeArray(updatedIsFreeArray);
   };
+
+  const [isFreeArray, setIsFreeArray] = useState<boolean[]>(
+    Array(imageCards.length).fill(false)
+  );
+
   const handleSubmit = () => {
     imageCards.forEach((image, index) => {
       console.log(`Image ${index + 1}:`);
+      console.log(currentUser.id);
+
       console.log("URL:", image.url);
       console.log("Name:", image.name);
       console.log("Tags:", image.tags);
       console.log("Description:", image.description);
-      if (!isFree) {
-        console.log("Price:", image.price); // Log price if not free
-      }
+
+      // Get the latest price value from the input field
+      const priceInput = document.getElementById(
+        `price-input-${index}`
+      ) as HTMLInputElement;
+      const priceValue = priceInput.value;
+      console.log(isFreeArray[index]);
+      let imagePrice = !isFreeArray[index] ? 0 : priceValue; // Set imagePrice based on isFree
+      console.log("Price:", imagePrice);
+      const data = {
+        user: currentUser.id,
+        name: image.name,
+        tags: image.tags,
+        numOfLike: image.numberOfLike,
+        price: imagePrice,
+        description: image.description,
+        imageUrl: image.url,
+        status: true,
+      };
+      // console.log(data);
+      fetch("http://localhost:5000/artworks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((data) => console.log(data))
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     });
   };
 
@@ -250,17 +319,11 @@ const UploadImageForm: React.FC = () => {
             <div className="card-container">
               <img alt="example" src={card.url} className="image-card" />
               <div className="input-container">
-                <Input
-                  placeholder="Name"
-                  onChange={(e) =>
-                    handleCardInputChange(index, "name", e.target.value)
-                  }
-                  className="input-name"
-                  size="large"
-                />
                 <Card>
                   <Meta
-                    avatar={<Avatar src={currentUser.avatar} />}
+                    avatar={
+                      <Avatar src={currentUser.avatar} className="avt-user" />
+                    }
                     title={currentUser.nickname}
                     description={
                       <>
@@ -270,93 +333,67 @@ const UploadImageForm: React.FC = () => {
                     }
                   />
                 </Card>
+                <Input
+                  placeholder="Name"
+                  onChange={(e) =>
+                    handleCardInputChange(index, "name", e.target.value)
+                  }
+                  className="input-name"
+                  size="large"
+                />
 
-                <Space size={[0, 8]} wrap className="tags">
-                  {tags.map((tag, index) => {
-                    if (editInputIndex === index) {
-                      return (
-                        <Input
-                          ref={editInputRef}
-                          key={tag}
-                          size="small"
-                          style={tagInputStyle}
-                          value={editInputValue}
-                          onChange={handleEditInputChange}
-                          onBlur={handleEditInputConfirm}
-                          onPressEnter={handleEditInputConfirm}
-                        />
-                      );
-                    }
-                    const isLongTag = tag.length > 20;
-                    const tagElem = (
-                      <Tag
-                        key={tag}
-                        closable={true}
-                        style={{ userSelect: "none" }}
-                        onClose={() => handleClose(tag, index)}
-                      >
-                        <span
-                          onDoubleClick={(e) => {
-                            if (index !== 0) {
-                              setEditInputIndex(index);
-                              setEditInputValue(tag);
-                              e.preventDefault();
-                            }
-                          }}
-                        >
-                          {isLongTag ? `${tag.slice(0, 20)}...` : tag}
-                        </span>
-                      </Tag>
-                    );
-                    return isLongTag ? (
-                      <Tooltip title={tag} key={tag}>
-                        {tagElem}
-                      </Tooltip>
-                    ) : (
-                      tagElem
-                    );
-                  })}
-                  {inputVisible ? (
+                {card.tags.map((tag, tagIndex) => (
+                  <Space key={tagIndex}>
                     <Input
-                      ref={inputRef}
-                      type="text"
+                      value={tag}
+                      onChange={(e) =>
+                        handleTagInputChange(index, tagIndex, e.target.value)
+                      }
+                      placeholder="Tag"
                       size="large"
-                      style={tagInputStyle}
-                      value={inputValue}
-                      onChange={handleInputTagChange}
-                      onBlur={handleInputConfirm}
-                      onPressEnter={handleInputConfirm}
                     />
-                  ) : (
-                    <Tag
-                      style={tagPlusStyle}
-                      icon={<PlusOutlined />}
-                      onClick={showInput}
-                    >
-                      New Tag
-                    </Tag>
-                  )}
-                </Space>
+                    <Button
+                      onClick={() => handleRemoveTag(index, tagIndex)}
+                      shape="circle"
+                      icon={<CloseOutlined />}
+                    />
+                  </Space>
+                ))}
+                <Button onClick={() => handleAddTag(index)}>Add Tag</Button>
                 <div className="option-price">
                   <div
-                    style={{ opacity: isFree ? 0.2 : 1, marginRight: "10px" }}
+                    style={{
+                      opacity: isFreeArray[index] ? 0.2 : 1,
+                      marginRight: "10px",
+                    }}
                   >
                     Free for everyone
                   </div>
-                  <Switch checked={!isFree} onChange={handleSwitchChange} />
+                  <Switch
+                    checked={!isFreeArray[index]}
+                    onChange={(checked) => handleSwitchChange(checked, index)}
+                  />
+
                   <div
                     className="price"
-                    style={{ opacity: isFree ? 1 : 0.2, marginLeft: "10px" }}
+                    style={{
+                      opacity: isFreeArray[index] ? 1 : 0.2,
+                      marginLeft: "10px",
+                    }}
                   >
                     Price:
                     <Input
+                      id={`price-input-${index}`} // Unique ID for each input
+                      disabled={!isFreeArray[index]}
                       style={{
                         width: "100px",
                         border: "1px solid",
                         marginLeft: "5px",
                       }}
-                      value={price.toString()} // Set the value of the input field to the price state
-                      onChange={(e) => setPrice(parseFloat(e.target.value))}
+                      // value={price.toString()}
+                      onChange={(e) => {
+                        handleCardInputChange(index, "price", e.target.value);
+                      }}
                     />
                   </div>
                 </div>

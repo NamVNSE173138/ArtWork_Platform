@@ -3,7 +3,14 @@ import { PinProps } from "./Pin";
 // import "./Mainboard.css";
 // import "./Pin.css";
 import "./test.css";
-import { Button, Divider, FloatButton, Skeleton, message } from "antd";
+import {
+  Button,
+  Divider,
+  FloatButton,
+  Skeleton,
+  Watermark,
+  message,
+} from "antd";
 import { DownloadOutlined, HeartFilled, PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -169,9 +176,19 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
   ) => {
     const imageUrl = pin.imageUrl;
     const name = pin.name;
-    message.success("Downloading...");
+    const extension = imageUrl.split(".").pop();
+    console.log(extension);
     console.log(imageUrl, " ", name);
-    saveAs(imageUrl, `${name}.png`);
+
+    if (extension === "png") {
+      message.success("Downloading...");
+      saveAs(imageUrl, `${name}.png`);
+    } else if (extension === "jpg") {
+      message.success("Downloading...");
+      saveAs(imageUrl, `${name}.jpg`);
+    } else {
+      message.error("Unsupported file format. Only PNG and JPG are supported.");
+    }
   };
 
   const [dataSource, setDataSource] = useState(pins.slice(0, 20));
@@ -283,13 +300,30 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                   </div>
                 </div>
                 <LazyLoad once>
-                  <img
-                    src={pin.imageUrl}
-                    alt={pin.name}
-                    onClick={() => navigate(`/artwork/${pin._id}`)}
-                    loading="lazy"
-                    className="image"
-                  />
+                  {pin.price > 0 ? (
+                    <Watermark
+                      content="ArtAttack"
+                      inherit={pin.price > 0 ? true : false}
+                      zIndex={100}
+                      gap={[60, 60]}
+                    >
+                      <img
+                        src={pin.imageUrl}
+                        alt={pin.name}
+                        onClick={() => navigate(`/artwork/${pin._id}`)}
+                        loading="lazy"
+                        className="image"
+                      />
+                    </Watermark>
+                  ) : (
+                    <img
+                      src={pin.imageUrl}
+                      alt={pin.name}
+                      onClick={() => navigate(`/artwork/${pin._id}`)}
+                      loading="lazy"
+                      className="image"
+                    />
+                  )}
                 </LazyLoad>
               </div>
             ))}

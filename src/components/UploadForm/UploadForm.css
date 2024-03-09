@@ -143,6 +143,12 @@ input.ant-input.ant-input-lg.css-dev-only-do-not-override-dkbvqv.input-descripti
     border-radius: 0 0 8px 8px;
 }
 
+span.ant-avatar.ant-avatar-circle.ant-avatar-image.avt-user.css-dev-only-do-not-override-dkbvqv {
+
+    height: 50px;
+    width: 50px;
+}
+
 .option-price {
     display: flex;
     align-items: center;
