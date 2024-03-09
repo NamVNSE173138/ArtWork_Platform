@@ -35,7 +35,7 @@ module.exports = {
       // Check if the email already exists
       const checkEmail = await User.findOne({ email });
 
-      if (checkEmail) {
+      if (checkEmail.password === password) {
         const token = createToken({ checkEmail, password: "" });
         res.send(token);
       } else {

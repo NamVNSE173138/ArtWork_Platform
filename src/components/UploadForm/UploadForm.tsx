@@ -1,156 +1,392 @@
-// Import necessary modules and components
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  Form,
+  Card,
   Input,
   Button,
-  Upload,
-  message,
-  UploadProps,
-  Image,
+  Radio,
+  Checkbox,
+  Space,
+  InputRef,
+  Tooltip,
+  Tag,
+  theme,
+  Avatar,
+  Switch,
   Row,
-  Col,
 } from "antd";
-import type { UploadFile } from "antd";
-import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
-import axios, { AxiosResponse } from "axios";
+import {
+  CheckOutlined,
+  CloseOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import "./UploadForm.css";
-
-const fileList: UploadFile[] = [
-  {
-    uid: "-1",
-    name: "yyy.png",
-    status: "done",
-    url: "https://images.unsplash.com/photo-1703884051748-2bdce28d166e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw2NHx8fGVufDB8fHx8fA%3D%3D",
-    thumbUrl:
-      "https://images.unsplash.com/photo-1703884051748-2bdce28d166e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw2NHx8fGVufDB8fHx8fA%3D%3D",
-  },
-];
+import Meta from "antd/es/card/Meta";
+import axios from "axios";
+import TextArea from "antd/es/input/TextArea";
+interface ImageCard {
+  url: string;
+  name: string;
+  tags: string;
+  description: string;
+  price: number;
+}
+interface User {
+  id: string;
+  email: string;
+  nickname: string;
+  role: string;
+  numOfFollower: number;
+  avatar: string;
+  password: string;
+  status: boolean;
+  createAt?: string;
+  updateAt?: string;
+}
 const UploadImageForm: React.FC = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageName, setImageName] = useState("");
+  const [imageTags, setImageTags] = useState("");
+  const [imageDescription, setImageDescription] = useState("");
+  const [imageCards, setImageCards] = useState<ImageCard[]>([]);
 
-  const onFinish = async (values: any) => {
-    if (!file) {
-      message.error("Please upload an image");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("description", values.description);
-    formData.append("tag", values.tag);
-    formData.append("image", file);
-
-    try {
-      const response: AxiosResponse<{ url: string }> = await axios.post(
-        "YOUR_API_ENDPOINT",
-        formData
-      );
-
-      setImageUrl(response.data.url);
-      message.success("Image uploaded successfully");
-    } catch (error) {
-      console.error("Upload failed:", error);
-      message.error("Failed to upload image");
+  const handleImageUpload = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      if (imageCards.length < 10) {
+        setImageCards([
+          ...imageCards,
+          { url: imageUrl, name: "", tags: "", description: "", price: 0 },
+        ]);
+        setImageUrl("");
+      } else {
+        console.log("duoi 10 images");
+      }
     }
   };
 
-  const onFileChange = (info: any) => {
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully`);
-      setImageUrl(info.file.response?.url || ""); // Assuming the response contains the image URL
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setImageUrl(event.target.value);
+  };
 
-    const uploadedFile = info.fileList[0]?.originFileObj; // Use optional chaining to handle undefined
-    if (uploadedFile) {
-      setFile(uploadedFile);
-    } else {
-      setFile(null);
+  type ImageCardKey = keyof ImageCard;
+
+  const handleCardInputChange = (
+    index: number,
+    key: ImageCardKey,
+    value: string | number
+  ) => {
+    const newImageCards = [...imageCards];
+    if (
+      typeof value === "string" &&
+      (key === "url" ||
+        key === "name" ||
+        key === "tags" ||
+        key === "description")
+    ) {
+      newImageCards[index][key] = value;
+    } else if (typeof value === "number" && key === "price") {
+      newImageCards[index][key] = value;
+    }
+    setImageCards(newImageCards);
+  };
+
+  const handleRemoveCard = (index: number) => {
+    const newImageCards = [...imageCards];
+    newImageCards.splice(index, 1);
+    setImageCards(newImageCards);
+  };
+  const { token } = theme.useToken();
+  const [tags, setTags] = useState<string[]>([]);
+  const [inputVisible, setInputVisible] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [editInputIndex, setEditInputIndex] = useState(-1);
+  const [editInputValue, setEditInputValue] = useState("");
+  const inputRef = useRef<InputRef>(null);
+  const editInputRef = useRef<InputRef>(null);
+  useEffect(() => {
+    if (inputVisible) {
+      inputRef.current?.focus();
+    }
+  }, [inputVisible]);
+
+  useEffect(() => {
+    editInputRef.current?.focus();
+  }, [editInputValue]);
+
+  const handleClose = (removedTag: string, index: number) => {
+    let newTags = [...tags];
+    newTags = newTags.filter((tag, i) => i !== index);
+    setTags(newTags);
+    if (editInputIndex === index) {
+      setEditInputIndex(-1); // Reset editInputIndex
     }
   };
 
-  const formLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 18 },
+  const showInput = () => {
+    setInputVisible(true);
+  };
+
+  const handleInputTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleInputConfirm = () => {
+    if (inputValue && !tags.includes(inputValue)) {
+      setTags([...tags, inputValue]);
+    }
+    setInputVisible(false);
+    setInputValue("");
+  };
+
+  const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditInputValue(e.target.value);
+  };
+
+  const handleEditInputConfirm = () => {
+    const newTags = [...tags];
+    newTags[editInputIndex] = editInputValue;
+    setTags(newTags);
+    setEditInputIndex(-1);
+    setEditInputValue("");
+  };
+
+  const tagInputStyle: React.CSSProperties = {
+    width: 99,
+    height: 22,
+    marginInlineEnd: 8,
+    verticalAlign: "top",
+  };
+
+  const tagPlusStyle: React.CSSProperties = {
+    height: 22,
+    fontSize: "16px",
+    background: token.colorBgContainer,
+    borderStyle: "dashed",
+  };
+  const userToken = localStorage.getItem("USER");
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User>({
+    id: "",
+    email: "",
+    password: "",
+    nickname: "",
+    role: "",
+    numOfFollower: 0,
+    avatar: "",
+    status: false,
+    createAt: "",
+    updateAt: "",
+  });
+  const fetchCurrentUserData = async () => {
+    setIsLoading(true);
+    await axios
+      .get(`http://localhost:5000/users/getUserInfo`, {
+        headers: {
+          token: userToken, //userToken = localStorage("USER")
+        },
+      })
+      .then((res) => {
+        console.log("Current user: ", res.data);
+        setCurrentUser(res.data);
+        setIsLoading(false);
+      })
+      .catch((err) => console.log(err));
+  };
+  useEffect(() => {
+    fetchCurrentUserData();
+  }, []);
+  useEffect(() => {
+    console.log("Current user: ", currentUser);
+  }, [currentUser]);
+  //switch
+  const [isFree, setIsFree] = useState(false);
+  const [price, setPrice] = useState<number>(0);
+  const handleSwitchChange = (checked: boolean) => {
+    setIsFree(!checked);
+  };
+  const handleSubmit = () => {
+    imageCards.forEach((image, index) => {
+      console.log(`Image ${index + 1}:`);
+      console.log("URL:", image.url);
+      console.log("Name:", image.name);
+      console.log("Tags:", image.tags);
+      console.log("Description:", image.description);
+      if (!isFree) {
+        console.log("Price:", image.price); // Log price if not free
+      }
+    });
   };
 
   return (
-    <Form
-      {...formLayout}
-      name="uploadImage"
-      onFinish={onFinish}
-      className="upload-form"
-      layout="vertical"
-    >
-      <Row>
-        <Col flex={1}>
-          <div className="upload-left">
-            <Form.Item
-              label="Image"
-              name="image"
-              rules={[{ required: true, message: "Please upload an image" }]}
-              valuePropName="fileList"
-              getValueFromEvent={onFileChange}
-            >
-              <Upload
-                action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-                listType="picture"
-                defaultFileList={[...fileList]}
-                className="upload-list-inline"
-              >
-                <Button size="large" icon={<UploadOutlined />}>
-                  Upload
-                </Button>
-              </Upload>
-            </Form.Item>
+    <>
+      <h2>Upload Photos</h2>
+      <h4 className="title">Import from URL</h4>
+      <div className="upload-image-form">
+        <Input
+          placeholder="Add image URL"
+          onChange={handleInputChange}
+          onKeyDown={handleImageUpload}
+          value={imageUrl}
+          size="large"
+          className="image-url-input"
+        />
+        {imageCards.map((card, index) => (
+          <div className="image-card-container" key={index}>
+            <div className="btn-card">
+              <h4>Image: {index + 1}</h4>
+              <Checkbox className="radio-checkout" />
+              <br />
+              <Button
+                type="text"
+                shape="circle"
+                icon={<DeleteOutlined style={{ fontSize: "30px" }} />}
+                onClick={() => handleRemoveCard(index)}
+                className="button-remove"
+                danger
+              />
+            </div>
+
+            <div className="card-container">
+              <img alt="example" src={card.url} className="image-card" />
+              <div className="input-container">
+                <Input
+                  placeholder="Name"
+                  onChange={(e) =>
+                    handleCardInputChange(index, "name", e.target.value)
+                  }
+                  className="input-name"
+                  size="large"
+                />
+                <Card>
+                  <Meta
+                    avatar={<Avatar src={currentUser.avatar} />}
+                    title={currentUser.nickname}
+                    description={
+                      <>
+                        {currentUser.email} <br />
+                        <i>Role: {currentUser.role}</i>
+                      </>
+                    }
+                  />
+                </Card>
+
+                <Space size={[0, 8]} wrap className="tags">
+                  {tags.map((tag, index) => {
+                    if (editInputIndex === index) {
+                      return (
+                        <Input
+                          ref={editInputRef}
+                          key={tag}
+                          size="small"
+                          style={tagInputStyle}
+                          value={editInputValue}
+                          onChange={handleEditInputChange}
+                          onBlur={handleEditInputConfirm}
+                          onPressEnter={handleEditInputConfirm}
+                        />
+                      );
+                    }
+                    const isLongTag = tag.length > 20;
+                    const tagElem = (
+                      <Tag
+                        key={tag}
+                        closable={true}
+                        style={{ userSelect: "none" }}
+                        onClose={() => handleClose(tag, index)}
+                      >
+                        <span
+                          onDoubleClick={(e) => {
+                            if (index !== 0) {
+                              setEditInputIndex(index);
+                              setEditInputValue(tag);
+                              e.preventDefault();
+                            }
+                          }}
+                        >
+                          {isLongTag ? `${tag.slice(0, 20)}...` : tag}
+                        </span>
+                      </Tag>
+                    );
+                    return isLongTag ? (
+                      <Tooltip title={tag} key={tag}>
+                        {tagElem}
+                      </Tooltip>
+                    ) : (
+                      tagElem
+                    );
+                  })}
+                  {inputVisible ? (
+                    <Input
+                      ref={inputRef}
+                      type="text"
+                      size="large"
+                      style={tagInputStyle}
+                      value={inputValue}
+                      onChange={handleInputTagChange}
+                      onBlur={handleInputConfirm}
+                      onPressEnter={handleInputConfirm}
+                    />
+                  ) : (
+                    <Tag
+                      style={tagPlusStyle}
+                      icon={<PlusOutlined />}
+                      onClick={showInput}
+                    >
+                      New Tag
+                    </Tag>
+                  )}
+                </Space>
+                <div className="option-price">
+                  <div
+                    style={{ opacity: isFree ? 0.2 : 1, marginRight: "10px" }}
+                  >
+                    Free for everyone
+                  </div>
+                  <Switch checked={!isFree} onChange={handleSwitchChange} />
+                  <div
+                    className="price"
+                    style={{ opacity: isFree ? 1 : 0.2, marginLeft: "10px" }}
+                  >
+                    Price:
+                    <Input
+                      style={{
+                        width: "100px",
+                        border: "1px solid",
+                        marginLeft: "5px",
+                      }}
+                      value={price.toString()} // Set the value of the input field to the price state
+                      onChange={(e) => setPrice(parseFloat(e.target.value))}
+                    />
+                  </div>
+                </div>
+                <TextArea
+                  placeholder="Description"
+                  onChange={(e) =>
+                    handleCardInputChange(index, "description", e.target.value)
+                  }
+                  className="input-description"
+                  size="large"
+                  autoSize={{ minRows: 3, maxRows: 5 }}
+                />
+              </div>
+            </div>
           </div>
-        </Col>
-        <Col flex={4}>
-          <div className="upload-right">
-            <Form.Item
-              label="Title"
-              name="title"
-              rules={[{ required: true, message: "Please enter the title" }]}
+        ))}
+        <div style={{ width: "60%", marginBottom: "40px" }}>
+          {imageCards.length > 0 && (
+            <Button
+              type="primary"
+              onClick={handleSubmit}
+              size="large"
+              className="post-btn"
             >
-              <Input />
-            </Form.Item>
-
-            <Form.Item
-              label="Description"
-              name="description"
-              rules={[
-                { required: true, message: "Please enter the description" },
-              ]}
-            >
-              <Input.TextArea />
-            </Form.Item>
-
-            <Form.Item
-              label="Tag"
-              name="tag"
-              rules={[{ required: true, message: "Please enter the tag" }]}
-            >
-              <Input />
-            </Form.Item>
-          </div>
-        </Col>
-      </Row>
-
-      {imageUrl && (
-        <div style={{ marginTop: 16, textAlign: "center" }}>
-          <Image src={imageUrl} alt="Uploaded Image" width={200} />
+              Post
+            </Button>
+          )}
         </div>
-      )}
-
-      <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
-        <Button type="primary" htmlType="submit">
-          Upload
-        </Button>
-      </Form.Item>
-    </Form>
+      </div>
+    </>
   );
 };
 

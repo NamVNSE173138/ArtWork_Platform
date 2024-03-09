@@ -1,7 +1,7 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Home from "./page/Home";
-import Upload from "./page/Upload";
+import UploadImageForm from "./page/Upload";
 
 import Admin from "./page/Admin/Admin";
 import SignIn from "./page/Authentication/SignIn";
@@ -26,7 +26,7 @@ function App() {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/forgot" element={<Forgot />} />
       <Route path="/reset/:id" element={<Reset />} />
-      <Route path="/upload" element={<Upload />} />
+      <Route path="/upload" element={<UploadImageForm />} />
       <Route path="/profile/:userId" element={<ProfilePage />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/home" element={<Home />} />
