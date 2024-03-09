@@ -149,12 +149,15 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
       })
       .catch((err) => console.log(err));
   };
+
   useEffect(() => {
     fetchCurrentUserData();
   }, []);
+
   useEffect(() => {
     console.log("Current user: ", currentUser);
   }, [currentUser]);
+
   return (
     <div className="navbar-home">
       <div className="logo-container">

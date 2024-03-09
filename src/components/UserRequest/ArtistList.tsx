@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Avatar,
   Button,
@@ -33,6 +33,7 @@ import "./ArtistList.css";
 import TextArea from 'antd/es/input/TextArea';
 
 const ArtistList = () => {
+  const navigate = useNavigate()
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -78,15 +79,10 @@ const ArtistList = () => {
   }
   const [artistData, setArtistData] = useState<UserData[]>([]);
   useEffect(() => {
-    // Fetch data from API
-    fetch("http://localhost:5000/users") // Fetch all users
+    fetch("http://localhost:5000/users/artists")
       .then((response) => response.json())
       .then((data: UserData[]) => {
-        // Define type for data as UserData[]
-        console.log("Fetched data:", data); // Log fetched data to see its structure
-        // Filter users by role "artist"
-        const artistUsers = data.filter((user) => user.role === "artist");
-        setArtistData(artistUsers);
+        setArtistData(data);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
@@ -201,7 +197,8 @@ const ArtistList = () => {
                 <Button className="btn-fl" icon={<PlusCircleOutlined />}>
                   Follow
                 </Button>
-                <Button className="btn-fl" onClick={showModal}>
+                {/* <Button className="btn-fl" onClick={showModal}> */}
+                <Button className="btn-fl" onClick={() => navigate(`/request/requirements/${item._id}`)}>
                   Request to make artwork
                 </Button>
                 <Modal

@@ -13,6 +13,15 @@ module.exports = {
     }
   },
 
+  getArtistList: async (req, res, next) => {
+    try {
+      const results = await User.find({ role: "artist" }, { __v: 0 }).sort({ 'numOfFollower': -1 });
+      res.send(results);
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+
   createNewUser: async (req, res, next) => {
     try {
       const user = new User(req.body);
@@ -73,6 +82,29 @@ module.exports = {
     try {
       const id = req.params.id;
       const updates = req.body;
+      const options = { new: true };
+
+      const result = await User.findByIdAndUpdate(id, updates, options);
+      if (!result) {
+        throw createError(404, 'User does not exist');
+      }
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+      if (error instanceof mongoose.CastError) {
+        return next(createError(400, 'Invalid User Id'));
+      }
+
+      next(error);
+    }
+  },
+
+  updateArtistRole: async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      const updates = {
+        role: "artist"
+      };
       const options = { new: true };
 
       const result = await User.findByIdAndUpdate(id, updates, options);

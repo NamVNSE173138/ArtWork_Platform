@@ -129,7 +129,7 @@ export default function Navigator() {
                   Thousands of artists are ready to make your dream come true.
                 </p>
               </span>
-              <button className={styles.primaryButton} onClick={() => { navigate('/artistList') }}>
+              <button className={styles.primaryButton} onClick={() => { navigate('/request') }}>
                 START
                 <ArrowRightOutlined style={{ fontSize: '75%', display: 'inline', marginLeft: '10%' }} />
               </button>
