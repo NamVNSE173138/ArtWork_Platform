@@ -1,11 +1,11 @@
 const createError = require('http-errors')
 const mongoose = require('mongoose')
-const Order = require('../Models/order')
+const CartItem = require('../Models/cart')
 
 module.exports = {
-  getAllOrders: async (req, res, next) => {
+  getAllCartItems: async (req, res, next) => {
     try {
-      const results = await Order.find({}, { __v: 0 });
+      const results = await CartItem.find({}, { __v: 0 });
 
       res.send(results);
     }
@@ -14,30 +14,30 @@ module.exports = {
     }
   },
 
-  getOrderById: async (req, res, next) => {
+  getCartItemById: async (req, res, next) => {
     try {
       const id = req.params.id;
-      const results = await Order.findById(id);
+      const results = await CartItem.findById(id);
 
       if (results) {
         res.send(results);
       }
       else {
-        throw createError(404, "Order does not exist!")
+        throw createError(404, "CartItem does not exist!")
       }
     }
     catch (error) {
       console.log(error.message);
       if (error instanceof mongoose.CastError) {
-        return next(createError(400, 'Invalid Order Id'))
+        return next(createError(400, 'Invalid CartItem Id'))
       }
     }
   },
 
-  postNewOrder: async (req, res, next) => {
+  postNewCartItem: async (req, res, next) => {
     try {
-      const order = new Order(req.body);
-      const result = order.save();
+      const cartitem = new CartItem(req.body);
+      const result = cartitem.save();
 
       res.send(result);
     }
@@ -46,16 +46,16 @@ module.exports = {
     }
   },
 
-  updateOrder: async (req, res, next) => {
+  updateCartItem: async (req, res, next) => {
     try {
       const id = req.params.id;
-      const update = new Order(req.body);
+      const update = new CartItem(req.body);
       const options = { new: true };
 
-      const result = await Order.findByIdAndUpdate(id, update, options);
+      const result = await CartItem.findByIdAndUpdate(id, update, options);
 
       if (!result) {
-        throw createError(404, "Order does not exist!");
+        throw createError(404, "CartItem does not exist!");
       }
       else {
         res.send(result);
@@ -64,18 +64,18 @@ module.exports = {
     catch (error) {
       console.log(error.message);
       if (error instanceof mongoose.CastError) {
-        return next(createError(400, 'Invalid Order Id'))
+        return next(createError(400, 'Invalid CartItem Id'))
       }
     }
   },
 
-  deleteOrder: async (req, res, next) => {
+  deleteCartItem: async (req, res, next) => {
     try {
       const id = req.params.id;
-      const result = await Order.findByIdAndDelete(id);
+      const result = await CartItem.findByIdAndDelete(id);
 
       if (!result) {
-        throw createError(404, "Order does not exist!");
+        throw createError(404, "CartItem does not exist!");
       }
       else {
         res.send(result);
@@ -84,7 +84,7 @@ module.exports = {
     catch (error) {
       console.log(error.message);
       if (error instanceof mongoose.CastError) {
-        return next(createError(400, 'Invalid Order Id'));
+        return next(createError(400, 'Invalid CartItem Id'));
       }
     }
   }
