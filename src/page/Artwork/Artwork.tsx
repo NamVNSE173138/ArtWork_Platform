@@ -17,6 +17,7 @@ import nFormatter from "../../assistants/Formatter";
 import { FormikProps, Formik, useFormik } from "formik";
 import moment from "moment";
 import ReportForm from "../../components/ReportForm/ReportForm";
+import BuyArtwork from "../../components/BuyForm/BuyForm";
 import Favorite from "../../components/Favorite/Favorite";
 interface User {
   _id: string;
@@ -50,8 +51,8 @@ interface Comment {
   text: string;
   createdAt?: string;
   updatedAt?: string;
-  nickname?: string,
-  avatar?: string,
+  nickname?: string;
+  avatar?: string;
 }
 
 interface FavoriteList {
@@ -68,7 +69,7 @@ export default function Artwork() {
   const [isLoading, setIsLoading] = useState(false);
 
   const onSearchSubmit = async (term: string) => {
-    console.log(term)
+    console.log(term);
   };
 
   const navigate = useNavigate();
@@ -122,7 +123,6 @@ export default function Artwork() {
     createdAt: "",
     updatedAt: "",
   });
-
 
   const [commentList, setCommentList] = useState<Comment[]>([]);
   const [newCommentIncoming, setNewCommentIncoming] = useState(false);
@@ -210,10 +210,11 @@ export default function Artwork() {
   };
 
   const fetchCommentListData = async () => {
-    await axios.get(`http://localhost:5000/comments/artwork/${id}`)
+    await axios
+      .get(`http://localhost:5000/comments/artwork/${id}`)
       .then((res) => {
-        console.log("Comment list: ", res.data)
-        setCommentList(res.data)
+        console.log("Comment list: ", res.data);
+        setCommentList(res.data);
       })
       .catch((err) => console.log(err));
   };
@@ -362,9 +363,10 @@ export default function Artwork() {
                     )}
                   />
                 ) : (
-                  <div style={{ margin: '10px auto' }}>
+                  <div style={{ margin: "10px auto" }}>
                     <Text italic>
-                      There is no comment on this yet. Start sharing your thoughts on this.
+                      There is no comment on this yet. Start sharing your
+                      thoughts on this.
                     </Text>
                   </div>
                 )}
@@ -418,11 +420,12 @@ export default function Artwork() {
                   Share
                 </Button>
                 <ReportForm artwork={artwork._id} />
+                <BuyArtwork artwork={artwork._id} user={currentUser.id} />
               </div>
             </div>
           </>
         )}
-      </div >
+      </div>
     </>
   );
 }

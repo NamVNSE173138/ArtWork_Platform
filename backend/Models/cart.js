@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const OrderItemSchema = new Schema({
-  order: {
+const CartItemSchema = new Schema({
+  user: {
     type: Schema.Types.ObjectId,
-    ref: 'orders',
+    ref: 'users',
   },
   artwork: {
     type: Schema.Types.ObjectId,
-    ref: 'artworks',
+    ref: 'Artwork',
   },
   price: {
     type: Number,
@@ -18,6 +18,6 @@ const OrderItemSchema = new Schema({
   timestamps: true
 })
 
-const OrderItem = mongoose.model('OrderItem', OrderItemSchema);
+const CartItem = mongoose.model('CartItem', CartItemSchema);
 
-module.exports = OrderItem
+module.exports = CartItem

@@ -6,6 +6,7 @@ import {
   SolutionOutlined,
   HomeOutlined,
   WarningOutlined,
+  InfoCircleOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Avatar, theme, Breadcrumb } from "antd";
 import User from "../../components/Admin/User";
@@ -13,6 +14,7 @@ import Dashboard from "../../components/Admin/Dashboard";
 import Artwork from "../../components/Admin/Artwork";
 import Request from "../../components/Admin/Request/index";
 import Report from "../../components/Admin/Report/index";
+import Order from "../../components/Admin/Order/index";
 import avt from "../../assets/image/e1eb03f8282b4f89a438983023e90697 (1).png";
 
 const { Header, Sider, Content } = Layout;
@@ -56,6 +58,12 @@ const Admin: React.FC = () => {
       icon: <WarningOutlined />,
       label: "Report",
       onClick: () => setActiveComponent("Report"),
+    },
+    {
+      key: "6",
+      icon: <InfoCircleOutlined />,
+      label: "Order",
+      onClick: () => setActiveComponent("Order"),
     },
   ];
 
@@ -126,6 +134,7 @@ const Admin: React.FC = () => {
           {activeComponent === "Request" && <Request />}
           {activeComponent === "Artwork" && <Artwork />}
           {activeComponent === "Report" && <Report />}
+          {activeComponent === "Order" && <Order />}
         </Content>
       </Layout>
     </Layout>
