@@ -15,6 +15,8 @@ import {
   Row,
   Flex,
   Image,
+  message,
+  notification,
 } from "antd";
 import {
   CheckOutlined,
@@ -52,32 +54,50 @@ interface User {
 const UploadImageForm: React.FC = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [imageCards, setImageCards] = useState<ImageCard[]>([]);
-
+  const [api, contextHolder] = notification.useNotification();
   const handleImageUpload = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      if (imageCards.length < 10) {
-        setImageCards([
-          ...imageCards,
-          {
-            url: imageUrl,
-            name: "",
-            tags: [],
-            description: "",
-            price: 0,
-            user: "",
-            status: true,
-            numberOfLike: 0,
-          },
-        ]);
-        setImageUrl("");
+      if (validateUrl(imageUrl)) {
+        if (imageCards.length < 10) {
+          setImageCards([
+            ...imageCards,
+            {
+              url: imageUrl,
+              name: "",
+              tags: [],
+              description: "",
+              price: 0,
+              user: "",
+              status: true,
+              numberOfLike: 0,
+            },
+          ]);
+          setImageUrl("");
+        } else {
+          console.log("duoi 10 images");
+        }
       } else {
-        console.log("duoi 10 images");
+        api.open({
+          message: "Invalid URL",
+          description:
+            "The URL you entered is not valid. Please enter a valid URL.",
+          duration: 2,
+          type: "warning",
+        });
       }
     }
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setImageUrl(event.target.value);
+  };
+  const validateUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
   };
 
   type ImageCardKey = keyof ImageCard;
@@ -246,7 +266,7 @@ const UploadImageForm: React.FC = () => {
   );
 
   const handleSubmit = () => {
-    imageCards.forEach((image, index) => {
+    const promises = imageCards.map((image, index) => {
       console.log(`Image ${index + 1}:`);
       console.log(currentUser.id);
 
@@ -274,29 +294,53 @@ const UploadImageForm: React.FC = () => {
         status: true,
       };
       // console.log(data);
-      fetch("http://localhost:5000/artworks", {
+      return fetch("http://localhost:5000/artworks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       })
-        .then((response) => response.json())
-        .then((data) => console.log(data))
-        .catch((error) => {
-          console.error("Error:", error);
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          return data; // Pass data forward
         });
     });
+
+    Promise.all(promises)
+      .then(() => {
+        message.success("Images posted successfully");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        message.error("Failed to post images");
+      });
   };
 
   return (
     <>
-      <Flex align="center" justify="center" style={{ marginTop: '6%' }} gap={10}>
-        <h2>SHARE YOUR ART TO PEOPLE</h2>
-        <Image src="https://i.pinimg.com/originals/7c/43/0b/7c430ba6fb3cd7058aec52cb84a080e6.png" alt="" width={70} />
-      </Flex>
-      {/* <h4 className="title">Import from URL</h4> */}
       <div className="upload-image-form">
+        <Flex
+          align="center"
+          justify="center"
+          // style={{ marginTop: "6%" }}
+          gap={10}
+        >
+          <h2>SHARE YOUR ART TO PEOPLE</h2>
+          <Image
+            src="https://i.pinimg.com/originals/7c/43/0b/7c430ba6fb3cd7058aec52cb84a080e6.png"
+            alt=""
+            width={70}
+            preview={false}
+          />
+        </Flex>
+        {contextHolder}
         <Input
           placeholder="Import image URL"
           onChange={handleInputChange}
