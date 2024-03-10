@@ -80,7 +80,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
         <Link
           id="profile"
           className="dropdown-item"
-          to={`/profile/${currentUser.id}`}
+          to={`/profile`}
         >
           <strong>View profile</strong>
         </Link>
@@ -90,7 +90,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     {
       label: (
         <Link id="profile" className="dropdown-item" to={`/cart`}>
-          <strong>View Cart</strong>
+          <strong>View cart</strong>
         </Link>
       ),
       key: 2,

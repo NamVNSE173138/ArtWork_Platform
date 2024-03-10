@@ -173,14 +173,8 @@ export default function UserRequestList() {
     }
 
     return (
-        <>
-            <Navbar onSubmit={() => { }} />
-            <Flex vertical justify='center' align='center'>
-                <Title style={{ fontFamily: '"Kanit", sans-serif', paddingBottom: '1%' }}>PERSONAL ARTWORK VISUALIZING REQUEST</Title>
-                <Table columns={columns} dataSource={userRequestList}
-                    pagination={{ hideOnSinglePage: true }}
-                    scroll={{ y: 500, scrollToFirstRowOnChange: true }} />
-            </Flex>
-        </>
+        <Table columns={columns} dataSource={userRequestList}
+            pagination={{ hideOnSinglePage: true }}
+            scroll={{ y: 500, scrollToFirstRowOnChange: true }} />
     )
 }

@@ -22,6 +22,7 @@ import CartPage from "./page/Cart/CartPage";
 import VisualizeRequest from "./page/VisualizeRequest/RequestHistory";
 import UserRequestList from "./components/Profile/UserRequestList";
 import RequestApproval from "./page/VisualizeRequest/RequestApproval";
+import UserRequestOnArtist from "./page/UserRequest on Artist/UserRequestOnArtist";
 
 function App() {
   return (
@@ -35,7 +36,7 @@ function App() {
       <Route path="/reset/:id" element={<Reset />} />
       <Route path="/upload" element={<UploadImageForm />} />
       <Route path="/profile/" element={<ProfilePage />} />
-      <Route path="/profile/requests" element={<UserRequestList />} />
+      <Route path="/profile/requests" element={<UserRequestOnArtist />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/home" element={<Home />} />
       <Route path="/artwork/:id" element={<Artwork />} />

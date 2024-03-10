@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import axios, { AxiosResponse } from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Flex, Image, Typography, Button, message, Avatar } from 'antd';
+import { Flex, Image, Typography, Button, message, Avatar, Card } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import styles from './UserRequest.module.css'
 import { useFormik } from "formik";
@@ -21,8 +21,17 @@ interface Pin {
     imageUrl: string;
 }
 
-interface ArtworkResponse {
-    data: Pin[];
+export interface UserRequest {
+    _id: string,
+    name: string,
+    quantity: number,
+    description: string,
+    priceEst: number,
+    message: string,
+    artist: User | {},
+    user: User | {},
+    createdAt: string,
+    updatedAt: string,
 }
 
 interface User {
@@ -57,16 +66,17 @@ export default function RequestApproval() {
     const [pins, setPins] = useState<Pin[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [image, setImage] = useState([]);
-    const [artist, setArtist] = useState<User>({
+    const [userRequest, setUserRequest] = useState<UserRequest>({
         _id: '',
-        email: '',
-        nickname: '',
-        bio: '',
-        role: '',
-        numOfFollower: 0,
-        avatar: '',
-        password: '',
-        status: false,
+        name: '',
+        quantity: 0,
+        description: '',
+        priceEst: 0,
+        message: '',
+        artist: {},
+        user: {},
+        createdAt: '',
+        updatedAt: '',
     })
 
     const [currentUser, setCurrentUser] = useState({
@@ -85,15 +95,6 @@ export default function RequestApproval() {
 
     };
 
-    const fetchArtistData = async () => {
-        await axios.get(`http://localhost:5000/users/${id}`)
-            .then((res: AxiosResponse) => {
-                console.log("Artist data: ", res.data)
-                setArtist(res.data)
-            })
-            .catch((err) => console.log(err))
-    }
-
     const fetchCurrentUserData = async () => {
         await axios
             .get(`http://localhost:5000/users/getUserInfo`, {
@@ -108,15 +109,44 @@ export default function RequestApproval() {
             .catch((err) => console.log(err));
     };
 
+    const fetchUserRequestData = async () => {
+        await axios.get(`http://localhost:5000/userRequests/${id}`)
+            .then((res: AxiosResponse) => {
+                console.log("User request data: ", res.data)
+                setUserRequest(res.data)
+            })
+            .catch((err) => console.log(err))
+    }
+
     useEffect(() => {
         fetchCurrentUserData();
-        fetchArtistData();
+        fetchUserRequestData();
     }, []);
 
     return (
         <>
-            <Navbar onSubmit={onSearchSubmit} />
             {contextHolder}
+            <Navbar onSubmit={onSearchSubmit} />
+            <Card size="default" title={<Text strong>REQUIREMENTS</Text>} className={styles.requirementCard}>
+                <Flex vertical justify='center' align='center' gap={10} className={styles.requirementSection}>
+                    <Flex justify='center' align='center' gap={10}>
+                        <Text strong>Name:</Text>
+                        <Text italic>{userRequest.name}</Text>
+                    </Flex>
+                    <Flex justify='center' align='center' gap={10}>
+                        <Text strong>Description:</Text>
+                        <Text italic>{userRequest.description}</Text>
+                    </Flex>
+                    <Flex justify='center' align='center' gap={10}>
+                        <Text strong mark>Message:</Text>
+                        <Text italic mark>{userRequest.message}</Text>
+                    </Flex>
+                    <Flex justify='center' align='center' gap={10}>
+                        <Text strong code>Quantity:</Text>
+                        <Text italic code>{userRequest.quantity}</Text>
+                    </Flex>
+                </Flex>
+            </Card>
             <UploadImageForm />
         </>
     )
