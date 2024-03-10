@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Navbar from "../components/Navbar/Navbar";
-import Artist from "../components/ArtistList/ArtistList";
+import Navbar from "../../components/Navbar/Navbar";
+import Artist from "../../components/UserRequest/ArtistList";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -88,7 +88,7 @@ const ArtistList: React.FC = () => {
     getNewPins();
   }, []);
 
-  useEffect(() => {}, [pins]);
+  useEffect(() => { }, [pins]);
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />

@@ -36,6 +36,12 @@ app.use('/conversations', ConversationRoute)
 const CheckoutRoute = require('./Routes/Checkout.route.js')
 app.use('/checkouts', CheckoutRoute)
 
+const UserRequestRoute = require('./Routes/UserRequest.route.js')
+app.use('/userRequests', UserRequestRoute)
+
+const ArtistRequestRoute = require('./Routes/ArtistRequest.route.js')
+app.use('/artistRequests', ArtistRequestRoute)
+
 app.use((req, res, next) => {
   next(createError(404, "Not found"))
 })

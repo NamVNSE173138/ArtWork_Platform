@@ -1,21 +1,13 @@
-.upload-form {
+/* .upload-form {
     margin-top: 70px;
     margin-left: 100px;
-    /* display: flex;
-    justify-content: space-between; */
     align-items: center;
-
-    /* width: 100%; */
 }
 
-.upload-left {
-    /* width: 48%; */
-    /* Adjust as needed */
-}
+
 
 .upload-right {
     width: 100%;
-    /* Adjust as needed */
 }
 
 .upload-list-inline .ant-upload-list-item {
@@ -51,4 +43,136 @@ span.anticon.anticon-delete {
 
 label.ant-form-item-required {
     font-size: 18px !important;
+} */
+/* Container holding the image and the form */
+
+.upload-image-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 50px;
+    position: relative;
+}
+
+.image-card-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+
+}
+
+.image-card {
+    margin-top: 20px;
+    width: 240;
+}
+
+h2 {
+    margin-top: 100px !important;
+    margin-left: 20px;
+}
+
+h4.title {
+    margin-top: 30px;
+    margin-left: 200px;
+    text-align: unset !important;
+}
+
+input.ant-input.ant-input-lg.css-dev-only-do-not-override-dkbvqv.image-url-input.css-dev-only-do-not-override-dkbvqv {
+    /* margin: 0 50px !important; */
+    width: 75%;
+    /* border: 1px solid #ccc; */
+    border-radius: 4px;
+    padding: 8px;
+    background-color: #f1f1f1;
+
+}
+
+.card-container {
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    width: 60%;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+
+/* The image */
+.image-card {
+    width: 50%;
+
+    object-fit: cover;
+    max-height: 460px;
+    margin: 20px;
+    border-radius: 20px;
+
+}
+
+/* The form */
+.input-container {
+    width: 50%;
+    padding: 20px;
+}
+
+
+input.ant-input.ant-input-lg.css-dev-only-do-not-override-dkbvqv.input-name.css-dev-only-do-not-override-dkbvqv {
+    margin-bottom: 20px;
+}
+
+span {
+    font-size: 16px;
+}
+
+.tags {
+    margin-bottom: 20px;
+}
+
+input.ant-input.ant-input-lg.css-dev-only-do-not-override-dkbvqv.input-description.css-dev-only-do-not-override-dkbvqv {
+    margin-bottom: 20px;
+}
+
+:where(.css-dev-only-do-not-override-dkbvqv).ant-card-bordered {
+    border: none;
+}
+
+:where(.css-dev-only-do-not-override-dkbvqv).ant-card .ant-card-body {
+    padding: 0 0 24px 0;
+    border-radius: 0 0 8px 8px;
+}
+
+span.ant-avatar.ant-avatar-circle.ant-avatar-image.avt-user.css-dev-only-do-not-override-dkbvqv {
+
+    height: 50px;
+    width: 50px;
+}
+
+.option-price {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.radio-checkout .ant-checkbox-inner {
+    width: 30px;
+    height: 30px;
+}
+
+.radio-checkout .ant-checkbox-inner::after {
+    left: 9px;
+    /* top: 5px; */
+    width: 8px;
+    height: 14px;
+}
+
+.button-remove {
+    margin-top: 20px;
+}
+
+.post-btn {
+    position: absolute;
+    right: 15%;
+    margin: 20px;
 }
