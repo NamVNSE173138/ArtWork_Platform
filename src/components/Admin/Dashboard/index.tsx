@@ -18,6 +18,7 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { getReportWithUserAndArtwork } from "../../../api/report/reportAPI";
+import userEvent from "@testing-library/user-event";
 
 ChartJS.register(
   CategoryScale,
@@ -148,7 +149,9 @@ function RecentRequest(): JSX.Element {
   useEffect(() => {
     setLoading(true);
     getArtwork().then((res: any) => {
-      setDataSource(res.splice(0, 3));
+      setDataSource(
+        res.filter((stat: any) => stat.status === false).splice(0, 3)
+      );
       setLoading(false);
     });
   }, []);
@@ -161,15 +164,16 @@ function RecentRequest(): JSX.Element {
         columns={[
           {
             title: "Name",
-            dataIndex: "nickname",
+            dataIndex: "name",
           },
           {
-            title: "Email",
-            dataIndex: "email",
+            title: "Description",
+            dataIndex: "description",
           },
           {
-            title: "Untitled",
-            dataIndex: "",
+            title: "Status",
+            dataIndex: "status",
+            render: () => "Pending",
           },
         ]}
         loading={loading}
@@ -187,12 +191,12 @@ function DashboardChart(): JSX.Element {
   });
 
   useEffect(() => {
-    getRevenue().then((res: any) => {
-      const labels = res.carts.map((cart: any) => {
-        return `User-${cart.userId}`;
+    getUser().then((res: any) => {
+      const labels = res.map((userCreated: any) => {
+        return userCreated.nickname;
       });
-      const data = res.carts.map((cart: any) => {
-        return cart.discountedTotal;
+      const data = res.map((userCreated: any) => {
+        return userCreated.length;
       });
       const dataSource = {
         labels,

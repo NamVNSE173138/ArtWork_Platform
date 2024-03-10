@@ -15,8 +15,14 @@ app.use('/users', userRouter);
 const artworkRouter = require("./Routes/Artwork.route.js");
 app.use("/artworks", artworkRouter);
 
+const CartItemRouter = require("./Routes/CartItem.route.js");
+app.use("/carts", CartItemRouter);
+
 const ReportRoute = require('./Routes/Report.route.js');
 app.use('/reports', ReportRoute);
+
+const NotificationRoute = require('./Routes/Notification.route.js');
+app.use('/notifications', NotificationRoute);
 
 const CommentRoute = require('./Routes/Comment.route.js')
 app.use('/comments', CommentRoute)

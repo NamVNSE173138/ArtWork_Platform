@@ -12,11 +12,12 @@ import {
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
-import axios from 'axios';
+import axios from "axios";
 import nFormatter from "../../assistants/Formatter";
 import { FormikProps, Formik, useFormik } from "formik";
 import moment from "moment";
 import ReportForm from "../../components/ReportForm/ReportForm";
+import BuyArtwork from "../../components/BuyForm/BuyForm";
 import Favorite from "../../components/Favorite/Favorite";
 interface User {
   id: string;
@@ -50,8 +51,8 @@ interface Comment {
   text: string;
   createdAt?: string;
   updatedAt?: string;
-  nickname?: string,
-  avatar?: string,
+  nickname?: string;
+  avatar?: string;
 }
 
 interface FavoriteList {
@@ -68,7 +69,7 @@ export default function Artwork() {
   const [isLoading, setIsLoading] = useState(false);
 
   const onSearchSubmit = async (term: string) => {
-    console.log(term)
+    console.log(term);
   };
 
   const navigate = useNavigate();
@@ -122,7 +123,6 @@ export default function Artwork() {
     createdAt: "",
     updatedAt: "",
   });
-
 
   const [commentList, setCommentList] = useState<Comment[]>([]);
   const [newCommentIncoming, setNewCommentIncoming] = useState(false);
@@ -195,7 +195,7 @@ export default function Artwork() {
     await axios
       .get(`http://localhost:5000/artworks/${id}`)
       .then((res: any) => {
-        console.log("Artwork:", res.data)
+        console.log("Artwork:", res.data);
         setArtwork(res.data);
         axios
           .get(`http://localhost:5000/users/${res.data.user}`)
@@ -209,10 +209,11 @@ export default function Artwork() {
   };
 
   const fetchCommentListData = async () => {
-    await axios.get(`http://localhost:5000/comments/artwork/${id}`)
+    await axios
+      .get(`http://localhost:5000/comments/artwork/${id}`)
       .then((res) => {
-        console.log("Comment list: ", res.data)
-        setCommentList(res.data)
+        console.log("Comment list: ", res.data);
+        setCommentList(res.data);
       })
       .catch((err) => console.log(err));
   };
@@ -224,12 +225,13 @@ export default function Artwork() {
 
       console.log("user", currentUser.id);
       if (!currentUser || !currentUser.id) {
-        console.error('Current user data is not available');
+        console.error("Current user data is not available");
         return;
       }
       // Make a POST request to likeArtwork API endpoint
       const response = await axios.post(
-        `http://localhost:5000/artworks/favoriteList/${artwork._id}`, { user: currentUser.id },
+        `http://localhost:5000/artworks/favoriteList/${artwork._id}`,
+        { user: currentUser.id },
         {
           headers: {
             Authorization: userToken,
@@ -336,8 +338,16 @@ export default function Artwork() {
                             />
                           </span>
                           <div className={styles.commentInfo}>
-                            <Flex vertical gap={6} style={{ marginLeft: '8px' }}>
-                              <Flex vertical className={styles.commentText} style={{ fontSize: '90%' }}>
+                            <Flex
+                              vertical
+                              gap={6}
+                              style={{ marginLeft: "8px" }}
+                            >
+                              <Flex
+                                vertical
+                                className={styles.commentText}
+                                style={{ fontSize: "90%" }}
+                              >
                                 <Text
                                   strong
                                   id={styles.userName}
@@ -347,11 +357,21 @@ export default function Artwork() {
                                 >
                                   {comment.user?.nickname}
                                 </Text>
-                                <Text style={{ maxWidth: 'fit-content', paddingRight: '5px' }}>
+                                <Text
+                                  style={{
+                                    maxWidth: "fit-content",
+                                    paddingRight: "5px",
+                                  }}
+                                >
                                   {comment.text}
                                 </Text>
                               </Flex>
-                              <Text style={{ fontSize: '70%', minWidth: 'fit-content' }}>
+                              <Text
+                                style={{
+                                  fontSize: "70%",
+                                  minWidth: "fit-content",
+                                }}
+                              >
                                 {moment(comment.createdAt).fromNow()}
                               </Text>
                             </Flex>
@@ -361,9 +381,10 @@ export default function Artwork() {
                     )}
                   />
                 ) : (
-                  <div style={{ margin: '10px auto' }}>
+                  <div style={{ margin: "10px auto" }}>
                     <Text italic>
-                      There is no comment on this yet. Start sharing your thoughts on this.
+                      There is no comment on this yet. Start sharing your
+                      thoughts on this.
                     </Text>
                   </div>
                 )}
@@ -417,11 +438,12 @@ export default function Artwork() {
                   Share
                 </Button>
                 <ReportForm artwork={artwork._id} />
+                <BuyArtwork artwork={artwork._id} user={currentUser.id} />
               </div>
             </div>
           </>
         )}
-      </div >
+      </div>
     </>
   );
 }

@@ -17,7 +17,8 @@ import RequestRequirements from "./page/UserRequest/RequestRequirements";
 import ArtistProfile from "./components/ArtistProfile/ArtistProfile";
 import ArtworkRequest from "./page/ArtworkRequest";
 import ProfilePage from "./components/Profile/Profile";
-
+import NotificationPage from "./page/NotificationPage/NotificationPage";
+import CartPage from "./page/Cart/CartPage";
 
 function App() {
   return (
@@ -36,9 +37,15 @@ function App() {
       <Route path="/artwork/:id" element={<Artwork />} />
       <Route path="/favoriteList" element={<FavoriteList />} />
       <Route path="/request" element={<ArtistList />} />
-      <Route path="/request/requirements/:id" element={<RequestRequirements />} />
+      <Route
+        path="/request/requirements/:id"
+        element={<RequestRequirements />}
+      />
       <Route path="/artistList/:_id" element={<ArtistProfile />} />
       <Route path="/artworkRequest" element={<ArtworkRequest />} />
+
+      <Route path="/cart" element={<CartPage />} />
+      <Route path="/notifications" element={<NotificationPage />} />
     </Routes>
   );
 }

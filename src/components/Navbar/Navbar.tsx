@@ -89,11 +89,23 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     },
     {
       label: (
+        <Link
+          id="profile"
+          className="dropdown-item"
+          to={`/cart`}
+        >
+          <strong>View Cart</strong>
+        </Link>
+      ),
+      key: 2,
+    },
+    {
+      label: (
         <Link id="profile" className="dropdown-item" to={`/forgot`}>
           <strong>Reset password</strong>
         </Link>
       ),
-      key: 2,
+      key: 3,
     },
     {
       type: "divider",
@@ -111,7 +123,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
           </p>
         </div>
       ),
-      key: 3,
+      key: 4,
     },
   ];
 
@@ -183,6 +195,26 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
       {(toggleMenu || screenWidth > 768) && (
         <nav className="navbar-links">
           <ul>
+            <li>
+              <Link
+                id="upload"
+                className="item"
+                to="/upload"
+                onClick={toggleNav}
+              >
+                BECOME AN ARTIST
+              </Link>
+            </li>
+            <li>
+              <Link
+                id="request"
+                className="item"
+                to="/request"
+                onClick={toggleNav}
+              >
+                VISUALIZE YOUR ART
+              </Link>
+            </li>
             <li>
               <Search
                 placeholder="Search..."

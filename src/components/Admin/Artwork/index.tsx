@@ -1,4 +1,4 @@
-import { Avatar, Space, Table, Typography, Modal, Input } from "antd";
+import { Avatar, Space, Table, Modal, Input } from "antd";
 import { useEffect, useState } from "react";
 import { getArtwork, getArtworkId, deleteArtwork } from "../../../api/index";
 import { SolutionOutlined, StopOutlined } from "@ant-design/icons";
@@ -91,7 +91,7 @@ const Artwork: React.FC = () => {
               title: "Thumbnail",
               dataIndex: "imageUrl",
               render: (link: string) => (
-                <Avatar shape="square" src={link} size={50} />
+                <Avatar shape="square" src={link} size={48} />
               ),
             },
             {
@@ -110,11 +110,20 @@ const Artwork: React.FC = () => {
             {
               title: "Tags",
               dataIndex: "tags",
+              render: (tags: string[]) => (
+                <>
+                  {tags.map((tag) => (
+                    <span key={tag} style={{ marginRight: 10 }}>
+                      #{tag}
+                    </span>
+                  ))}
+                </>
+              ),
             },
-            {
-              title: "Description",
-              dataIndex: "description",
-            },
+            // {
+            //   title: "Description",
+            //   dataIndex: "description",
+            // },
             {
               title: "Action",
               dataIndex: "_id",

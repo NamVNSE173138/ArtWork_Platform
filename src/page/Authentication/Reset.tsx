@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'react-toastify/dist/ReactToastify.css';
-import "./Authentication.css"
+import styles from "./Authentication.module.css"
 import { Button, Image, Divider } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,9 +9,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
 import axios from "axios";
-import { generateCode } from "../../assistants/Generators";
 import logo from "../../assets/image/logo-transparent.png";
-
+import randomImageUrl from '../../assets/image/reset.jpg'
 interface User {
     _id: string,
     email: string,
@@ -28,7 +27,7 @@ export default function Reset() {
     const [isLoading, setIsLoading] = useState(false)
     const params = useParams()
 
-    const randomImage = "https://i.pinimg.com/564x/3a/e6/7d/3ae67df286b9b8e568de17e4657fd21d.jpg";
+    const randomImage = randomImageUrl;
 
     const resetPasswordForm = useFormik({
         initialValues: {
@@ -56,12 +55,12 @@ export default function Reset() {
     })
 
     return (
-        <div className="container">
-            <div className="left-container">
-                <Image src={randomImage} width={400} preview={false} />
+        <div className={styles.container}>
+            <div className={styles.leftContainer}>
+                <Image src={randomImage} width={600} preview={false} className={styles.displayImage} />
             </div>
             <Divider type="vertical" />
-            <div className="right-container row" style={{ padding: "20px 0" }}>
+            <div className={styles.rightContainer} style={{ padding: "20px 0" }}>
                 <Image
                     src={logo}
                     width={300}
@@ -70,7 +69,7 @@ export default function Reset() {
                 <form onSubmit={resetPasswordForm.handleSubmit}>
                     <h5>Enter your email address to reset password.</h5>
                     <br />
-                    <div className="mb-2 mt-2">
+                    <div>
                         <input
                             type="password"
                             name="password"
@@ -79,14 +78,14 @@ export default function Reset() {
                             onBlur={resetPasswordForm.handleBlur}
                             value={resetPasswordForm.values.password}
                         />
-                        <div className="error">
+                        <div className={styles.error}>
                             {resetPasswordForm.errors.password ? (
                                 <i>{resetPasswordForm.errors.password}</i>
                             ) : null}
                         </div>
                     </div>
 
-                    <div className="mb-2 mt-2">
+                    <div>
                         <input
                             type="password"
                             name="confirm"
@@ -95,13 +94,13 @@ export default function Reset() {
                             onBlur={resetPasswordForm.handleBlur}
                             value={resetPasswordForm.values.confirm}
                         />
-                        <div className="error">
+                        <div className={styles.error}>
                             {resetPasswordForm.errors.confirm ? (
                                 <i>{resetPasswordForm.errors.confirm}</i>
                             ) : null}
                         </div>
                     </div>
-                    <span className="modal-button-group" style={{ flexDirection: "column", marginTop: "20px" }}>
+                    <span className={styles.modalButtonGroup} style={{ flexDirection: "column", marginTop: "20px" }}>
                         <Button type="primary" htmlType="submit" shape="round" block disabled={isLoading ? true : false}>
                             {isLoading ? <LoadingOutlined /> : <p>Finish</p>}
                         </Button>

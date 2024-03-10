@@ -6,22 +6,28 @@ const UserRequestSchema = new Schema({
         type: String,
         required: true,
     },
-    tags: {
-        type: [String],
-        required: false,
-        default: ['none']
-    },
     description: {
+        type: String,
+        required: false,
+    },
+    priceEst: {
+        type: Number,
+        required: true,
+        default: 0,
+    },
+    message: {
         type: String,
         required: false,
     },
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
+        required: true,
     },
     artist: {
         type: Schema.Types.ObjectId,
         ref: 'User',
+        required: true,
     },
     status: {
         type: Boolean,

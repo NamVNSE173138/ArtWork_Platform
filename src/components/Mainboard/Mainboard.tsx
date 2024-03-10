@@ -11,14 +11,20 @@ import {
   Watermark,
   message,
 } from "antd";
-import { DownloadOutlined, HeartFilled, PlusOutlined } from "@ant-design/icons";
+import {
+  DownloadOutlined,
+  HeartFilled,
+  PlusOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { saveAs } from "file-saver";
 import Box from "@mui/material/Box";
 import Masonry from '@mui/lab/Masonry';
 import axios from "axios";
-import LazyLoad from 'react-lazyload';
+import LazyLoad from "react-lazyload";
+import { addToCart } from "../../api/cart/cartAPI";
 
 interface MainboardProps {
   pins: PinProps[];
@@ -76,9 +82,7 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
   const userToken = localStorage.getItem("USER");
   const [isLiked, setIsLiked] = useState(false); // State to track if artwork is liked
   const [favoriteList, setFavoriteList] = useState<FavoriteList[]>([]);
-
   const [isLoading, setIsLoading] = useState(false);
-
   const [currentUser, setCurrentUser] = useState<User>({
     id: "",
     email: "",
@@ -132,6 +136,7 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
     createdAt: "",
     updatedAt: "",
   });
+
   const likeArtwork = async (pinId: string) => {
     try {
       console.log("dfbnkdjbskdhbkh");
@@ -165,6 +170,54 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
       // Handle error
     }
   };
+
+  const handleAddToCart = async (pinId: string) => {
+    // try {
+    //   console.log("dfbnkdjbskdhbkh");
+    //   console.log(localStorage.getItem("USER"));
+
+    //   console.log("user", currentUser.id);
+    //   if (!currentUser || !currentUser.id) {
+    //     console.error("Current user data is not available");
+    //     return;
+    //   }
+    //   const response = await axios.post(
+    //     `http://localhost:5000/carts/${pinId}`,
+    //     { user: currentUser.id },
+    //     {
+    //       headers: {
+    //         Authorization: userToken,
+    //       },
+    //     }
+    //   );
+    //   console.log("Response:", response.data);
+    //   if (response.status == 200) {
+    //     console.log("favorite", response.data);
+    //     setIsLiked(true);
+    //     setCart([
+    //       ...cart,
+    //       { user: response.data.currentUser, artwork: response.data.artwork },
+    //     ]);
+    //   }
+    // } catch (error: any) {
+    //   console.error("Error liking artwork:", error.message);
+    //   // Handle error
+    // }
+    message.success("Added To Cart!");
+  };
+
+  // const handleAddToCart = (pinId: string) => {
+  //   if (pinId !== cartData.artwork) {
+  //     setCartData({
+  //       ...cartData,
+  //       // user: currentUser.id,
+  //       user: "65bc7471c22e1a44d323b6a0",
+  //       artwork: pinId,
+  //       price: 0,
+  //     });
+  //   }
+  //   addToCart(cartData);
+  // };
 
   const handleAdd = () => {
     message.success("Added!");
@@ -268,14 +321,20 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
               <div className="Wrapper" key={index}>
                 <div className="top-btn">
                   <Button
-                    size="large"
+                    // size="large"
+                    className="like-btn"
+                    icon={<ShoppingCartOutlined />}
+                    onClick={() => handleAddToCart(pin._id)}
+                  />
+                  <Button
+                    // size="large"
                     className="like-btn"
                     icon={<HeartFilled />}
                     onClick={() => likeArtwork(pin._id)}
                     disabled={isLiked}
                   />
                   <Button
-                    size="large"
+                    // size="large"
                     className="add-btn"
                     icon={<PlusOutlined />}
                     onClick={handleAdd}
@@ -283,7 +342,7 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                 </div>
                 <div className="bottom-btn">
                   <Button
-                    size="large"
+                    // size="large"
                     className="download-btn"
                     icon={<DownloadOutlined />}
                     onClick={(event) => handleDownload(event, pin)}

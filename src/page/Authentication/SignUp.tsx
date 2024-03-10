@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
-import "./Authentication.css";
+import styles from "./Authentication.module.css"
 import { Button, Image, Divider, Typography, Modal } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { GoogleLogin } from "@react-oauth/google";
@@ -10,12 +10,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { jwtDecode } from "jwt-decode";
-import FacebookLogin from "react-facebook-login";
-import FacebookIcon from "../../assets/icons/facebook.png";
 import emailjs from "@emailjs/browser";
 import axios from "axios";
 import logo from "../../assets/image/logo-transparent.png";
 import { generatePassword, generateCode } from "../../assistants/Generators";
+import randomImageUrl from '../../assets/image/signup.jpg'
 
 interface User {
   _id?: string;
@@ -87,8 +86,7 @@ export default function SignUp() {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const { Text } = Typography;
-  const randomImage =
-    "https://i.pinimg.com/564x/3a/e6/7d/3ae67df286b9b8e568de17e4657fd21d.jpg";
+  const randomImage = randomImageUrl
 
   const [registerUser, setRegisterUser] = useState<User>({
     _id: "",
@@ -295,20 +293,19 @@ export default function SignUp() {
 
   return (
     <>
-      <div className="container">
-        <div className="left-container">
-          <Image src={randomImage} width={400} preview={false} />
+      <div className={styles.container}>
+        <div className={styles.leftContainer}>
+          <Image src={randomImage} width={600} preview={false} className={styles.displayImage} />
         </div>
         <Divider type="vertical" />
-        <div className="right-container row">
+        <div className={styles.rightContainer}>
           <Image
-            className=""
             src={logo}
             width={180}
             preview={false}
           />
           <form ref={formRef} onSubmit={signUpForm.handleSubmit}>
-            <div className="mb-2 mt-2">
+            <div>
               <input
                 type="text"
                 name="email"
@@ -317,13 +314,13 @@ export default function SignUp() {
                 onBlur={signUpForm.handleBlur}
                 value={signUpForm.values.email}
               />
-              <div className="error">
+              <div className={styles.error}>
                 {signUpForm.touched.email && signUpForm.errors.email ? (
                   <i>{signUpForm.errors.email}</i>
                 ) : null}
               </div>
             </div>
-            <div className="mb-2 mt-2">
+            <div>
               <input
                 type="password"
                 name="password"
@@ -332,13 +329,13 @@ export default function SignUp() {
                 onBlur={signUpForm.handleBlur}
                 value={signUpForm.values.password}
               />
-              <div className="error">
+              <div className={styles.error}>
                 {signUpForm.touched.password && signUpForm.errors.password ? (
                   <i>{signUpForm.errors.password}</i>
                 ) : null}
               </div>
             </div>
-            <div className="mb-2 mt-2">
+            <div>
               <input
                 type="password"
                 name="confirm"
@@ -347,13 +344,13 @@ export default function SignUp() {
                 onBlur={signUpForm.handleBlur}
                 value={signUpForm.values.confirm}
               />
-              <div className="error">
+              <div className={styles.error}>
                 {signUpForm.touched.confirm && signUpForm.errors.confirm ? (
                   <i>{signUpForm.errors.confirm}</i>
                 ) : null}
               </div>
             </div>
-            <div className="mb-2 mt-2">
+            <div>
               <input
                 type="text"
                 name="nickname"
@@ -362,7 +359,7 @@ export default function SignUp() {
                 onBlur={signUpForm.handleBlur}
                 value={signUpForm.values.nickname}
               />
-              <div className="error">
+              <div className={styles.error}>
                 {signUpForm.touched.nickname && signUpForm.errors.nickname ? (
                   <i>{signUpForm.errors.nickname}</i>
                 ) : null}
@@ -402,7 +399,7 @@ export default function SignUp() {
               or you can sign in with
             </Text>
           </Divider>
-          <div className="otherLogin">
+          <div className={styles.otherLogin}>
             <GoogleLogin
               onSuccess={onGoogleSuccess}
               onError={onGoogleError}
@@ -429,7 +426,7 @@ export default function SignUp() {
                   onBlur={codeVerifyForm.handleBlur}
                   value={codeVerifyForm.values.code}
                 />
-                <div className="error">
+                <div className={styles.error}>
                   {codeStatus !== "" ? <i>{codeStatus}</i> : null}
                 </div>
                 <input
@@ -437,7 +434,7 @@ export default function SignUp() {
                   name="email"
                   value={signUpForm.values.email}
                 />
-                <span className="modal-button-group">
+                <span className={styles.modalButtonGroup}>
                   <Button
                     type="default"
                     shape="round"
@@ -463,7 +460,7 @@ export default function SignUp() {
               </form>
             </Modal>
           </div>
-          <div className="form-footer">
+          <div className={styles.formFooter}>
             <p>Already have account?&nbsp;</p>
             <a
               onClick={() => {

@@ -69,7 +69,7 @@ const ReportForm = (record: any) => {
   return (
     <>
       <Button
-        style={{ float: "right", marginRight: "50px" }}
+        style={{ float: "right" }}
         size="large"
         onClick={showModal}
         icon={<WarningOutlined />}

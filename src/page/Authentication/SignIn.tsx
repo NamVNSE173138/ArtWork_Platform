@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
-import "./Authentication.css";
+import styles from "./Authentication.module.css"
 import { Button, Image, Divider, Typography } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { GoogleLogin } from "@react-oauth/google";
@@ -12,10 +12,9 @@ import { useFormik } from "formik";
 import * as Yup from 'yup';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
-import FacebookLogin from "react-facebook-login";
-import FacebookIcon from "../../assets/icons/facebook.png";
 import logo from "../../assets/image/logo-transparent.png";
 import { generatePassword } from "../../assistants/Generators";
+import randomImageUrl from '../../assets/image/gif.gif'
 
 interface User {
   _id: string;
@@ -77,9 +76,7 @@ export default function Signin() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { Text } = Typography;
-  const randomImage =
-    "https://i.pinimg.com/564x/3a/e6/7d/3ae67df286b9b8e568de17e4657fd21d.jpg";
-
+  const randomImage = randomImageUrl
   const location = useLocation();
 
   useEffect(() => {
@@ -235,20 +232,19 @@ export default function Signin() {
 
   return (
     <>
-      <div className="container">
-        <div className="left-container">
-          <Image src={randomImage} width={400} preview={false} />
+      <div className={styles.container}>
+        <div className={styles.leftContainer}>
+          <Image src={randomImage} width={600} preview={false} className={styles.displayImage} />
         </div>
         <Divider type="vertical" />
-        <div className="right-container row">
+        <div className={styles.rightContainer}>
           <Image
-            className=""
             src={logo}
             width={300}
             preview={false}
           />
           <form onSubmit={loginForm.handleSubmit}>
-            <div className="mb-2 mt-2">
+            <div>
               <input
                 type="text"
                 name="email"
@@ -258,7 +254,7 @@ export default function Signin() {
                 value={loginForm.values.email}
               />
             </div>
-            <div className="mb-2 password-input-container">
+            <div className={styles.passwordInputContainer}>
               <input
                 type="password"
                 name="password"
@@ -270,7 +266,7 @@ export default function Signin() {
             </div>
             <Button
               type="link"
-              className="forgot"
+              className={styles.forgot}
               onClick={() => {
                 navigate("/forgot");
               }}
@@ -292,7 +288,7 @@ export default function Signin() {
               or you can sign in with
             </Text>
           </Divider>
-          <div className="otherLogin">
+          <div className={styles.otherLogin}>
             <GoogleLogin
               size="medium"
               type="standard"
@@ -312,7 +308,7 @@ export default function Signin() {
             pauseOnHover
             theme="light"
           />
-          <div className="form-footer">
+          <div className={styles.formFooter}>
             <p>Don't have an account yet?&nbsp;</p>
             <a
               onClick={() => {

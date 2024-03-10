@@ -1,26 +1,28 @@
-import { Avatar, Space, Table, Typography, Modal, Input } from "antd";
+import { Avatar, Space, Table, Modal, Input } from "antd";
 import { useEffect, useState } from "react";
-import { getArtworkId, deleteArtwork } from "../../../api/index";
-import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  SolutionOutlined,
-} from "@ant-design/icons";
-import {
-  deleteReport,
-  getReportWithUserAndArtwork,
-} from "../../../api/report/reportAPI";
+import { getArtwork, getArtworkId, deleteArtwork } from "../../../api/index";
+import { SolutionOutlined, StopOutlined } from "@ant-design/icons";
 
-const Report: React.FC = () => {
+interface ArtworkRecord {
+  imageUrl: string;
+  artworkName: string;
+  artworkId: string;
+  price: number;
+  tags: string[];
+  describe: string;
+  _id: string;
+}
+
+const Artwork: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>();
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [dataSource, setDataSource] = useState([]);
+  const [dataSource, setDataSource] = useState<ArtworkRecord[]>([]);
 
   useEffect(() => {
     setLoading(true);
-    getReportWithUserAndArtwork().then((res) => {
+    getArtwork().then((res: ArtworkRecord[]) => {
       setDataSource(res);
       setLoading(false);
     });
@@ -37,11 +39,11 @@ const Report: React.FC = () => {
     setModalVisible(false);
   };
 
-  const onDeleteArtwork = (record: any) => {
+  const onDeleteArtwork = (record: ArtworkRecord) => {
     console.log(record);
     Modal.confirm({
-      title: "CONFIRM DELETE THIS ARTWORK?",
-      okText: "Confirm",
+      title: "Are you sure, you want to delete this artwork?",
+      okText: "Yes",
       okType: "danger",
       onOk: () => {
         deleteArtwork(record);
@@ -49,26 +51,16 @@ const Report: React.FC = () => {
     });
   };
 
-  const onDeleteReport = (record: any) => {
-    Modal.confirm({
-      title: "DECLINE THIS REPORT?",
-      okText: "Confirm",
-      onOk: () => {
-        deleteReport(record);
-      },
-    });
-  };
-
   const handleSearch = (searchText: string) => {
     setSearchInput(searchText);
-    getReportWithUserAndArtwork().then((res) => {
+    getArtwork().then((res) => {
       if (searchText === "") {
         setDataSource(res);
       } else {
         setDataSource(
           res.filter(
             (item: any) =>
-              (item.user.nickname?.toLowerCase() || "").includes(
+              (item.name?.toLowerCase() || "").includes(
                 searchText.toLowerCase()
               ) ||
               (item.description?.toLowerCase() || "").includes(
@@ -82,56 +74,57 @@ const Report: React.FC = () => {
 
   return (
     <Space size={20} direction="vertical">
-      {/* <Typography.Title level={4}>Reports</Typography.Title> */}
+      {/* <Typography.Title level={4}>Artwork</Typography.Title> */}
       <div style={{ overflowX: "auto" }}>
         <Input.Search
-          placeholder="Search by name, description..."
+          placeholder="Search by name, tag, description..."
           value={searchInput}
           onChange={(e) => handleSearch(e.target.value)}
           enterButton
           style={{ width: "500px", margin: "10px 0px 10px 0px" }}
         />
-        <Table
+        <Table<ArtworkRecord>
           style={{ width: "1250px", minWidth: "100%" }}
           loading={loading}
           columns={[
             {
               title: "Thumbnail",
-              dataIndex: "artwork",
-              render: (link: any) => {
-                return <Avatar shape="square" size={48} src={link.imageUrl} />;
-              },
+              dataIndex: "imageUrl",
+              render: (link: string) => (
+                <Avatar shape="square" src={link} size={48} />
+              ),
             },
             {
               title: "Name",
+              dataIndex: "name",
+            },
+            {
+              title: "Artist",
               dataIndex: "user",
-              render: (name: any) => <span>{name.nickname}</span>,
             },
             {
-              title: "Description",
-              dataIndex: "description",
+              title: "Price",
+              dataIndex: "price",
+              render: (value: number) => <span>${value}</span>,
             },
             {
-              title: "Status",
-              dataIndex: "status",
-              render: (status) => (
-                <span
-                style={{
-                  backgroundColor: status ? "green" : "gray",
-                  padding: "4px 8px",
-                  borderRadius: "4px",
-                  color: "white",
-                }}
-              >
-                {status ? "Reported" : "Pending"}
-              </span>
+              title: "Tags",
+              dataIndex: "tags",
+              render: (tags: string[]) => (
+                <>
+                  {tags.map((tag) => (
+                    <span key={tag} style={{ marginRight: 10 }}>
+                      #{tag}
+                    </span>
+                  ))}
+                </>
               ),
             },
             {
               title: "Action",
               dataIndex: "_id",
               align: "center",
-              render: (record: any) => (
+              render: (record: ArtworkRecord) => (
                 <div
                   style={{
                     display: "flex",
@@ -143,17 +136,10 @@ const Report: React.FC = () => {
                     onClick={() => {
                       handleCardClick(record);
                     }}
-                    style={{ color: "blue" }}
                   />
-                  <CheckCircleOutlined
+                  <StopOutlined
                     onClick={() => {
                       onDeleteArtwork(record);
-                    }}
-                    style={{ color: "green" }}
-                  />
-                  <CloseCircleOutlined
-                    onClick={() => {
-                      onDeleteReport(record);
                     }}
                     style={{ color: "red" }}
                   />
@@ -167,7 +153,7 @@ const Report: React.FC = () => {
           }}
         />
         <Modal
-          title="Report Information"
+          title="Artwork Information"
           open={modalVisible}
           onCancel={closeModal}
           footer={null}
@@ -179,7 +165,7 @@ const Report: React.FC = () => {
               dataSource={[selectedRequest]}
               columns={[
                 {
-                  title: "Username",
+                  title: "Artwork",
                   dataIndex: "name",
                   key: "name",
                 },
@@ -199,6 +185,11 @@ const Report: React.FC = () => {
                   key: "likes",
                 },
                 {
+                  title: "Price",
+                  dataIndex: "price",
+                  key: "price",
+                },
+                {
                   title: "Description",
                   dataIndex: "description",
                   key: "description",
@@ -213,4 +204,4 @@ const Report: React.FC = () => {
   );
 };
 
-export default Report;
+export default Artwork;

@@ -469,7 +469,7 @@ const UploadImageForm: React.FC = () => {
               size="large"
               className="post-btn"
             >
-              Post
+              POST
             </Button>
           )}
         </div>
