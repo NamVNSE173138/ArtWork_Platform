@@ -77,10 +77,10 @@ const ReportForm = (record: any) => {
         onClick={showModal}
         icon={<WarningOutlined />}
       >
-        Report
+        Add To Cart
       </Button>
       <Modal
-        title="REPORT"
+        title="Add To Cart"
         style={{ textAlign: "center" }}
         width={1000}
         open={isModalOpen}

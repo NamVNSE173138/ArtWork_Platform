@@ -42,7 +42,6 @@ interface User {
 const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   let navigate = useNavigate();
   const userToken = localStorage.getItem("USER");
-  console.log(userToken);
   const [isLoadingLogOut, setIsLoadingLogOut] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -67,7 +66,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     setTimeout(() => {
       localStorage.removeItem("USER");
       setIsLoadingLogOut(false);
-      window.location.reload()
+      window.location.reload();
     }, 2000);
   };
 
@@ -90,23 +89,11 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     },
     {
       label: (
-        <Link
-          id="profile"
-          className="dropdown-item"
-          to={`/notifications`}
-        >
-          <strong>Notifications</strong>
-        </Link>
-      ),
-      key: 2,
-    },
-    {
-      label: (
         <Link id="profile" className="dropdown-item" to={`/forgot`}>
           <strong>Reset password</strong>
         </Link>
       ),
-      key: 3,
+      key: 2,
     },
     {
       type: "divider",
@@ -124,7 +111,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
           </p>
         </div>
       ),
-      key: 4,
+      key: 3,
     },
   ];
 
@@ -170,12 +157,15 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
       })
       .catch((err) => console.log(err));
   };
+
   useEffect(() => {
     fetchCurrentUserData();
   }, []);
+
   useEffect(() => {
     console.log("Current user: ", currentUser);
   }, [currentUser]);
+
   return (
     <div className="navbar-home">
       <div className="logo-container">
@@ -227,7 +217,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
             ) : (
               <>
                 <li>
-                  <Dropdown menu={{ items }} trigger={['click']}>
+                  <Dropdown menu={{ items }} trigger={["click"]}>
                     <a onClick={(e) => e.preventDefault()}>
                       <Space id="user-section">
                         <img

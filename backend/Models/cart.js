@@ -8,7 +8,7 @@ const CartItemSchema = new Schema({
   },
   artwork: {
     type: Schema.Types.ObjectId,
-    ref: 'artworks',
+    ref: 'Artwork',
   },
   price: {
     type: Number,

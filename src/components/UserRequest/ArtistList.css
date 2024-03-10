@@ -1,0 +1,37 @@
+h1 {
+  margin-top: 100px;
+}
+
+.btn-fl {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  justify-content: center;
+  margin-right: 15px;
+}
+
+.btn-fl svg {
+  font-size: 1rem;
+}
+
+.artist-list {
+  height: 433px;
+
+  margin: 20px 40px 0 40px;
+}
+
+.artist-action {
+  display: flex;
+  margin-top: 15px;
+}
+
+.nickname a {
+  text-decoration: none;
+  color: #0f1035;
+}
+
+:where(.css-dev-only-do-not-override-dkbvqv).ant-form-item
+  .ant-form-item-label
+  > label {
+  font-size: 14px !important;
+}

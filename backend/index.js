@@ -39,6 +39,12 @@ app.use('/orders', OrderRoute)
 const ConversationRoute = require('./Routes/Conversation.route.js')
 app.use('/conversations', ConversationRoute)
 
+const UserRequestRoute = require('./Routes/UserRequest.route.js')
+app.use('/userRequests', UserRequestRoute)
+
+const ArtistRequestRoute = require('./Routes/ArtistRequest.route.js')
+app.use('/artistRequests', ArtistRequestRoute)
+
 app.use((req, res, next) => {
   next(createError(404, "Not found"))
 })

@@ -7,6 +7,8 @@ import {
   Switch,
   Select,
   SelectProps,
+  Button,
+  message,
 } from "antd";
 import {
   EditOutlined,
@@ -15,6 +17,7 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getUser, deleteUser, updateUser, getUserId } from "../../../api/index";
+import axios, { AxiosResponse } from "axios";
 interface User {
   avatar: string;
   nickname: string;
@@ -22,6 +25,20 @@ interface User {
   email: string;
   status: { status: string };
   _id: string;
+}
+
+interface Artwork {
+  _id: string;
+  user: User;
+  name: string;
+  tags: [string];
+  numOfLike: number;
+  price: number;
+  description: string;
+  imageUrl: string;
+  status: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface EditFormData {
@@ -76,18 +93,40 @@ function Users() {
     });
   }, []);
 
-  // const onDeleteUser = (record: User) => {
-  //   console.log(record);
-  //   Modal.confirm({
-  //     title: "Are you sure, you want to delete this user?",
-  //     okText: "Yes",
-  //     okType: "danger",
-  //     onOk: () => {
-  //       setLoading(true);
-  //       deleteUser(record).then(() => setLoading(false));
-  //     },
-  //   });
-  // };
+  const [messageApi, contextHolder] = message.useMessage()
+
+  const onUpdateArtistRole = async () => {
+    await axios.get('http://localhost:5000/artworks')
+      .then((res: AxiosResponse) => {
+        res.data.map((artwork: Artwork) => {
+          axios.patch(`http://localhost:5000/users/updateRole/${artwork.user}`)
+            .then((res) => {
+              console.log("User role updated: ", artwork.user)
+            })
+            .catch((err) => console.log(err))
+        })
+      })
+    messageApi
+      .open({
+        type: 'loading',
+        content: 'Updating...',
+        duration: 1,
+      })
+      .then(() => message.success('Successfully updated', 3))
+  }
+
+  const onDeleteUser = (record: User) => {
+    console.log(record);
+    Modal.confirm({
+      title: "Are you sure, you want to delete this user?",
+      okText: "Yes",
+      okType: "danger",
+      onOk: () => {
+        setLoading(true);
+        deleteUser(record).then(() => setLoading(false));
+      },
+    });
+  };
 
   const banUser = (record: User) => {
     let ban = { ...banData, id: record };
@@ -146,6 +185,7 @@ function Users() {
 
   return (
     <Space size={20} direction="vertical">
+      {contextHolder}
       {/* <Typography.Title level={4}>Users</Typography.Title> */}
       <Input.Search
         placeholder="Search by name..."
@@ -155,6 +195,7 @@ function Users() {
         enterButton
         style={{ width: "500px", marginTop: "10px" }}
       />
+      <Button type="primary" loading={loading} onClick={onUpdateArtistRole}>Update Users' Role</Button>
       <Table<User>
         style={{ width: "1250px" }}
         loading={loading}
