@@ -184,6 +184,16 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
         <nav className="navbar-links">
           <ul>
             <li>
+              <Link
+                id="signup"
+                className="item"
+                to="/signup/email"
+                onClick={toggleNav}
+              >
+                VISUALIZE YOUR ART
+              </Link>
+            </li>
+            <li>
               <Search
                 placeholder="Search..."
                 allowClear

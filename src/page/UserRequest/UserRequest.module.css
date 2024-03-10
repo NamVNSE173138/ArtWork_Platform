@@ -1,0 +1,11 @@
+#followButton {
+    font-size: 120%;
+    display: flex;
+    align-items: center;
+    padding: 4% 3%;
+    background-color: #1b80c3;
+}
+
+#followButton:hover {
+    background-color: #145c8c;
+}

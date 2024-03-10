@@ -12,14 +12,14 @@ import {
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import nFormatter from "../../assistants/Formatter";
 import { FormikProps, Formik, useFormik } from "formik";
 import moment from "moment";
 import ReportForm from "../../components/ReportForm/ReportForm";
 import Favorite from "../../components/Favorite/Favorite";
 interface User {
-  id: string;
+  _id: string;
   email: string;
   nickname: string;
   role: string;
@@ -73,7 +73,7 @@ export default function Artwork() {
 
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<User>({
-    id: "",
+    _id: "",
     email: "",
     password: "",
     nickname: "",
@@ -88,7 +88,7 @@ export default function Artwork() {
   const [artwork, setArtwork] = useState<Artwork>({
     _id: "",
     user: {
-      id: "",
+      _id: "",
       email: "",
       nickname: "",
       role: "",
@@ -111,7 +111,7 @@ export default function Artwork() {
   });
 
   const [artist, setArtist] = useState<User>({
-    id: "",
+    _id: "",
     email: "",
     nickname: "",
     role: "",
@@ -133,7 +133,7 @@ export default function Artwork() {
   const commentForm: FormikProps<Comment> = useFormik<Comment>({
     initialValues: {
       user: {
-        id: "",
+        _id: "",
         email: "",
         nickname: "",
         role: "",
@@ -153,7 +153,7 @@ export default function Artwork() {
           "http://localhost:5000/comments",
           {
             artwork: id,
-            user: currentUser.id,
+            user: currentUser._id,
             text: values.text,
             numOfLike: 0,
           },
@@ -194,12 +194,13 @@ export default function Artwork() {
     setIsLoading(true);
     await axios
       .get(`http://localhost:5000/artworks/${id}`)
-      .then((res: any) => {
+      .then((res: AxiosResponse) => {
         console.log("Artwork:", res.data)
         setArtwork(res.data);
         axios
           .get(`http://localhost:5000/users/${res.data.user}`)
-          .then((res: any) => {
+          .then((res: AxiosResponse) => {
+            console.log("Artist info: ", res.data)
             setArtist(res.data);
             setIsLoading(false);
           })
@@ -222,14 +223,14 @@ export default function Artwork() {
       console.log("dfbnkdjbskdhbkh");
       console.log(localStorage.getItem("USER"));
 
-      console.log("user", currentUser.id);
-      if (!currentUser || !currentUser.id) {
+      console.log("user", currentUser._id);
+      if (!currentUser || !currentUser._id) {
         console.error('Current user data is not available');
         return;
       }
       // Make a POST request to likeArtwork API endpoint
       const response = await axios.post(
-        `http://localhost:5000/artworks/favoriteList/${artwork._id}`, { user: currentUser.id },
+        `http://localhost:5000/artworks/favoriteList/${artwork._id}`, { user: currentUser._id },
         {
           headers: {
             Authorization: userToken,
@@ -299,7 +300,7 @@ export default function Artwork() {
                     <Text
                       strong
                       id={styles.userName}
-                      onClick={() => navigate(`/profile/${artist.id}`)}
+                      onClick={() => navigate(`/artistList/${artist._id}`)}
                       style={{ textDecoration: "underline" }}
                     >
                       {artist.nickname}
@@ -342,7 +343,7 @@ export default function Artwork() {
                                   strong
                                   id={styles.userName}
                                   onClick={() =>
-                                    navigate(`/profile/${comment.user?.id}`)
+                                    navigate(`/profile/${comment.user?._id}`)
                                   }
                                 >
                                   {comment.user?.nickname}

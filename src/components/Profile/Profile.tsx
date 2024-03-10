@@ -23,6 +23,7 @@ import type { TabsProps } from "antd";
 import "./Profile.css"; // Create this stylesheet for additional styling if needed
 import Contributed from "../ContributedArtwork/ContributedArtwork";
 import Favorite from "../Favorite/Favorite";
+import Navbar from "../Navbar/Navbar";
 import { useParams } from "react-router-dom";
 import axios from 'axios';
 const { Meta } = Card;
@@ -150,83 +151,86 @@ const ProfilePage: React.FC = () => {
       });
   };
   return (
-    <div className="profile-container">
-      <Row gutter={16}>
-        <Col span={24}>
-          <div className="profile-content">
-            <Card
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Meta
-                avatar={<Avatar src={currentUser.avatar} />}
-                title={currentUser.nickname}
-                description={
-                  <>
-                    {currentUser.email} <br />
-                    <i>Role: {currentUser.role}</i>
-                  </>
-                }
-              />
+    <>
+      <Navbar onSubmit={() => { }} />
+      <div className="profile-container">
+        <Row gutter={16}>
+          <Col span={24}>
+            <div className="profile-content">
+              <Card
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Meta
+                  avatar={<Avatar src={currentUser.avatar} />}
+                  title={currentUser.nickname}
+                  description={
+                    <>
+                      {currentUser.email} <br />
+                      <i>Role: {currentUser.role}</i>
+                    </>
+                  }
+                />
 
-              {[
-                <Button
-                  size="large"
-                  className="profile-btn"
-                  icon={<ShareAltOutlined />}
-                  key="upload"
-                  onClick={handleShareProfile}
-                >
-                  Share Profile
-                </Button>,
-                <Button
-                  size="large"
-                  className="profile-btn"
-                  icon={<EditOutlined />}
-                  key="edit"
-                  onClick={showEditModal}
-                >
-                  Edit Profile
-                </Button>,
-              ]}
-            </Card>
+                {[
+                  <Button
+                    size="large"
+                    className="profile-btn"
+                    icon={<ShareAltOutlined />}
+                    key="upload"
+                    onClick={handleShareProfile}
+                  >
+                    Share Profile
+                  </Button>,
+                  <Button
+                    size="large"
+                    className="profile-btn"
+                    icon={<EditOutlined />}
+                    key="edit"
+                    onClick={showEditModal}
+                  >
+                    Edit Profile
+                  </Button>,
+                ]}
+              </Card>
 
-            <Modal
-              title="Edit Profile"
-              open={editModalVisible}
-              onOk={handleEditModalOk}
-              onCancel={handleEditModalCancel}
-            >
-              {/* Add your form fields for editing profile data */}
-              <Form layout="vertical">
-                <Form.Item label="Full Name">
-                  <Input placeholder="Enter your full name" />
-                </Form.Item>
-                <Form.Item label="Bio">
-                  <Input.TextArea placeholder="Enter your bio" />
-                </Form.Item>
-                {/* Add more form fields as needed */}
-              </Form>
-            </Modal>
-          </div>
-        </Col>
-      </Row>
-      <Row gutter={16} style={{ marginTop: 20 }}>
-        <Col span={24}>
-          <Tabs
-            defaultActiveKey="1"
-            items={items}
-            size="large"
-            type="card"
-            tabBarGutter={20}
-            centered
-          />
-        </Col>
-      </Row>
-    </div>
+              <Modal
+                title="Edit Profile"
+                open={editModalVisible}
+                onOk={handleEditModalOk}
+                onCancel={handleEditModalCancel}
+              >
+                {/* Add your form fields for editing profile data */}
+                <Form layout="vertical">
+                  <Form.Item label="Full Name">
+                    <Input placeholder="Enter your full name" />
+                  </Form.Item>
+                  <Form.Item label="Bio">
+                    <Input.TextArea placeholder="Enter your bio" />
+                  </Form.Item>
+                  {/* Add more form fields as needed */}
+                </Form>
+              </Modal>
+            </div>
+          </Col>
+        </Row>
+        <Row gutter={16} style={{ marginTop: 20 }}>
+          <Col span={24}>
+            <Tabs
+              defaultActiveKey="1"
+              items={items}
+              size="large"
+              type="card"
+              tabBarGutter={20}
+              centered
+            />
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 };
 
