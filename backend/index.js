@@ -39,6 +39,9 @@ app.use('/orders', OrderRoute)
 const ConversationRoute = require('./Routes/Conversation.route.js')
 app.use('/conversations', ConversationRoute)
 
+const CheckoutRoute = require('./Routes/Checkout.route.js')
+app.use('/checkouts', CheckoutRoute)
+
 const UserRequestRoute = require('./Routes/UserRequest.route.js')
 app.use('/userRequests', UserRequestRoute)
 

@@ -13,6 +13,8 @@ import {
   Avatar,
   Switch,
   Row,
+  Flex,
+  Image,
 } from "antd";
 import {
   CheckOutlined,
@@ -289,11 +291,14 @@ const UploadImageForm: React.FC = () => {
 
   return (
     <>
-      <h2>Upload Photos</h2>
-      <h4 className="title">Import from URL</h4>
+      <Flex align="center" justify="center" style={{ marginTop: '6%' }} gap={10}>
+        <h2>SHARE YOUR ART TO PEOPLE</h2>
+        <Image src="https://i.pinimg.com/originals/7c/43/0b/7c430ba6fb3cd7058aec52cb84a080e6.png" alt="" width={70} />
+      </Flex>
+      {/* <h4 className="title">Import from URL</h4> */}
       <div className="upload-image-form">
         <Input
-          placeholder="Add image URL"
+          placeholder="Import image URL"
           onChange={handleInputChange}
           onKeyDown={handleImageUpload}
           value={imageUrl}

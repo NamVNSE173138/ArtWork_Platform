@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { saveAs } from "file-saver";
 import Box from "@mui/material/Box";
-import Masonry from "@mui/lab/Masonry";
+import Masonry from '@mui/lab/Masonry';
 import axios from "axios";
 import LazyLoad from "react-lazyload";
 import { addToCart } from "../../api/cart/cartAPI";
