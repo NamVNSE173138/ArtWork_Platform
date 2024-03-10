@@ -17,7 +17,7 @@ import RequestRequirements from "./page/UserRequest/RequestRequirements";
 import ArtistProfile from "./components/ArtistProfile/ArtistProfile";
 import ArtworkRequest from "./page/ArtworkRequest";
 import ProfilePage from "./components/Profile/Profile";
-import NotificationPage from "./page/NotificationPage/test";
+import NotificationPage from "./page/NotificationPage/NotificationPage";
 import CartPage from "./page/Cart/CartPage";
 
 function App() {

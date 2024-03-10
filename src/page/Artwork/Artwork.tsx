@@ -12,7 +12,7 @@ import {
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
-import axios, { AxiosResponse } from 'axios';
+import axios from "axios";
 import nFormatter from "../../assistants/Formatter";
 import { FormikProps, Formik, useFormik } from "formik";
 import moment from "moment";
@@ -20,7 +20,7 @@ import ReportForm from "../../components/ReportForm/ReportForm";
 import BuyArtwork from "../../components/BuyForm/BuyForm";
 import Favorite from "../../components/Favorite/Favorite";
 interface User {
-  _id: string;
+  id: string;
   email: string;
   nickname: string;
   role: string;
@@ -73,7 +73,7 @@ export default function Artwork() {
   };
 
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState({
+  const [currentUser, setCurrentUser] = useState<User>({
     id: "",
     email: "",
     password: "",
@@ -89,7 +89,7 @@ export default function Artwork() {
   const [artwork, setArtwork] = useState<Artwork>({
     _id: "",
     user: {
-      _id: "",
+      id: "",
       email: "",
       nickname: "",
       role: "",
@@ -112,7 +112,7 @@ export default function Artwork() {
   });
 
   const [artist, setArtist] = useState<User>({
-    _id: "",
+    id: "",
     email: "",
     nickname: "",
     role: "",
@@ -133,7 +133,7 @@ export default function Artwork() {
   const commentForm: FormikProps<Comment> = useFormik<Comment>({
     initialValues: {
       user: {
-        _id: "",
+        id: "",
         email: "",
         nickname: "",
         role: "",
@@ -194,13 +194,12 @@ export default function Artwork() {
     setIsLoading(true);
     await axios
       .get(`http://localhost:5000/artworks/${id}`)
-      .then((res: AxiosResponse) => {
-        console.log("Artwork:", res.data)
+      .then((res: any) => {
+        console.log("Artwork:", res.data);
         setArtwork(res.data);
         axios
           .get(`http://localhost:5000/users/${res.data.user}`)
-          .then((res: AxiosResponse) => {
-            console.log("Artist info: ", res.data)
+          .then((res: any) => {
             setArtist(res.data);
             setIsLoading(false);
           })
@@ -225,12 +224,13 @@ export default function Artwork() {
 
       console.log("user", currentUser.id);
       if (!currentUser || !currentUser.id) {
-        console.error('Current user data is not available');
+        console.error("Current user data is not available");
         return;
       }
       // Make a POST request to likeArtwork API endpoint
       const response = await axios.post(
-        `http://localhost:5000/artworks/favoriteList/${artwork._id}`, { user: currentUser.id },
+        `http://localhost:5000/artworks/favoriteList/${artwork._id}`,
+        { user: currentUser.id },
         {
           headers: {
             Authorization: userToken,
@@ -312,7 +312,7 @@ export default function Artwork() {
                     <Text
                       strong
                       id={styles.userName}
-                      onClick={() => navigate(`/artistList/${artist._id}`)}
+                      onClick={() => navigate(`/profile/${artist.id}`)}
                       style={{ textDecoration: "underline" }}
                     >
                       {artist.nickname}
@@ -360,22 +360,40 @@ export default function Artwork() {
                             />
                           </span>
                           <div className={styles.commentInfo}>
-                            <Flex vertical gap={6} style={{ marginLeft: '8px' }}>
-                              <Flex vertical className={styles.commentText} style={{ fontSize: '90%' }}>
+                            <Flex
+                              vertical
+                              gap={6}
+                              style={{ marginLeft: "8px" }}
+                            >
+                              <Flex
+                                vertical
+                                className={styles.commentText}
+                                style={{ fontSize: "90%" }}
+                              >
                                 <Text
                                   strong
                                   id={styles.userName}
                                   onClick={() =>
-                                    navigate(`/profile/${comment.user?._id}`)
+                                    navigate(`/profile/${comment.user?.id}`)
                                   }
                                 >
                                   {comment.user?.nickname}
                                 </Text>
-                                <Text style={{ maxWidth: 'fit-content', paddingRight: '5px' }}>
+                                <Text
+                                  style={{
+                                    maxWidth: "fit-content",
+                                    paddingRight: "5px",
+                                  }}
+                                >
                                   {comment.text}
                                 </Text>
                               </Flex>
-                              <Text style={{ fontSize: '70%', minWidth: 'fit-content' }}>
+                              <Text
+                                style={{
+                                  fontSize: "70%",
+                                  minWidth: "fit-content",
+                                }}
+                              >
                                 {moment(comment.createdAt).fromNow()}
                               </Text>
                             </Flex>
@@ -447,6 +465,7 @@ export default function Artwork() {
                   Share
                 </Button>
                 <ReportForm artwork={artwork._id} />
+                <BuyArtwork artwork={artwork._id} user={currentUser.id} />
               </div>
             </div>
           </>

@@ -10,7 +10,7 @@ interface BuyData {
   price?: number;
 }
 
-const ReportForm = (record: any) => {
+const BuyForm = (record: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState<BuyData | null>({
     artwork: "",
@@ -83,4 +83,4 @@ const ReportForm = (record: any) => {
   );
 };
 
-export default ReportForm;
+export default BuyForm;
