@@ -22,9 +22,9 @@ const NotificationController = require('../Controllers/NotificationController');
 
 router.get('/', NotificationController.getAllNotification);
 
-router.post('/', NotificationController.createNotification);
+router.get('/:id', NotificationController.getNotificationsById);
 
-router.get('/:userId', NotificationController.getNotificationsByUser);
+router.post('/', NotificationController.createNotification);
 
 router.put('/:notificationId', NotificationController.markNotificationAsRead);
 
