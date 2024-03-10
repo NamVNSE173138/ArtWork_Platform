@@ -9,3 +9,35 @@
 #followButton:hover {
     background-color: #145c8c;
 }
+
+.formButton {
+    background-color: #ffffff;
+    border: solid 1px;
+    border-radius: 20px;
+    padding: 1% 5%;
+    color: #000;
+    width: 50%;
+    font-size: 125%;
+}
+
+.formButton:hover {
+    background-color: #737373;
+    color: #FFF;
+}
+
+#submitButton {
+    background-color: #145c8c;
+    color: #FFF;
+}
+
+#submitButton:hover {
+    background-color: #0c3957;
+}
+
+.messageInput {
+    width: 100%;
+    height: 150px;
+    resize: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+}

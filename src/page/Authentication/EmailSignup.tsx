@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
-import "./Authentication.css";
+import styles from "./Authentication.module.css";
 import { Button, Image, Divider, Typography } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
@@ -10,12 +10,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
 import { jwtDecode } from "jwt-decode";
-import FacebookLogin from 'react-facebook-login';
-import FacebookIcon from '../../assets/icons/facebook.png'
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { generatePassword } from "../../assistants/Generators";
 import logo from "../../assets/image/logo-transparent.png";
+import randomImageUrl from '../../assets/image/emailSignup.jpg'
 
 interface User {
   _id: string;
@@ -86,8 +85,7 @@ export default function EmailSignup() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { Text } = Typography;
-  const randomImage =
-    "https://i.pinimg.com/564x/3a/e6/7d/3ae67df286b9b8e568de17e4657fd21d.jpg";
+  const randomImage = randomImageUrl
 
   const emailForm = useFormik({
     validateOnChange: false,
@@ -205,19 +203,19 @@ export default function EmailSignup() {
   };
 
   return (
-    <div className="container">
-      <div className="left-container">
-        <Image src={randomImage} width={400} preview={false} />
+    <div className={styles.container}>
+      <div className={styles.leftContainer}>
+        <Image src={randomImage} width={600} preview={false} className={styles.displayImage} />
       </div>
       <Divider type="vertical" />
-      <div className="right-container row">
+      <div className={styles.rightContainer}>
         <Image
           src={logo}
           width={300}
           preview={false}
         />
         <form onSubmit={emailForm.handleSubmit}>
-          <div className="mb-2 mt-2">
+          <div>
             <br />
             <h6 style={{ textAlign: "start" }}>Enter your email address:</h6>
             <input
@@ -228,7 +226,7 @@ export default function EmailSignup() {
               onBlur={emailForm.handleBlur}
               value={emailForm.values.email}
             />
-            <div className="error">
+            <div className={styles.error}>
               {emailForm.errors.email ? <i>{emailForm.errors.email}</i> : null}
             </div>
           </div>
@@ -248,7 +246,7 @@ export default function EmailSignup() {
             or you can sign in with
           </Text>
         </Divider>
-        <div className="otherLogin">
+        <div className={styles.otherLogin}>
           <GoogleLogin
             onSuccess={onGoogleSuccess}
             onError={onGoogleError}
@@ -256,7 +254,7 @@ export default function EmailSignup() {
             type="standard"
           />
         </div>
-        <div className="form-footer">
+        <div className={styles.formFooter}>
           <p>Already have account?&nbsp;</p>
           <a
             onClick={() => {

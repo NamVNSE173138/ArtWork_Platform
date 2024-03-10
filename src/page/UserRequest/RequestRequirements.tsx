@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import axios, { AxiosResponse } from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Flex, Image, Typography, Button } from 'antd';
+import { Flex, Image, Typography, Button, message } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import styles from './UserRequest.module.css'
+import { useFormik } from "formik";
+import * as Yup from "yup";
 interface Pin {
     _id: string;
     artworkId: number;
@@ -23,29 +25,53 @@ interface ArtworkResponse {
 }
 
 interface User {
-    id: string;
-    email: string;
-    nickname: string;
-    role: string;
-    numOfFollower: number;
-    avatar: string;
-    password: string;
-    status: boolean;
-    createdAt?: string;
-    updatedAt?: string;
+    _id: string,
+    email: string,
+    nickname: string,
+    bio: string,
+    role: string,
+    numOfFollower: number,
+    avatar: string,
+    password: string,
+    status: boolean,
+    createdAt?: string,
+    updatedAt?: string,
+}
+
+export interface FormValues {
+    name: string,
+    description: string,
+    priceEst: number,
+    message: string,
 }
 
 export default function RequestRequirements() {
     const navigate = useNavigate()
     const { Text, Title } = Typography
+    const [messageApi, contextHolder] = message.useMessage()
+
+    const userToken = localStorage.getItem("USER")
     const { id } = useParams()
     const [pins, setPins] = useState<Pin[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [image, setImage] = useState([]);
     const [artist, setArtist] = useState<User>({
+        _id: '',
+        email: '',
+        nickname: '',
+        bio: '',
+        role: '',
+        numOfFollower: 0,
+        avatar: '',
+        password: '',
+        status: false,
+    })
+
+    const [currentUser, setCurrentUser] = useState({
         id: '',
         email: '',
         nickname: '',
+        bio: '',
         role: '',
         numOfFollower: 0,
         avatar: '',
@@ -58,9 +84,6 @@ export default function RequestRequirements() {
             const response = await axios.get<ArtworkResponse>(
                 "http://localhost:5000/artworks"
             );
-            console.log("reponse: ", response);
-            console.log(response.data);
-
             return response.data;
         } catch (error) {
             console.error("Error fetching artwork:", error);
@@ -105,34 +128,145 @@ export default function RequestRequirements() {
     const fetchArtistData = async () => {
         await axios.get(`http://localhost:5000/users/${id}`)
             .then((res: AxiosResponse) => {
-                console.log("artist data: ", res.data)
+                console.log("Artist data: ", res.data)
                 setArtist(res.data)
             })
             .catch((err) => console.log(err))
     }
 
+    const fetchCurrentUserData = async () => {
+        await axios
+            .get(`http://localhost:5000/users/getUserInfo`, {
+                headers: {
+                    token: userToken, //userToken = localStorage("USER")
+                },
+            })
+            .then((res) => {
+                console.log("Current user data: ", res.data)
+                setCurrentUser(res.data);
+            })
+            .catch((err) => console.log(err));
+    };
+
     useEffect(() => {
         getNewPins();
+        fetchCurrentUserData();
         fetchArtistData();
     }, []);
+
+    const defaultValues: FormValues = {
+        name: "",
+        description: "",
+        priceEst: 0,
+        message: "",
+    };
+
+    const requestForm = useFormik({
+        initialValues: defaultValues,
+        validationSchema: Yup.object({
+            name: Yup.string().required(""),
+            description: Yup.string().required(""),
+            priceEst: Yup.number().min(0.000001).required(""),
+            message: Yup.string()
+        }),
+        validateOnBlur: false,
+        validateOnChange: false,
+        enableReinitialize: true,
+        onSubmit: async (values: FormValues) => {
+            console.log("Form values: ", values)
+            await axios.post(`http://localhost:5000/userRequests`, {
+                name: values.name,
+                description: values.description,
+                priceEst: Math.round(values.priceEst * 100) / 100,
+                message: values.message,
+                user: currentUser.id,
+                artist: artist._id,
+                status: false,
+            })
+                .then((res: AxiosResponse) => {
+                    console.log("Send request: ", res.data)
+                    messageApi
+                        .open({
+                            type: 'loading',
+                            content: 'Sending request...',
+                            duration: 2,
+                        })
+                        .then(() => message.success('Your request is sent. Please stay tuned for responses from the artist', 5))
+                    requestForm.resetForm()
+                })
+                .catch((err) => console.log(err))
+        }
+    })
 
     return (
         <>
             <Navbar onSubmit={onSearchSubmit} />
-            <Flex justify='center' align='center' style={{ marginTop: '5%' }}>
-                <Flex justify='space-evenly' align='start' gap={10}>
-                    <Image src={artist.avatar} alt='' width={200} preview={false} style={{ borderRadius: '20px' }} />
-                    <Text strong style={{ fontSize: '150%', minWidth: 'max-content' }}>{artist.nickname}</Text>
-                    <Button
-                        type="primary"
-                        shape="round"
-                        size="large"
-                        id={styles.followButton}
-                    >
-                        <PlusCircleOutlined /> Follow
-                    </Button>
-                </Flex>
-            </Flex>
+            {contextHolder}
+            <form onSubmit={requestForm.handleSubmit} style={{ minWidth: '100%' }}>
+                <Flex justify='center' align='center' style={{ marginTop: '5%' }}>
+                    <Flex justify='space-evenly' align='center' gap={20} style={{ width: '30%' }}>
+                        <Image src={artist.avatar} alt='' width={200} preview={false} style={{ borderRadius: '20px' }} />
+                        <Flex vertical>
+                            <Flex justify='space-evenly' align='center' gap={20}>
+                                <Text strong style={{ fontSize: '150%', minWidth: 'max-content' }}>{artist.nickname}</Text>
+                                <Button
+                                    type="primary"
+                                    shape="round"
+                                    size="large"
+                                    id={styles.followButton}
+                                >
+                                    <PlusCircleOutlined /> Follow
+                                </Button>
+                            </Flex>
+                            <Flex justify='center' vertical gap={10}>
+                                <Text>{artist.bio}</Text>
+                                <textarea name="message" rows={8} cols={8} wrap="soft" placeholder='Your personal desires...'
+                                    className={styles.messageInput}
+                                    value={requestForm.values.message}
+                                    onChange={requestForm.handleChange}
+                                    onBlur={requestForm.handleBlur}
+                                />
+                            </Flex>
+                        </Flex>
+                    </Flex>
+                    <Flex style={{ width: '50%' }} justify='center' align='center' vertical>
+                        <Title style={{ fontFamily: 'sans-serif', fontSize: '180%' }}>Tell the artist about your art...</Title>
+
+
+                        <Flex vertical style={{ width: '80%', margin: '0 auto' }} gap={10}>
+                            <Text>Name of the artwork <strong style={{ color: 'red' }}>*</strong></Text>
+                            <input className={styles.formInput} type='text' name='name' placeholder='What is it called ?' autoComplete='off'
+                                value={requestForm.values.name}
+                                onChange={requestForm.handleChange}
+                                onBlur={requestForm.handleBlur}
+                            />
+
+                            <Text>Description <strong style={{ color: 'red' }}>*</strong></Text>
+                            <textarea name='description' placeholder='Describe your art...' autoComplete='off'
+                                className={styles.messageInput}
+                                value={requestForm.values.description}
+                                onChange={requestForm.handleChange}
+                                onBlur={requestForm.handleBlur}
+                            />
+
+                            <Text>Estimated price <strong style={{ color: 'red' }}>*</strong></Text>
+                            <input className={styles.formInput} type='number' name='priceEst' defaultValue={0}
+                                value={requestForm.values.priceEst}
+                                onChange={requestForm.handleChange}
+                                onBlur={requestForm.handleBlur}
+                            />
+                            <Flex justify='center' align='center' gap={5} style={{ marginTop: '2%' }}>
+                                <button type='submit' className={styles.formButton} id={styles.submitButton}>
+                                    <strong>SEND REQUEST</strong>
+                                </button>
+                                <button type='reset' className={styles.formButton} style={{ maxWidth: '30%' }}>
+                                    <strong>RESET</strong>
+                                </button>
+                            </Flex>
+                        </Flex>
+                    </Flex>
+                </Flex >
+            </form>
         </>
     )
 }
