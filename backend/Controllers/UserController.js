@@ -157,7 +157,7 @@ module.exports = {
   getUserInfo: async (req, res, next) => {
     try {
       const { token } = req.headers;
-      console.log(token)
+      // console.log(token)
 
       const userInfo = decodeToken(token);
       const data = {
@@ -169,7 +169,7 @@ module.exports = {
         role: userInfo?.data?.checkEmail?.role,
         numOfFollower: userInfo?.data?.checkEmail?.numOfFollower
       }
-      console.log(data)
+      // console.log(data)
       if (!userInfo) {
         return res.status(401).json({ message: 'Invalid or expired token' });
       }

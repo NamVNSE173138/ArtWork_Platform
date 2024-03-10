@@ -3,7 +3,14 @@ import { PinProps } from "./Pin";
 // import "./Mainboard.css";
 // import "./Pin.css";
 import "./test.css";
-import { Button, Divider, FloatButton, Skeleton, message } from "antd";
+import {
+  Button,
+  Divider,
+  FloatButton,
+  Skeleton,
+  Watermark,
+  message,
+} from "antd";
 import {
   DownloadOutlined,
   HeartFilled,
@@ -17,6 +24,7 @@ import Box from "@mui/material/Box";
 import Masonry from "@mui/lab/Masonry";
 import axios from "axios";
 import LazyLoad from "react-lazyload";
+import { addToCart } from "../../api/cart/cartAPI";
 
 interface MainboardProps {
   pins: PinProps[];
@@ -47,11 +55,6 @@ interface User {
   updatedAt?: string;
 }
 
-interface CartItem {
-  user?: User;
-  artwork?: Artwork;
-}
-
 interface FavoriteList {
   user?: User;
   artwork?: Artwork;
@@ -79,9 +82,7 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
   const userToken = localStorage.getItem("USER");
   const [isLiked, setIsLiked] = useState(false); // State to track if artwork is liked
   const [favoriteList, setFavoriteList] = useState<FavoriteList[]>([]);
-  const [cart, setCart] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
   const [currentUser, setCurrentUser] = useState<User>({
     id: "",
     email: "",
@@ -171,39 +172,52 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
   };
 
   const handleAddToCart = async (pinId: string) => {
-    try {
-      console.log("dfbnkdjbskdhbkh");
-      console.log(localStorage.getItem("USER"));
+    // try {
+    //   console.log("dfbnkdjbskdhbkh");
+    //   console.log(localStorage.getItem("USER"));
 
-      console.log("user", currentUser.id);
-      if (!currentUser || !currentUser.id) {
-        console.error("Current user data is not available");
-        return;
-      }
-      const response = await axios.post(
-        `http://localhost:5000/carts/${pinId}`,
-        { user: currentUser.id },
-        {
-          headers: {
-            Authorization: userToken,
-          },
-        }
-      );
-      console.log("Response:", response.data);
-      if (response.status == 200) {
-        console.log("favorite", response.data);
-        setIsLiked(true);
-        setCart([
-          ...cart,
-          { user: response.data.currentUser, artwork: response.data.artwork },
-        ]);
-      }
-    } catch (error: any) {
-      console.error("Error liking artwork:", error.message);
-      // Handle error
-    }
+    //   console.log("user", currentUser.id);
+    //   if (!currentUser || !currentUser.id) {
+    //     console.error("Current user data is not available");
+    //     return;
+    //   }
+    //   const response = await axios.post(
+    //     `http://localhost:5000/carts/${pinId}`,
+    //     { user: currentUser.id },
+    //     {
+    //       headers: {
+    //         Authorization: userToken,
+    //       },
+    //     }
+    //   );
+    //   console.log("Response:", response.data);
+    //   if (response.status == 200) {
+    //     console.log("favorite", response.data);
+    //     setIsLiked(true);
+    //     setCart([
+    //       ...cart,
+    //       { user: response.data.currentUser, artwork: response.data.artwork },
+    //     ]);
+    //   }
+    // } catch (error: any) {
+    //   console.error("Error liking artwork:", error.message);
+    //   // Handle error
+    // }
     message.success("Added To Cart!");
   };
+
+  // const handleAddToCart = (pinId: string) => {
+  //   if (pinId !== cartData.artwork) {
+  //     setCartData({
+  //       ...cartData,
+  //       // user: currentUser.id,
+  //       user: "65bc7471c22e1a44d323b6a0",
+  //       artwork: pinId,
+  //       price: 0,
+  //     });
+  //   }
+  //   addToCart(cartData);
+  // };
 
   const handleAdd = () => {
     message.success("Added!");
@@ -215,9 +229,19 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
   ) => {
     const imageUrl = pin.imageUrl;
     const name = pin.name;
-    message.success("Downloading...");
+    const extension = imageUrl.split(".").pop();
+    console.log(extension);
     console.log(imageUrl, " ", name);
-    saveAs(imageUrl, `${name}.png`);
+
+    if (extension === "png") {
+      message.success("Downloading...");
+      saveAs(imageUrl, `${name}.png`);
+    } else if (extension === "jpg") {
+      message.success("Downloading...");
+      saveAs(imageUrl, `${name}.jpg`);
+    } else {
+      message.error("Unsupported file format. Only PNG and JPG are supported.");
+    }
   };
 
   const [dataSource, setDataSource] = useState(pins.slice(0, 20));
@@ -335,13 +359,30 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                   </div>
                 </div>
                 <LazyLoad once>
-                  <img
-                    src={pin.imageUrl}
-                    alt={pin.name}
-                    onClick={() => navigate(`/artwork/${pin._id}`)}
-                    loading="lazy"
-                    className="image"
-                  />
+                  {pin.price > 0 ? (
+                    <Watermark
+                      content="ArtAttack"
+                      inherit={pin.price > 0 ? true : false}
+                      zIndex={100}
+                      gap={[60, 60]}
+                    >
+                      <img
+                        src={pin.imageUrl}
+                        alt={pin.name}
+                        onClick={() => navigate(`/artwork/${pin._id}`)}
+                        loading="lazy"
+                        className="image"
+                      />
+                    </Watermark>
+                  ) : (
+                    <img
+                      src={pin.imageUrl}
+                      alt={pin.name}
+                      onClick={() => navigate(`/artwork/${pin._id}`)}
+                      loading="lazy"
+                      className="image"
+                    />
+                  )}
                 </LazyLoad>
               </div>
             ))}

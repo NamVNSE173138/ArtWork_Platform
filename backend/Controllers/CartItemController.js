@@ -16,12 +16,11 @@ module.exports = {
   },
 
   getCartItemById: async (req, res, next) => {
-    const { token } = req.headers;
     try {
+      const { token } = req.headers;
       const userInfo = decodeToken(token);
       const userId = userInfo?.data?.checkEmail?._id;
-      // const results = await CartItem.find({ user: userId });
-      const results = await CartItem.find({ user: "65bc7471c22e1a44d323b6a0" }).populate('artwork', 'name imageUrl');
+      const results = await CartItem.find({ user: userId }).populate('artwork', 'name imageUrl');
 
       if (results) {
         res.send(results);
@@ -39,25 +38,25 @@ module.exports = {
   },
 
   postNewCartItem: async (req, res, next) => {
-    const id = req.params;
+    // const id = req.params;
     try {
-      // const token = req.headers;
-      // const userInfo = decode(token.authorization);
-      // const userId = userInfo?.data?.checkEmail?._id;
-      // const checkCartExist = await CartItem.findOne({
-      //   artwork: id,
-      //   user: userId,
-      // });
-      // if (!checkCartExist) {
-      //   const cartitem = new CartItem({ user: userId, artwork: id });
-      //   const result = await cartitem.save();
-      //   res.send(result);
-      // } else {
-      //   console.log("you add to cart");
-      //   res
-      //     .status(400)
-      //     .json({ message: "You have already add this artwork" });
-      // }
+      //   const token = req.headers;
+      //   const userInfo = decodeToken(token.authorization);
+      //   const userId = userInfo?.data?.checkEmail?._id;
+      //   const checkCartExist = await CartItem.findOne({
+      //     artwork: id,
+      //     user: userId,
+      //   });
+      //   if (!checkCartExist) {
+      //     const cartitem = new CartItem({ user: userId, artwork: id });
+      //     const result = await cartitem.save();
+      //     res.send(result);
+      //   } else {
+      //     console.log("you add to cart");
+      //     res
+      //       .status(400)
+      //       .json({ message: "You have already add this artwork" });
+      //   }
       const cartitem = new CartItem(req.body);
       const result = cartitem.save();
 

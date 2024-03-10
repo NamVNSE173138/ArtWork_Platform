@@ -114,7 +114,18 @@ const Report: React.FC = () => {
             {
               title: "Status",
               dataIndex: "status",
-              render: (status) => String(status),
+              render: (status) => (
+                <span
+                style={{
+                  backgroundColor: status ? "green" : "gray",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  color: "white",
+                }}
+              >
+                {status ? "Reported" : "Pending"}
+              </span>
+              ),
             },
             {
               title: "Action",

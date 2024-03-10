@@ -1,44 +1,35 @@
 import { useState } from "react";
-import {
-  Button,
-  Form,
-  Modal,
-  Input,
-  Space,
-  message,
-} from "antd";
-import { WarningOutlined } from "@ant-design/icons";
-import { createReport } from "../../api/report/reportAPI";
-
-interface ReportData {
-  artwork?: string;
-  user?: string;
-  description?: string;
-  status?: boolean;
-}
+import { Button, Modal, message } from "antd";
+import { ShoppingCartOutlined } from "@ant-design/icons";
+import { addToCart } from "../../api/cart/cartAPI";
+import { getArtworkId } from "../../api";
 
 interface BuyData {
   artwork?: string;
   user?: string;
-  status?: boolean;
+  price?: number;
 }
 
 const ReportForm = (record: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState<ReportData | null>({
+  const [formData, setFormData] = useState<BuyData | null>({
     artwork: "",
-    user: "65bc7471c22e1a44d323b6a0",
-    description: "",
-    status: false,
+    user: "",
+    price: 0,
   });
 
-  // console.log("Report Artwork ID: ", record);
+  console.log("yolo: ", record);
 
   const showModal = () => {
     setIsModalOpen(true);
-    setFormData({
-      ...formData,
-      artwork: record.artwork,
+    getArtworkId(record.artwork).then((res) => {
+      console.log("RES: ", res);
+      setFormData({
+        ...formData,
+        artwork: res._id,
+        user: record.user,
+        price: res.price,
+      });
     });
   };
 
@@ -47,27 +38,25 @@ const ReportForm = (record: any) => {
     setFormData({
       ...formData,
       artwork: "",
-      user: "65bc7471c22e1a44d323b6a0",
-      description: "",
-      status: false,
+      user: "",
+      price: 0,
     });
   };
 
   const handleSubmit = (event: any) => {
     setIsModalOpen(false);
     event.preventDefault();
-    createReport(formData);
+    addToCart(formData);
     setFormData({
       ...formData,
       artwork: "",
-      user: "65bc7471c22e1a44d323b6a0",
-      description: "",
-      status: false,
+      user: "",
+      price: 0,
     });
-    message.success("Report Successful!!!");
+    message.success("Added To Cart!!!");
   };
 
-  console.log("Report Data: ", formData);
+  console.log("BUY: ", formData);
 
   return (
     <>
@@ -75,39 +64,20 @@ const ReportForm = (record: any) => {
         style={{ float: "right", marginRight: "50px" }}
         size="large"
         onClick={showModal}
-        icon={<WarningOutlined />}
+        icon={<ShoppingCartOutlined />}
       >
         Add To Cart
       </Button>
       <Modal
-        title="Add To Cart"
         style={{ textAlign: "center" }}
-        width={1000}
+        width={500}
         open={isModalOpen}
         onOk={handleSubmit}
-        okText="Submit"
+        okText="Confirm"
         onCancel={handleCancel}
         centered
       >
-        <Form layout="vertical">
-          <Space direction="vertical">
-            <Form.Item
-              name="description"
-              label="Description of the offense(s):"
-            >
-              <Input.TextArea
-                rows={5}
-                value={formData?.description}
-                onChange={(e) => {
-                  setFormData((pre) => {
-                    return { ...pre, description: e.target.value };
-                  });
-                }}
-                placeholder="If you can, please provide a detailed description of the offense(s)"
-              />
-            </Form.Item>
-          </Space>
-        </Form>
+        <h3>ADD THIS ARTWORK TO CART?</h3>
       </Modal>
     </>
   );

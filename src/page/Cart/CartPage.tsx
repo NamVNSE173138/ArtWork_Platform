@@ -1,8 +1,22 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import Navbar from "../../components/Navbar/Navbar";
 import { deleteCartItem, getCartItemById } from "../../api/cart/cartAPI";
+
+interface User {
+  id: string;
+  email: string;
+  nickname: string;
+  role: string;
+  numOfFollower: number;
+  avatar: string;
+  password: string;
+  status: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 interface CartItem {
   _id: string;
@@ -14,14 +28,63 @@ interface CartItem {
   price: number;
 }
 
-const Cart = () => {
+const CartPage = () => {
+  const userToken = localStorage.getItem("USER");
+  const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [currentUser, setCurrentUser] = useState<User>({
+    id: "",
+    email: "",
+    password: "",
+    nickname: "",
+    role: "",
+    numOfFollower: 0,
+    avatar: "",
+    status: false,
+    createdAt: "",
+    updatedAt: "",
+  });
+
+  const getCartItem = async (id: any) => {
+    setIsLoading(true);
+    if (currentUser.id) {
+      await axios
+        .get(`http://localhost:5000/carts/${id}`, {
+          headers: {
+            token: userToken,
+          },
+        })
+        .then((res: any) => {
+          setCart(res.data);
+          setIsLoading(false);
+        })
+        .catch((err: any) => console.log(err));
+    }
+  };
+
+  const fetchCurrentUserData = async () => {
+    setIsLoading(true);
+    await axios
+      .get(`http://localhost:5000/users/getUserInfo`, {
+        headers: {
+          token: userToken,
+        },
+      })
+      .then((res: any) => {
+        setCurrentUser(res.data);
+        setIsLoading(false);
+      })
+      .catch((err: any) => console.log(err));
+  };
 
   useEffect(() => {
-    getCartItemById("65bc7471c22e1a44d323b6a0").then((res) => {
-      setCart(res);
-    });
-  }, []);
+    const fetchData = async () => {
+      await fetchCurrentUserData();
+      await getCartItem(currentUser.id);
+    };
+    fetchData();
+    // Add currentUser.id to the dependency array to ensure the effect runs when currentUser.id changes
+  }, [currentUser.id]);
 
   const EmptyCart = () => {
     return (
@@ -30,13 +93,15 @@ const Cart = () => {
           <div className="col-md-12 py-5 bg-light text-center">
             <h4 className="p-3 display-5">Your Cart is Empty</h4>
             <Link to="/home" className="btn  btn-outline-dark mx-4">
-              <i className="fa fa-arrow-left"></i> Continue Shopping
+              <i className="fa fa-arrow-left"></i> Continue Buying
             </Link>
           </div>
         </div>
       </div>
     );
   };
+
+  const handleNothing = () => {};
 
   const ShowCart = () => {
     let subtotal = 0;
@@ -52,9 +117,6 @@ const Cart = () => {
             <div className="row d-flex justify-content-center my-4">
               <div className="col-md-8">
                 <div className="card mb-4">
-                  <Link to="/home" className="btn  btn-outline-dark mx-4">
-                    <i className="fa fa-arrow-left"></i> Continue Shopping
-                  </Link>
                   <div className="card-header py-3">
                     <h4 className="mb-0">Cart List</h4>
                   </div>
@@ -72,7 +134,6 @@ const Cart = () => {
                                   src={item.artwork.imageUrl}
                                   alt={item.artwork.name}
                                   width={100}
-                                  height={75}
                                 />
                               </div>
                             </div>
@@ -98,7 +159,7 @@ const Cart = () => {
                                   }}
                                   style={{ marginTop: "-10px" }}
                                 >
-                                  x
+                                  X
                                 </button>
                               </div>
 
@@ -110,11 +171,13 @@ const Cart = () => {
                               </p>
                             </div>
                           </div>
-
                           <hr className="my-4" />
                         </div>
                       );
                     })}
+                    <Link to="/home" className="btn  btn-outline-dark mx-4">
+                      <i className="fa fa-arrow-left"></i> Continue Buying
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -165,15 +228,14 @@ const Cart = () => {
 
   return (
     <>
-      {/* <Navbar /> */}
+      <Navbar onSubmit={handleNothing} />
       <div className="container my-3 py-3">
         <h1 className="text-center">Cart</h1>
         <hr />
-        {cart?.length > 0 ? <ShowCart /> : <EmptyCart />}
+        {cart?.length > 0 && currentUser.id ? <ShowCart /> : <EmptyCart />}
       </div>
-      {/* <Footer /> */}
     </>
   );
 };
 
-export default Cart;
+export default CartPage;

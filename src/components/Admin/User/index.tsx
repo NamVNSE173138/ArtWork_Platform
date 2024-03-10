@@ -93,27 +93,29 @@ function Users() {
     });
   }, []);
 
-  const [messageApi, contextHolder] = message.useMessage()
+  const [messageApi, contextHolder] = message.useMessage();
 
   const onUpdateArtistRole = async () => {
-    await axios.get('http://localhost:5000/artworks')
+    await axios
+      .get("http://localhost:5000/artworks")
       .then((res: AxiosResponse) => {
         res.data.map((artwork: Artwork) => {
-          axios.patch(`http://localhost:5000/users/updateRole/${artwork.user}`)
+          axios
+            .patch(`http://localhost:5000/users/updateRole/${artwork.user}`)
             .then((res) => {
-              console.log("User role updated: ", artwork.user)
+              console.log("User role updated: ", artwork.user);
             })
-            .catch((err) => console.log(err))
-        })
-      })
+            .catch((err) => console.log(err));
+        });
+      });
     messageApi
       .open({
-        type: 'loading',
-        content: 'Updating...',
+        type: "loading",
+        content: "Updating...",
         duration: 1,
       })
-      .then(() => message.success('Successfully updated', 3))
-  }
+      .then(() => message.success("Successfully updated", 3));
+  };
 
   const onDeleteUser = (record: User) => {
     console.log(record);
@@ -187,15 +189,24 @@ function Users() {
     <Space size={20} direction="vertical">
       {contextHolder}
       {/* <Typography.Title level={4}>Users</Typography.Title> */}
-      <Input.Search
-        placeholder="Search by name..."
-        value={searchInput}
-        // onSearch={(value) => handleSearch(value)}
-        onChange={(e) => handleSearch(e.target.value)}
-        enterButton
-        style={{ width: "500px", marginTop: "10px" }}
-      />
-      <Button type="primary" loading={loading} onClick={onUpdateArtistRole}>Update Users' Role</Button>
+      <div>
+        <Input.Search
+          placeholder="Search by name..."
+          value={searchInput}
+          // onSearch={(value) => handleSearch(value)}
+          onChange={(e) => handleSearch(e.target.value)}
+          enterButton
+          style={{ width: "500px", marginTop: "10px" }}
+        />
+        <Button
+          type="primary"
+          loading={loading}
+          onClick={onUpdateArtistRole}
+          style={{ float: "right", margin: "10px 50px 0px 0px" }}
+        >
+          Update Users' Role
+        </Button>
+      </div>
       <Table<User>
         style={{ width: "1250px" }}
         loading={loading}
@@ -222,7 +233,18 @@ function Users() {
           {
             title: "Status",
             dataIndex: "status",
-            render: (status) => String(status),
+            render: (status) => (
+              <span
+                style={{
+                  backgroundColor: status ? "green" : "red",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  color: "white",
+                }}
+              >
+                {status ? "Online" : "Banned"}
+              </span>
+            ),
           },
           {
             title: "Action",
