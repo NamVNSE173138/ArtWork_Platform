@@ -71,10 +71,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   };
 
   const items: MenuProps["items"] = [
-    {
-      label: <div style={{ height: "10px" }}></div>,
-      key: 0,
-    },
+    // {
+    //   label: <div style={{ height: "10px" }}></div>,
+    //   key: 0,
+    // },
     {
       label: (
         <Link
@@ -89,12 +89,8 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     },
     {
       label: (
-        <Link
-          id="profile"
-          className="dropdown-item"
-          to={`/cart`}
-        >
-          <strong>View cart</strong>
+        <Link id="profile" className="dropdown-item" to={`/cart`}>
+          <strong>View Cart</strong>
         </Link>
       ),
       key: 2,

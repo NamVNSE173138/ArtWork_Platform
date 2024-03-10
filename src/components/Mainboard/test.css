@@ -6,7 +6,7 @@
     margin-top: 100px;
     background-color: white;
     position: relative;
-    /* Ensure there's a positioning context for absolutely positioned children */
+    z-index: 2;
 }
 
 .Wrapper {
