@@ -37,13 +37,9 @@ function App() {
       <Route path="/artwork/:id" element={<Artwork />} />
       <Route path="/favoriteList" element={<FavoriteList />} />
       <Route path="/request" element={<ArtistList />} />
-      <Route
-        path="/request/requirements/:id"
-        element={<RequestRequirements />}
-      />
+      <Route path="/request/requirements/:id" element={<RequestRequirements />} />
       <Route path="/artistList/:_id" element={<ArtistProfile />} />
       <Route path="/artworkRequest" element={<ArtworkRequest />} />
-
       <Route path="/cart" element={<CartPage />} />
       <Route path="/notifications" element={<NotificationPage />} />
     </Routes>
