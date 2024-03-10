@@ -420,7 +420,7 @@ export default function Artwork() {
                   Share
                 </Button>
                 <ReportForm artwork={artwork._id} />
-                <BuyArtwork artwork={artwork._id} user={currentUser.id} />
+                <BuyArtwork artwork={artwork._id} user={currentUser._id} />
               </div>
             </div>
           </>
