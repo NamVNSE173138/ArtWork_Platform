@@ -182,3 +182,7 @@ span.ant-avatar.ant-avatar-circle.ant-avatar-image.avt-user.css-dev-only-do-not-
     right: 15%;
     margin: 20px;
 }
+
+.ant-notification-notice-wrapper {
+    margin-top: 50px;
+}
