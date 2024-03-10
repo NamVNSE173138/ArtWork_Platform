@@ -177,12 +177,11 @@ export default function Artwork() {
 
   const fetchCurrentUserData = async () => {
     setIsLoading(true);
-    await axios
-      .get(`http://localhost:5000/users/getUserInfo`, {
-        headers: {
-          token: userToken, //userToken = localStorage("USER")
-        },
-      })
+    await axios.get(`http://localhost:5000/users/getUserInfo`, {
+      headers: {
+        token: userToken, //userToken = localStorage("USER")
+      },
+    })
       .then((res) => {
         setCurrentUser(res.data);
         setIsLoading(false);
@@ -332,7 +331,7 @@ export default function Artwork() {
                 </Button>
               </div>
               <div className={styles.commentSection}>
-                <div style={{ padding: '10px 0'}}>
+                <div style={{ padding: '10px 0' }}>
                   <Text strong>
                     Comment &ensp;
                     <Badge
@@ -465,7 +464,6 @@ export default function Artwork() {
                   Share
                 </Button>
                 <ReportForm artwork={artwork._id} />
-                <BuyArtwork artwork={artwork._id} user={currentUser.id} />
               </div>
             </div>
           </>

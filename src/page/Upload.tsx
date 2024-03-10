@@ -1,6 +1,7 @@
 // Home.tsx
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar/Navbar";
+import { Flex, Image } from "antd";
 import UploadImageForm from "../components/UploadForm/UploadForm";
 import axios from "axios";
 
@@ -82,10 +83,14 @@ const Upload: React.FC = () => {
   useEffect(() => {
     getNewPins();
   }, []);
-  useEffect(() => {}, [pins]);
+  useEffect(() => { }, [pins]);
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />
+      <Flex align="center" justify="center" style={{ marginTop: '6%' }} gap={10}>
+        <h2>SHARE YOUR ART TO PEOPLE</h2>
+        <Image src="https://i.pinimg.com/originals/7c/43/0b/7c430ba6fb3cd7058aec52cb84a080e6.png" alt="" width={70} preview={false} />
+      </Flex>
       <UploadImageForm />
     </>
   );

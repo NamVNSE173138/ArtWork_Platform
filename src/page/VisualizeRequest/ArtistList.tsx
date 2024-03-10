@@ -41,7 +41,7 @@ const ArtistList: React.FC = () => {
       const response = await axios.get<ArtworkResponse>(
         "http://localhost:5000/artworks"
       );
-      console.log("reponse: ", response);
+      console.log("response: ", response);
       console.log(response.data);
 
       return response.data;

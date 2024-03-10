@@ -94,10 +94,22 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
           className="dropdown-item"
           to={`/cart`}
         >
-          <strong>View Cart</strong>
+          <strong>View cart</strong>
         </Link>
       ),
       key: 2,
+    },
+    {
+      label: (
+        <Link
+          id="profile"
+          className="dropdown-item"
+          to={`/request/history`}
+        >
+          <strong>View request history</strong>
+        </Link>
+      ),
+      key: 3,
     },
     {
       label: (
@@ -105,7 +117,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
           <strong>Reset password</strong>
         </Link>
       ),
-      key: 3,
+      key: 4,
     },
     {
       type: "divider",
@@ -123,7 +135,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
           </p>
         </div>
       ),
-      key: 4,
+      key: 5,
     },
   ];
 
