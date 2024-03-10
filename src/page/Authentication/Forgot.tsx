@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'react-toastify/dist/ReactToastify.css';
-import "./Authentication.css"
+import styles from "./Authentication.module.css"
 import { Button, Image, Divider, Modal } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import * as Yup from 'yup';
 import emailjs from '@emailjs/browser';
 import { generateCode } from "../../assistants/Generators";
 import logo from "../../assets/image/logo-transparent.png";
+import randomImageUrl from '../../assets/image/forgot.jpg'
 
 interface User {
     _id?: string,
@@ -26,7 +27,7 @@ interface User {
 export default function Forgot() {
     const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
-    const randomImage = "https://i.pinimg.com/564x/3a/e6/7d/3ae67df286b9b8e568de17e4657fd21d.jpg";
+    const randomImage = randomImageUrl;
 
     const [open, setOpen] = useState(false);
     const showModal = () => {
@@ -125,13 +126,12 @@ export default function Forgot() {
     })
 
     return (
-        <div className="container">
-            <div className="left-container">
-                <Image src={randomImage} width={400} preview={false} />
+        <div className={styles.container}>
+            <div className={styles.leftContainer}>
+                <Image src={randomImage} width={600} preview={false} className={styles.displayImage} />
             </div>
-            <div className="right-container row" style={{ padding: "20px 0" }}>
+            <div className={styles.rightContainer} style={{ padding: "20px 0" }}>
                 <Image
-                    className=""
                     src={logo}
                     width={300}
                     preview={false}
@@ -152,12 +152,12 @@ export default function Forgot() {
                         name="code"
                         value={emailForm.values.code}
                     />
-                    <div className="error">
+                    <div className={styles.error}>
                         {emailForm.errors.email ? (
                             <i>{emailForm.errors.email}</i>
                         ) : null}
                     </div>
-                    <span className="modal-button-group" style={{ flexDirection: "column", marginTop: "20px" }}>
+                    <span className={styles.modalButtonGroup} style={{ flexDirection: "column", marginTop: "20px" }}>
                         <Button type="primary" htmlType="submit" shape="round" block disabled={isLoading ? true : false}>
                             {isLoading ? <LoadingOutlined /> : <p>Continue</p>}
                         </Button>
@@ -181,7 +181,7 @@ export default function Forgot() {
                             onBlur={codeVerifyForm.handleBlur}
                             value={codeVerifyForm.values.code}
                         />
-                        <div className="error">
+                        <div className={styles.error}>
                             {codeVerifyForm.errors.code ? (
                                 <i>{codeVerifyForm.errors.code}</i>
                             ) : null}
@@ -193,7 +193,7 @@ export default function Forgot() {
                             onBlur={emailForm.handleBlur}
                             value={emailForm.values.email}
                         />
-                        <span className="modal-button-group">
+                        <span className={styles.modalButtonGroup}>
                             <Button type="default" shape="round" onClick={handleCancel}>Cancel</Button>
                             <Button type="primary" htmlType="submit" shape="round" disabled={isLoading ? true : false}>
                                 {isLoading ? <LoadingOutlined /> : <p>Verify {verifyCode}</p>}

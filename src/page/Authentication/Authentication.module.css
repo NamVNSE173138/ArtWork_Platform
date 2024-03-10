@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300&family=Encode+Sans+Expanded:wght@800&family=Maven+Pro:wght@500&family=Oswald:wght@500&display=swap');
 
-/* .container {
+.container {
   width: 100%;
   height: 100vh;
   min-height: fit-content;
@@ -15,9 +15,9 @@
   margin: 10px auto 0 auto;
   border-radius: 3%;
   margin-top: 20px;
-} */
+}
 
-.left-container {
+.lefContainer {
   display: inline-block;
   border-radius: 20px;
   padding: 30px;
@@ -30,28 +30,39 @@
   flex-grow: 1;
 }
 
-.left-container img {
+.lefContainer img {
   border-radius: 10px;
 
 }
 
-.left-container:nth-child(1) {
+.lefContainer:nth-child(1) {
   margin-left: 20px;
   box-shadow: 5px 10px 5px 5px #b4b4b4;
 }
 
-.right-container {
+.rightContainer {
   background-color: #fff;
   border-radius: 20px;
   padding: 0;
-  width: 100%;
+  min-width: 40%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
   flex-grow: 1;
   flex: 0 0 25em;
+}
+
+.rightContainer div {
+  margin: 2px 0;
+}
+
+.displayImage {
+  opacity: 1;
+  border-radius: 30px;
+  transition: opacity 4s;
 }
 
 .container h2,
@@ -67,8 +78,8 @@ h6 {
   flex-direction: column;
 }
 
-.container .mb-2 input,
-.container .mb-2 input,
+.container input,
+.container input,
 input {
   background-color: white;
   color: black;
@@ -76,12 +87,12 @@ input {
   border-radius: 10px;
   padding: 8px 12px;
   font-size: 90%;
-  width: 100%;
+  min-width: 400px;
   box-sizing: border-box;
   font-family: 'Maven Pro', sans-serif;
 }
 
-.container .password-input-container {
+.container .passwordInputContainer {
   position: relative;
 }
 
@@ -106,12 +117,12 @@ input {
   text-align: start !important;
 }
 
-.form-footer p {
+.formFooter p {
   display: inline-block;
   margin-top: 20px;
 }
 
-.form-footer a {
+.formFooter a {
   cursor: pointer;
   color: #007bff;
   font-family: 'Encode Sans Expanded', sans-serif;
@@ -126,23 +137,7 @@ input {
   gap: 20px;
 }
 
-.my-facebook-button-class {
-  background-color: rgb(255, 255, 255);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 11px;
-  border: solid 1px #dadce0;
-  align-self: flex-start;
-  border-radius: 12% !important;
-}
-
-.my-facebook-button-class:hover {
-  border: solid 1px #dadce0;
-  background-color: #f5f8ff;
-}
-
-.modal-button-group {
+.modalButtonGroup {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;

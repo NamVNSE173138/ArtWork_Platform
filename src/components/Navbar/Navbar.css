@@ -3,7 +3,7 @@
 .navbar-home {
     display: flex;
     position: fixed !important;
-    z-index: 9999;
+    z-index: -1;
     top: 0;
     justify-content: space-between;
     align-items: center;
@@ -22,6 +22,7 @@
 #logo {
     width: 100%;
     height: 100%;
+    margin-left: 20px;
 }
 
 .brand-title {

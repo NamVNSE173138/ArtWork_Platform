@@ -196,6 +196,26 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
         <nav className="navbar-links">
           <ul>
             <li>
+              <Link
+                id="upload"
+                className="item"
+                to="/upload"
+                onClick={toggleNav}
+              >
+                BECOME AN ARTIST
+              </Link>
+            </li>
+            <li>
+              <Link
+                id="request"
+                className="item"
+                to="/request"
+                onClick={toggleNav}
+              >
+                VISUALIZE YOUR ART
+              </Link>
+            </li>
+            <li>
               <Search
                 placeholder="Search..."
                 allowClear
