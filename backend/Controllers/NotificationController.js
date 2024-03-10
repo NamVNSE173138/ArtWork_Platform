@@ -1,4 +1,5 @@
 const Notification = require('../Models/notification');
+const { decodeToken } = require("../Config/config.js");
 
 exports.getAllNotification = async (req, res) => {
   try {
@@ -6,6 +7,27 @@ exports.getAllNotification = async (req, res) => {
     res.send(results);
   } catch (err) {
     console.log(err.message);
+  }
+}
+
+exports.getNotificationsById = async (req, res) => {
+  try {
+    const { token } = req.headers;
+    const userInfo = decodeToken(token);
+    const userId = userInfo?.data?.checkEmail?._id;
+    const results = await Notification.find({ artist: userId }).populate('user artwork', 'nickname user');
+    if (results) {
+      res.send(results);
+    }
+    else {
+      throw createError(404, "Notifcation does not exist!")
+    }
+
+  } catch (error) {
+    console.log(error.message);
+    if (error instanceof mongoose.CastError) {
+      return next(createError(400, 'Invalid Notification Id'))
+    }
   }
 }
 
