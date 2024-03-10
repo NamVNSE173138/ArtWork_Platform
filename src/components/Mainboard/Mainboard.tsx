@@ -18,7 +18,7 @@ import { saveAs } from "file-saver";
 import Box from "@mui/material/Box";
 import Masonry from '@mui/lab/Masonry';
 import axios from "axios";
-import LazyLoad from "react-lazyload";
+import LazyLoad from 'react-lazyload';
 
 interface MainboardProps {
   pins: PinProps[];

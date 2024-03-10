@@ -64,7 +64,7 @@ interface FavoriteList {
 const ProfilePage: React.FC = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const { id } = useParams();
-  console.log(id);
+  console.log("user profile page", id);
   const [favoriteList, setFavoriteList] = useState<FavoriteList[]>([]);
   const items: TabsProps["items"] = [
     {

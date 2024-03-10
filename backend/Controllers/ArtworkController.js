@@ -82,7 +82,7 @@ module.exports = {
 
   likeArtwork: async (req, res, next) => {
     const { id } = req.params;
-    const { token } = req.headers;
+    const token = req.headers.authorization;
     console.log("token", token);
     try {
 
