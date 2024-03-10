@@ -81,25 +81,17 @@ module.exports = {
   },
 
   likeArtwork: async (req, res, next) => {
-    const id = req.params;
+    const { id } = req.params;
+    const token = req.headers.authorization;
+    console.log("token", token);
     try {
-      const token = req.headers;
-      // console.log("token: ", token.authorization);
-      // console.log("id artwork:", id);
-      const userInfo = decodeToken(token.authorization);
-      // console.log("user info: ", userInfo);
-      const userId = userInfo?.data?.checkEmail?._id;
-      // console.log("USID", userId);
-      const checkLikeExist = await FavoriteList.findOne({
-        artwork: id,
-        user: userId,
-      });
-      if (!checkLikeExist) {
-        console.log("co data");
-      } else {
-        console.log("eo co data");
-      }
-      console.log("check like: ", checkLikeExist);
+
+      const userInfo = decodeToken(token);
+      const userId = userInfo?.data?.checkEmail?._id
+      console.log("USID", userId);
+
+      const checkLikeExist = await FavoriteList.findOne({ artwork: id, user: userId })
+
       if (!checkLikeExist) {
         const favoriteList = new FavoriteList({ user: userId, artwork: id });
         const result = await favoriteList.save();
