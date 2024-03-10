@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { saveAs } from "file-saver";
 import Box from "@mui/material/Box";
-import Masonry from "@mui/lab/Masonry";
+import Masonry from '@mui/lab/Masonry';
 import axios from "axios";
 
 interface MainboardProps {
@@ -286,7 +286,7 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                 </div>
                 <div
                   className="artist-info"
-                  // style={{ position: "absolute", bottom: "10px", left: "10px" }}
+                // style={{ position: "absolute", bottom: "10px", left: "10px" }}
                 >
                   <img
                     src="https://i.pinimg.com/564x/30/2f/d4/302fd4ae9a9786bf3b637f7cbe1ae7b6.jpg"

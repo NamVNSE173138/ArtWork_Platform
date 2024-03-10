@@ -21,3 +21,18 @@ router.get("/getUserFavoriteList", artworkController.getUserFavoriteList)
 
 
 module.exports = router;
+
+
+// chạy file backend pk fen
+// mà tui chạy npm run dev nó ms start backend á
+// đúng chưua fen
+// tạo cái button r viết cái hàm để sao nx fen :)))
+// chưa fen
+
+
+
+// FE:
+// viết page thanh toán j nx hok fen
+// amount, bankcode, language
+// redirect
+// 

@@ -83,11 +83,13 @@ module.exports = {
   likeArtwork: async (req, res, next) => {
     const { id } = req.params;
     const { token } = req.headers;
+    console.log("token", token);
     try {
 
       const userInfo = decodeToken(token);
       const userId = userInfo?.data?.checkEmail?._id
       console.log("USID", userId);
+
       const checkLikeExist = await FavoriteList.findOne({ artwork: id, user: userId })
 
       if (!checkLikeExist) {
