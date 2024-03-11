@@ -81,7 +81,7 @@ export default function PendingRequest() {
 
     useEffect(() => {
         fetchUserRequest()
-    }, [userRequestList])
+    }, [])
 
     const columns: TableProps<UserRequest>['columns'] = [
         {
