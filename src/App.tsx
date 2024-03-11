@@ -17,12 +17,13 @@ import RequestRequirements from "./page/VisualizeRequest/RequestRequirements";
 import ArtistProfile from "./components/ArtistProfile/ArtistProfile";
 import ArtworkRequest from "./page/ArtworkRequest";
 import ProfilePage from "./components/Profile/Profile";
-import NotificationPage from "./page/NotificationPage/NotificationPage";
+// import NotificationPage from "./page/NotificationPage/NotificationPage";
 import CartPage from "./page/Cart/CartPage";
 import VisualizeRequest from "./page/VisualizeRequest/RequestHistory";
 import UserRequestList from "./components/Profile/UserRequestList";
 import RequestApproval from "./page/VisualizeRequest/RequestApproval";
 import UserRequestOnArtist from "./page/UserRequest on Artist/UserRequestOnArtist";
+import VnPayPayment from "./components/VNPay/VnPayPayment";
 
 function App() {
   return (
@@ -48,7 +49,8 @@ function App() {
       <Route path="/artistList/:_id" element={<ArtistProfile />} />
       <Route path="/artworkRequest" element={<ArtworkRequest />} />
       <Route path="/cart" element={<CartPage />} />
-      <Route path="/notifications" element={<NotificationPage />} />
+      <Route path="/order/vnpay_return" element={<VnPayPayment />} />
+      {/* <Route path="/notifications" element={<NotificationPage />} /> */}
     </Routes>
   );
 }
