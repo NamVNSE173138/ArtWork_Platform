@@ -69,7 +69,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     setTimeout(() => {
       localStorage.removeItem("USER");
       setIsLoadingLogOut(false);
-      window.location.reload();
+      navigate("/home");
     }, 2000);
   };
 
