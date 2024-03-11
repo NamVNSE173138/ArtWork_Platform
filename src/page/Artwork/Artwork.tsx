@@ -437,7 +437,7 @@ export default function Artwork() {
                 <Button className="share-btn" size="large">
                   Share
                 </Button>
-                <ReportForm artwork={artwork._id} />
+                <ReportForm artwork={artwork._id} user={currentUser.id} />
                 <BuyArtwork artwork={artwork._id} user={currentUser.id} />
               </div>
             </div>
