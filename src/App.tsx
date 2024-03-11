@@ -14,7 +14,7 @@ import Artwork from "./page/Artwork/Artwork";
 import FavoriteList from "./page/FavoriteList/FavoriteList";
 import ArtistList from "./page/VisualizeRequest/ArtistList";
 import RequestRequirements from "./page/VisualizeRequest/RequestRequirements";
-import ArtistProfile from "./components/ArtistProfile/ArtistProfile";
+import ArtistProfile from "./page/ArtistProfile";
 import ArtworkRequest from "./page/ArtworkRequest";
 import ProfilePage from "./components/Profile/Profile";
 // import NotificationPage from "./page/NotificationPage/NotificationPage";
@@ -44,7 +44,10 @@ function App() {
       <Route path="/favoriteList" element={<FavoriteList />} />
       <Route path="/request" element={<ArtistList />} />
       <Route path="/request/history" element={<VisualizeRequest />} />
-      <Route path="/request/requirements/:id" element={<RequestRequirements />} />
+      <Route
+        path="/request/requirements/:id"
+        element={<RequestRequirements />}
+      />
       <Route path="/userRequest/approval/:id" element={<RequestApproval />} />
       <Route path="/artistList/:_id" element={<ArtistProfile />} />
       <Route path="/artworkRequest" element={<ArtworkRequest />} />
