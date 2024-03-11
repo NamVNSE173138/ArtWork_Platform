@@ -11,17 +11,10 @@ const ArtistRequestSchema = new Schema({
         required: true,
         default: 0,
     },
-    description: {
-        type: String,
-        required: false,
-    },
-    user: {
+    userRequest: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
-    },
-    artist: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'UserRequest',
+        required: true,
     },
     status: {
         type: Boolean,

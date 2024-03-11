@@ -17,6 +17,7 @@ import {
   Image,
   message,
   notification,
+  Form,
 } from "antd";
 import {
   CheckOutlined,
@@ -29,6 +30,7 @@ import Meta from "antd/es/card/Meta";
 import axios from "axios";
 import TextArea from "antd/es/input/TextArea";
 import { number } from "yup";
+import { useNavigate } from "react-router-dom";
 interface ImageCard {
   user: string;
   name: string;
@@ -55,6 +57,18 @@ const UploadImageForm: React.FC = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [imageCards, setImageCards] = useState<ImageCard[]>([]);
   const [api, contextHolder] = notification.useNotification();
+  const [selectedImageIndexes, setSelectedImageIndexes] = useState<number[]>(
+    []
+  );
+  const handleSelectImage = (index: number) => {
+    if (selectedImageIndexes.includes(index)) {
+      setSelectedImageIndexes(
+        selectedImageIndexes.filter((idx) => idx !== index)
+      );
+    } else {
+      setSelectedImageIndexes([...selectedImageIndexes, index]);
+    }
+  };
   const handleImageUpload = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       if (validateUrl(imageUrl)) {
@@ -100,6 +114,11 @@ const UploadImageForm: React.FC = () => {
     }
   };
 
+  // Validation for price input
+  const isPriceValid = (price: number) => {
+    return price >= 0; // Basic validation, check if price is non-negative
+  };
+
   type ImageCardKey = keyof ImageCard;
 
   const handleCardInputChange = (
@@ -108,6 +127,7 @@ const UploadImageForm: React.FC = () => {
     value: string | number | string[]
   ) => {
     const newImageCards = [...imageCards];
+
     if (
       typeof value === "string" &&
       (key === "url" || key === "name" || key === "description")
@@ -127,11 +147,11 @@ const UploadImageForm: React.FC = () => {
     newImageCards.splice(index, 1);
     setImageCards(newImageCards);
   };
-  const { token } = theme.useToken();
-  const [tags, setTags] = useState<string[]>([]);
+  // const { token } = theme.useToken();
+  // const [tags, setTags] = useState<string[]>([]);
   const [inputVisible, setInputVisible] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [editInputIndex, setEditInputIndex] = useState(-1);
+  // const [inputValue, setInputValue] = useState("");
+  // const [editInputIndex, setEditInputIndex] = useState(-1);
   const [editInputValue, setEditInputValue] = useState("");
   const inputRef = useRef<InputRef>(null);
   const editInputRef = useRef<InputRef>(null);
@@ -166,56 +186,6 @@ const UploadImageForm: React.FC = () => {
     setImageCards(newImageCards);
   };
 
-  const handleClose = (removedTag: string, index: number) => {
-    let newTags = [...tags];
-    newTags = newTags.filter((tag, i) => i !== index);
-    setTags(newTags);
-    if (editInputIndex === index) {
-      setEditInputIndex(-1); // Reset editInputIndex
-    }
-  };
-
-  const showInput = () => {
-    setInputVisible(true);
-  };
-
-  const handleInputTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
-
-  const handleInputConfirm = () => {
-    if (inputValue && !tags.includes(inputValue)) {
-      setTags([...tags, inputValue]);
-    }
-    setInputVisible(false);
-    setInputValue("");
-  };
-
-  const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditInputValue(e.target.value);
-  };
-
-  const handleEditInputConfirm = () => {
-    const newTags = [...tags];
-    newTags[editInputIndex] = editInputValue;
-    setTags(newTags);
-    setEditInputIndex(-1);
-    setEditInputValue("");
-  };
-
-  const tagInputStyle: React.CSSProperties = {
-    width: 99,
-    height: 22,
-    marginInlineEnd: 8,
-    verticalAlign: "top",
-  };
-
-  const tagPlusStyle: React.CSSProperties = {
-    height: 22,
-    fontSize: "16px",
-    background: token.colorBgContainer,
-    borderStyle: "dashed",
-  };
   const userToken = localStorage.getItem("USER");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -253,8 +223,8 @@ const UploadImageForm: React.FC = () => {
     // console.log("Current user: ", currentUser);
   }, [currentUser]);
   //switch
-  const [isFree, setIsFree] = useState(false);
-  const [price, setPrice] = useState<number | string>("");
+  // const [isFree, setIsFree] = useState(false);
+  // const [price, setPrice] = useState<number | string>("");
   const handleSwitchChange = (checked: boolean, index: number) => {
     const updatedIsFreeArray = [...isFreeArray];
     updatedIsFreeArray[index] = !checked;
@@ -264,25 +234,29 @@ const UploadImageForm: React.FC = () => {
   const [isFreeArray, setIsFreeArray] = useState<boolean[]>(
     Array(imageCards.length).fill(false)
   );
-
+  const navigate = useNavigate();
   const handleSubmit = () => {
-    const promises = imageCards.map((image, index) => {
-      console.log(`Image ${index + 1}:`);
-      console.log(currentUser.id);
-
-      console.log("URL:", image.url);
-      console.log("Name:", image.name);
-      console.log("Tags:", image.tags);
-      console.log("Description:", image.description);
-
-      // Get the latest price value from the input field
+    if (selectedImageIndexes.length === 0) {
+      message.error("Please select at least one image to post.");
+      return; // Prevent form submission
+    }
+    const selectedImages = selectedImageIndexes.map(
+      (index) => imageCards[index]
+    );
+    let allImagesValid = true;
+    const promises = selectedImages.map((image, index) => {
+      if (!image.name || !image.description) {
+        allImagesValid = false; // Set flag to false
+        message.error(
+          "Please fill both the name and description for images you choose."
+        );
+        return null; // Prevent form submission
+      }
       const priceInput = document.getElementById(
         `price-input-${index}`
       ) as HTMLInputElement;
       const priceValue = priceInput.value;
-      console.log(isFreeArray[index]);
       let imagePrice = !isFreeArray[index] ? 0 : priceValue; // Set imagePrice based on isFree
-      console.log("Price:", imagePrice);
       const data = {
         user: currentUser.id,
         name: image.name,
@@ -293,7 +267,6 @@ const UploadImageForm: React.FC = () => {
         imageUrl: image.url,
         status: true,
       };
-      // console.log(data);
       return fetch("http://localhost:5000/artworks", {
         method: "POST",
         headers: {
@@ -313,14 +286,17 @@ const UploadImageForm: React.FC = () => {
         });
     });
 
-    Promise.all(promises)
-      .then(() => {
-        message.success("Images posted successfully");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        message.error("Failed to post images");
-      });
+    if (allImagesValid) {
+      Promise.all(promises.filter(Boolean))
+        .then(() => {
+          message.success("Images posted successfully");
+          // navigate(0); // Redirect to another page after successful submission
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          message.error("Failed to post images");
+        });
+    }
   };
 
   return (
@@ -339,7 +315,11 @@ const UploadImageForm: React.FC = () => {
           <div className="image-card-container" key={index}>
             <div className="btn-card">
               <h4>Image: {index + 1}</h4>
-              <Checkbox className="radio-checkout" />
+              <Checkbox
+                className="radio-checkout"
+                checked={selectedImageIndexes.includes(index)}
+                onChange={() => handleSelectImage(index)}
+              />
               <br />
               <Button
                 type="text"
@@ -368,79 +348,132 @@ const UploadImageForm: React.FC = () => {
                     }
                   />
                 </Card>
-                <Input
-                  placeholder="Name"
-                  onChange={(e) =>
-                    handleCardInputChange(index, "name", e.target.value)
-                  }
-                  className="input-name"
-                  size="large"
-                />
-
-                {card.tags.map((tag, tagIndex) => (
-                  <Space key={tagIndex}>
+                <Form>
+                  <Form.Item
+                    name="name"
+                    rules={[
+                      { required: true, message: "Please input the name!" },
+                    ]}
+                  >
                     <Input
-                      value={tag}
+                      placeholder="Name"
                       onChange={(e) =>
-                        handleTagInputChange(index, tagIndex, e.target.value)
+                        handleCardInputChange(index, "name", e.target.value)
                       }
-                      placeholder="Tag"
+                      className="input-name"
                       size="large"
                     />
-                    <Button
-                      onClick={() => handleRemoveTag(index, tagIndex)}
-                      shape="circle"
-                      icon={<CloseOutlined />}
-                    />
-                  </Space>
-                ))}
-                <Button onClick={() => handleAddTag(index)}>Add Tag</Button>
-                <div className="option-price">
-                  <div
-                    style={{
-                      opacity: isFreeArray[index] ? 0.2 : 1,
-                      marginRight: "10px",
-                    }}
-                  >
-                    Free for everyone
+                  </Form.Item>
+                  <div className="tag-input">
+                    {card.tags.map((tag, tagIndex) => (
+                      <Space key={tagIndex}>
+                        <Input
+                          value={tag}
+                          onChange={(e) =>
+                            handleTagInputChange(
+                              index,
+                              tagIndex,
+                              e.target.value
+                            )
+                          }
+                          placeholder="Tag"
+                          size="large"
+                        />
+                        <Button
+                          onClick={() => handleRemoveTag(index, tagIndex)}
+                          shape="circle"
+                          icon={<CloseOutlined />}
+                        />
+                      </Space>
+                    ))}
                   </div>
-                  <Switch
-                    checked={!isFreeArray[index]}
-                    onChange={(checked) => handleSwitchChange(checked, index)}
-                  />
 
-                  <div
-                    className="price"
-                    style={{
-                      opacity: isFreeArray[index] ? 1 : 0.2,
-                      marginLeft: "10px",
-                    }}
-                  >
-                    Price:
-                    <Input
-                      id={`price-input-${index}`} // Unique ID for each input
-                      disabled={!isFreeArray[index]}
+                  <Button onClick={() => handleAddTag(index)}>Add Tag</Button>
+
+                  <div className="option-price">
+                    <div
                       style={{
-                        width: "100px",
-                        border: "1px solid",
-                        marginLeft: "5px",
+                        opacity: isFreeArray[index] ? 0.2 : 1,
+                        marginRight: "10px",
                       }}
-                      // value={price.toString()}
-                      onChange={(e) => {
-                        handleCardInputChange(index, "price", e.target.value);
-                      }}
+                    >
+                      Free for everyone
+                    </div>
+                    <Switch
+                      checked={!isFreeArray[index]}
+                      onChange={(checked) => handleSwitchChange(checked, index)}
                     />
+
+                    <div
+                      className="price"
+                      style={{
+                        opacity: isFreeArray[index] ? 1 : 0.2,
+                        marginLeft: "10px",
+                      }}
+                    >
+                      Price:
+                      <Form.Item
+                        name="price"
+                        rules={[
+                          {
+                            required: isFreeArray[index],
+                            message: "Please input the price!",
+                          },
+                          {
+                            validator: (_, value) =>
+                              isPriceValid(value)
+                                ? Promise.resolve()
+                                : Promise.reject(
+                                    new Error("Price must be non-negative!")
+                                  ),
+                          },
+                        ]}
+                      >
+                        <Input
+                          id={`price-input-${index}`} // Unique ID for each input
+                          disabled={!isFreeArray[index]}
+                          style={{
+                            width: "100px",
+                            border: "1px solid",
+                            marginLeft: "5px",
+                          }}
+                          // value={price.toString()}
+                          onChange={(e) => {
+                            handleCardInputChange(
+                              index,
+                              "price",
+                              e.target.value
+                            );
+                          }}
+                        />
+                      </Form.Item>
+                    </div>
                   </div>
-                </div>
-                <TextArea
-                  placeholder="Description"
-                  onChange={(e) =>
-                    handleCardInputChange(index, "description", e.target.value)
-                  }
-                  className="input-description"
-                  size="large"
-                  autoSize={{ minRows: 3, maxRows: 5 }}
-                />
+
+                  <Form.Item
+                    name="description"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input the description!",
+                      },
+                    ]}
+                  >
+                    <TextArea
+                      placeholder="Description"
+                      onChange={(e) =>
+                        handleCardInputChange(
+                          index,
+                          "description",
+                          e.target.value
+                        )
+                      }
+                      className="input-description"
+                      size="large"
+                      autoSize={{ minRows: 3, maxRows: 5 }}
+                    />
+                  </Form.Item>
+                </Form>
               </div>
             </div>
           </div>

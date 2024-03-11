@@ -31,7 +31,7 @@ const ArtistList: React.FC = () => {
       .then((response) => response.json())
       .then((res) => {
         setImage(res);
-        console.log(res);
+        // console.log(res);
       });
   }, []);
   // console.log(image);
@@ -41,8 +41,13 @@ const ArtistList: React.FC = () => {
       const response = await axios.get<ArtworkResponse>(
         "http://localhost:5000/artworks"
       );
+<<<<<<< HEAD:src/page/UserRequest/ArtistList.tsx
+      console.log("reponse: ", response);
+      // console.log(response.data);
+=======
       console.log("response: ", response);
       console.log(response.data);
+>>>>>>> 1604d2b450ea2a3fd3f849b35a98bb84754870bb:src/page/VisualizeRequest/ArtistList.tsx
 
       return response.data;
     } catch (error) {
@@ -88,7 +93,7 @@ const ArtistList: React.FC = () => {
     getNewPins();
   }, []);
 
-  useEffect(() => { }, [pins]);
+  useEffect(() => {}, [pins]);
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />

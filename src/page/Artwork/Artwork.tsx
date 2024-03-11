@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import styles from "./Artwork.module.css";
+<<<<<<< HEAD
+import { List, Button, Avatar, Typography, Spin, Badge, Flex, Tag } from "antd";
+=======
 import { List, Button, Avatar, Typography, Spin, Badge, Flex, Watermark } from "antd";
+>>>>>>> 1604d2b450ea2a3fd3f849b35a98bb84754870bb
 import {
   LoadingOutlined,
   HeartFilled,
@@ -286,8 +290,24 @@ export default function Artwork() {
             </div>
             <div className={styles.rightSection}>
               <div className={styles.titleSection}>
-                <Title style={{ minWidth: "fit-content" }}>
+                <Title style={{ minWidth: "fit-content", marginTop: "50px" }}>
                   {artwork.name}
+                  <br />
+                  <i style={{ fontSize: "16px", fontWeight: "lighter" }}>
+                    Description: {artwork.description}
+                  </i>
+                  {/* <br /> */}
+                  <div
+                    style={{
+                      marginTop: "-20px",
+                    }}
+                  >
+                    {artwork.tags.map((tag, index) => (
+                      <Tag key={index}>
+                        <i>{tag}</i>
+                      </Tag>
+                    ))}
+                  </div>
                 </Title>
                 <Text style={{ minWidth: "max-content" }}>
                   {moment(artwork.createdAt).fromNow()}

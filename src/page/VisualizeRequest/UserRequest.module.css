@@ -62,12 +62,22 @@
 
 .requirementCard {
     min-width: fit-content;
-    max-width: fit-content;
+    max-width: 500px;
     margin: 5% auto 0 auto;
-    border: solid 1px;
+    box-shadow: 2px 2px 2px 2px;
     padding: 0 2%;
 }
 
 .requirementCard * {
     font-size: 100%;
+}
+
+.inputCard {
+    box-shadow: 2px 2px 2px 2px;
+    max-width: fit-content;
+    margin: 1% auto;
+    padding: 1%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

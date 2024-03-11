@@ -1,31 +1,27 @@
 import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
-import axios, { AxiosResponse } from 'axios';
+import axios, { Axios, AxiosResponse } from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Flex, Space, Typography, Button, message, Table, Avatar } from 'antd';
+import { Flex, Space, Typography, Button, message, Table, Avatar, Image } from 'antd';
 import type { TableProps } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import styles from './UserRequest.module.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-interface Pin {
+interface Artwork {
     _id: string;
-    artworkId: number;
-    userId: number;
-    artworkName: string;
-    createTime: Date;
-    tags: string;
+    user: User;
+    name: string;
+    tags: [string];
     numOfLike: number;
-    price: string;
-    describe: string;
+    price: number;
+    description: string;
     imageUrl: string;
+    status: boolean;
+    createdAt?: string;
+    updatedAt?: string;
 }
-
-interface ArtworkResponse {
-    data: Pin[];
-}
-
 interface User {
     _id: string,
     email: string,
@@ -40,13 +36,35 @@ interface User {
     updatedAt?: string,
 }
 
-export interface Data {
+interface UserRequest {
+    _id: string,
     name: string,
+    quantity: number,
     description: string,
     priceEst: number,
     message: string,
+    user: User,
     artist: User,
-    createdAt?: string
+    createdAt: string,
+    updatedAt: string,
+}
+
+interface ArtistRequest {
+    _id: string,
+    artwork: Artwork,
+    price: number,
+    userRequest: UserRequest,
+    status: boolean,
+    createdAt: string,
+    updatedAt: string,
+}
+
+export interface Data {
+    artwork: Artwork,
+    price: number,
+    userRequest: UserRequest,
+    createdAt: string,
+    updatedAt: string
 }
 
 export default function ArtistResponse() {
@@ -55,9 +73,9 @@ export default function ArtistResponse() {
     const [messageApi, contextHolder] = message.useMessage()
 
     const userToken = localStorage.getItem("USER")
-    const [userRequestList, setUserRequestList] = useState([])
+    const [artistRequestList, setArtistRequestList] = useState<ArtistRequest[]>([])
 
-    const fetchUserRequest = async () => {
+    const fetchArtistRequest = async () => {
         await axios.get(`http://localhost:5000/users/getUserInfo`, {
             headers: {
                 token: userToken, //userToken = localStorage("USER")
@@ -68,7 +86,13 @@ export default function ArtistResponse() {
                 axios.get(`http://localhost:5000/userRequests/user/${res.data.id}`)
                     .then((res) => {
                         console.log("User request list: ", res.data)
-                        setUserRequestList(res.data)
+                        res.data.map((item: UserRequest) => {
+                            axios.get(`http://localhost:5000/artistRequests/userRequest/${item._id}`)
+                                .then((res: AxiosResponse) => {
+                                    setArtistRequestList([...artistRequestList, res.data])
+                                })
+                                .catch((err) => console.log(err))
+                        })
                     })
                     .catch((err) => console.log(err))
             })
@@ -77,7 +101,7 @@ export default function ArtistResponse() {
     };
 
     useEffect(() => {
-        fetchUserRequest()
+        fetchArtistRequest()
     }, [])
 
     const deleteRequest = async () => {
@@ -86,35 +110,30 @@ export default function ArtistResponse() {
 
     const columns: TableProps<Data>['columns'] = [
         {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
             title: 'Artist',
-            dataIndex: 'artist',
-            key: 'artist',
-            render: (_, { artist }) => (
+            dataIndex: 'userRequest',
+            key: 'userRequest',
+            render: (_, { userRequest }) => (
                 <Flex justify='start' align='center' gap={10} style={{ cursor: 'pointer' }}>
-                    <Avatar src={artist.avatar} alt='' size={50} />
-                    <Text strong onClick={() => navigate(`../../artistList/${artist._id}`)}>{artist.nickname}</Text>
+                    <Avatar src={userRequest.artist.avatar} alt='' size={50} />
+                    <Text strong onClick={() => navigate(`../../artistList/${userRequest.artist._id}`)}>{userRequest.artist.nickname}</Text>
                 </Flex>
             )
         },
         {
-            title: 'Description',
-            dataIndex: 'description',
-            key: 'description',
+            title: 'Artwork',
+            dataIndex: 'artwork',
+            key: 'artwork',
+            render: (_, { artwork }) => (
+                <Flex justify='start' align='center' gap={10} style={{ cursor: 'pointer' }}>
+                    <Image src={artwork.imageUrl} alt='' />
+                </Flex>
+            )
         },
         {
-            title: 'Estimated price',
-            dataIndex: 'priceEst',
-            key: 'priceEst',
-        },
-        {
-            title: 'Message',
-            dataIndex: 'message',
-            key: 'message',
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'price',
         },
         {
             title: 'Action',
@@ -123,7 +142,6 @@ export default function ArtistResponse() {
                 <Space size="middle">
                     <Button type='primary' danger onClick={deleteRequest}
                         style={{ display: 'flex', alignItems: 'center' }}
-
                     >
                         Recall
                     </Button>
@@ -133,7 +151,7 @@ export default function ArtistResponse() {
     ]
 
     return (
-        <Table columns={columns} dataSource={userRequestList}
+        <Table columns={columns} dataSource={artistRequestList}
             pagination={{ defaultPageSize: 10, hideOnSinglePage: true }} />
     )
 }
