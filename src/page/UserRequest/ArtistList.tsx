@@ -31,7 +31,7 @@ const ArtistList: React.FC = () => {
       .then((response) => response.json())
       .then((res) => {
         setImage(res);
-        console.log(res);
+        // console.log(res);
       });
   }, []);
   // console.log(image);
@@ -42,7 +42,7 @@ const ArtistList: React.FC = () => {
         "http://localhost:5000/artworks"
       );
       console.log("reponse: ", response);
-      console.log(response.data);
+      // console.log(response.data);
 
       return response.data;
     } catch (error) {
@@ -88,7 +88,7 @@ const ArtistList: React.FC = () => {
     getNewPins();
   }, []);
 
-  useEffect(() => { }, [pins]);
+  useEffect(() => {}, [pins]);
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />
