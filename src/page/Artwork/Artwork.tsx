@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./Artwork.module.css";
-import { List, Button, Avatar, Typography, Spin, Badge, Flex, Watermark } from "antd";
+import { List, Button, Avatar, Typography, Spin, Badge, Flex, Watermark, Tag } from "antd";
 import {
   LoadingOutlined,
   HeartFilled,
@@ -286,8 +286,24 @@ export default function Artwork() {
             </div>
             <div className={styles.rightSection}>
               <div className={styles.titleSection}>
-                <Title style={{ minWidth: "fit-content" }}>
+                <Title style={{ minWidth: "fit-content", marginTop: "50px" }}>
                   {artwork.name}
+                  <br />
+                  <i style={{ fontSize: "16px", fontWeight: "lighter" }}>
+                    Description: {artwork.description}
+                  </i>
+                  {/* <br /> */}
+                  <div
+                    style={{
+                      marginTop: "-20px",
+                    }}
+                  >
+                    {artwork.tags.map((tag, index) => (
+                      <Tag key={index}>
+                        <i>{tag}</i>
+                      </Tag>
+                    ))}
+                  </div>
                 </Title>
                 <Text style={{ minWidth: "max-content" }}>
                   {moment(artwork.createdAt).fromNow()}
@@ -311,7 +327,7 @@ export default function Artwork() {
                     <Text
                       strong
                       id={styles.userName}
-                      onClick={() => navigate(`/profile/${artist.id}`)}
+                      onClick={() => navigate(`/artistList/${artist.id}`)}
                       style={{ textDecoration: "underline" }}
                     >
                       {artist.nickname}

@@ -31,7 +31,7 @@ const ArtistList: React.FC = () => {
       .then((response) => response.json())
       .then((res) => {
         setImage(res);
-        console.log(res);
+        // console.log(res);
       });
   }, []);
   // console.log(image);
@@ -88,7 +88,7 @@ const ArtistList: React.FC = () => {
     getNewPins();
   }, []);
 
-  useEffect(() => { }, [pins]);
+  useEffect(() => {}, [pins]);
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />

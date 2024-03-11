@@ -158,4 +158,5 @@
 
 .ant-dropdown.css-dev-only-do-not-override-dkbvqv.ant-dropdown-placement-bottomRight {
     inset: 60px 10px auto auto !important;
+    position: fixed;
 }
