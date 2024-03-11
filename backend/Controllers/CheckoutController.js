@@ -1,6 +1,8 @@
 const createError = require("http-errors");
 const mongoose = require("mongoose");
 const moment = require("moment");
+const { decodeToken } = require("../Config/config");
+const Checkout = require("../Models/checkout");
 require('dotenv').config();
 function sortObject(obj) {
     let sorted = {};
@@ -86,5 +88,37 @@ module.exports = {
         vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
         console.log("vnurl", vnpUrl);
         res.send(vnpUrl)
+    },
+
+    saveBillTransaction: async (req, res, next) => {
+
+        const token = req.headers.token;
+        console.log("token to vnpay", token);
+        try {
+            const userInfo = decodeToken(token);
+            const userId = userInfo?.data?.checkEmail?._id
+
+            const queryString = req.url.split('?')[1];
+            const urlParams = new URLSearchParams(queryString);
+
+            const amount = urlParams.get('vnp_Amount');
+            const bankName = urlParams.get('vnp_BankCode');
+            const payDate = urlParams.get('vnp_PayDate');
+            const transCode = urlParams.get('vnp_BankTranNo');
+
+            const billData = {
+                user: userId,
+                amount,
+                bankName,
+                payDate,
+                transCode,
+            };
+
+            const bill = new Checkout(billData);
+            const result = await bill.save();
+            res.send(result);
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 }
