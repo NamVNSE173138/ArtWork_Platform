@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./Artwork.module.css";
-<<<<<<< HEAD
-import { List, Button, Avatar, Typography, Spin, Badge, Flex, Tag } from "antd";
-=======
-import { List, Button, Avatar, Typography, Spin, Badge, Flex, Watermark } from "antd";
->>>>>>> 1604d2b450ea2a3fd3f849b35a98bb84754870bb
+import { List, Button, Avatar, Typography, Spin, Badge, Flex, Watermark, Tag } from "antd";
 import {
   LoadingOutlined,
   HeartFilled,
