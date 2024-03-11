@@ -66,7 +66,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     setTimeout(() => {
       localStorage.removeItem("USER");
       setIsLoadingLogOut(false);
-      window.location.reload();
+      navigate("/home");
     }, 2000);
   };
 
@@ -77,11 +77,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     // },
     {
       label: (
-        <Link
-          id="profile"
-          className="dropdown-item"
-          to={`/profile`}
-        >
+        <Link id="profile" className="dropdown-item" to={`/profile`}>
           <strong>View profile</strong>
         </Link>
       ),
@@ -97,11 +93,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     },
     {
       label: (
-        <Link
-          id="profile"
-          className="dropdown-item"
-          to={`/request/history`}
-        >
+        <Link id="profile" className="dropdown-item" to={`/request/history`}>
           <strong>View request history</strong>
         </Link>
       ),

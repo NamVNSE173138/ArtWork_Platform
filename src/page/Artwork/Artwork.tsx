@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 import styles from "./Artwork.module.css";
-<<<<<<< HEAD
-import { List, Button, Avatar, Typography, Spin, Badge, Flex, Tag } from "antd";
-=======
-import { List, Button, Avatar, Typography, Spin, Badge, Flex, Watermark } from "antd";
->>>>>>> 1604d2b450ea2a3fd3f849b35a98bb84754870bb
+import {
+  List,
+  Button,
+  Avatar,
+  Typography,
+  Spin,
+  Badge,
+  Flex,
+  Watermark,
+  Tag,
+} from "antd";
 import {
   LoadingOutlined,
   HeartFilled,
@@ -181,11 +187,12 @@ export default function Artwork() {
 
   const fetchCurrentUserData = async () => {
     setIsLoading(true);
-    await axios.get(`http://localhost:5000/users/getUserInfo`, {
-      headers: {
-        token: userToken, //userToken = localStorage("USER")
-      },
-    })
+    await axios
+      .get(`http://localhost:5000/users/getUserInfo`, {
+        headers: {
+          token: userToken, //userToken = localStorage("USER")
+        },
+      })
       .then((res) => {
         setCurrentUser(res.data);
         setIsLoading(false);
@@ -274,8 +281,7 @@ export default function Artwork() {
         ) : (
           <>
             <div className={styles.leftSection}>
-              {artwork.price > 0
-                ?
+              {artwork.price > 0 ? (
                 <Watermark
                   content="ArtAttack"
                   inherit={artwork.price > 0 ? true : false}
@@ -284,9 +290,9 @@ export default function Artwork() {
                 >
                   <img className={styles.image} src={artwork.imageUrl} alt="" />
                 </Watermark>
-                :
+              ) : (
                 <img className={styles.image} src={artwork.imageUrl} alt="" />
-              }
+              )}
             </div>
             <div className={styles.rightSection}>
               <div className={styles.titleSection}>
@@ -351,14 +357,14 @@ export default function Artwork() {
                 </Button>
               </div>
               <div className={styles.commentSection}>
-                <div style={{ padding: '10px 0' }}>
+                <div style={{ padding: "10px 0" }}>
                   <Text strong>
                     Comment &ensp;
                     <Badge
                       className="site-badge-count-109"
                       count={commentList.length}
                       showZero
-                      style={{ backgroundColor: '#000000' }}
+                      style={{ backgroundColor: "#000000" }}
                     />
                   </Text>
                 </div>
@@ -468,10 +474,9 @@ export default function Artwork() {
                   onClick={likeArtwork}
                   disabled={isLiked}
                 />
-                {artwork.price > 0
-                  ?
+                {artwork.price > 0 ? (
                   <BuyArtwork artwork={artwork._id} user={currentUser.id} />
-                  :
+                ) : (
                   <Button
                     size="large"
                     className="download-btn"
@@ -479,7 +484,7 @@ export default function Artwork() {
                   >
                     Download
                   </Button>
-                }
+                )}
                 <Button className="share-btn" size="large">
                   Share
                 </Button>
