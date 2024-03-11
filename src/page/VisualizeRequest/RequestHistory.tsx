@@ -130,7 +130,7 @@ export default function RequestHistory() {
         },
         {
             key: '2',
-            label: 'Artist response',
+            label: "Artist's response",
             children: <ArtistResponse />
         },
     ]

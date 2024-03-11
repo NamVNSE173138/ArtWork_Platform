@@ -103,6 +103,45 @@ module.exports = {
         }
     },
 
+    findArtistRequestByUserId: async (req, res, next) => {
+        const id = req.params.id;
+        try {
+            const artistRequest = await ArtistRequest
+                .populate([{
+                    path: 'userRequest',
+                    populate: [{
+                        path: 'user',
+                        model: 'User',
+                    },
+                    {
+                        path: 'artist',
+                        model: 'User',
+                    }
+                    ]
+                },
+                {
+                    path: 'artwork',
+                    model: 'Artwork',
+                }
+                ])
+                .find({ 'userRequest.user': id })
+            if (!artistRequest) {
+                throw createError(404, "ArtistRequest does not exist.");
+            }
+            if (!id) {
+                throw createError(404, "UserRequest does not exist.");
+            }
+            res.send(artistRequest);
+        } catch (error) {
+            console.log(error.message);
+            if (error instanceof mongoose.CastError) {
+                next(createError(400, "Invalid ArtistRequest id"));
+                return;
+            }
+            next(error);
+        }
+    },
+
     updateArtistRequest: async (req, res, next) => {
         try {
             const id = req.params.id;

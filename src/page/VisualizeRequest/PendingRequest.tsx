@@ -8,6 +8,8 @@ import { DeleteOutlined } from '@ant-design/icons';
 import styles from './UserRequest.module.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import moment from 'moment';
+import dateFormat from '../../assistants/date.format';
 
 interface Pin {
     _id: string;
@@ -119,6 +121,19 @@ export default function PendingRequest() {
             title: 'Message',
             dataIndex: 'message',
             key: 'message',
+        },
+        {
+            title: 'Sent at',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            render: (_, { createdAt }) => (
+                <Space size="middle">
+                    <Flex vertical>
+                        <Text strong>{moment(createdAt).fromNow()}</Text>
+                        <Text style={{ fontSize: '80%' }} >{dateFormat(createdAt, 'HH:MM dd/mm/yyyy')}</Text>
+                    </Flex>
+                </Space>
+            ),
         },
         {
             title: 'Action',
