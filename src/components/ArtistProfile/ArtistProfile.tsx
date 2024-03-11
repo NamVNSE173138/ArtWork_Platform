@@ -26,32 +26,17 @@ import axios from "axios";
 const { Meta } = Card;
 const items: TabsProps["items"] = [
   {
-    key: "1",
-    label: "Favourite Artwork",
-    children: <Contributed />,
-  },
-  {
     key: "2",
     label: "Contributed Artwork",
     children: "Content of Tab Pane 2",
   },
 ];
 const ArtistProfile: React.FC = () => {
-  const [editModalVisible, setEditModalVisible] = useState(false);
+  const { _id } = useParams();
+  console.log(_id);
 
-  const showEditModal = () => {
-    setEditModalVisible(true);
-  };
-
-  const handleEditModalCancel = () => {
-    setEditModalVisible(false);
-  };
-
-  const handleEditModalOk = () => {
-    // Handle logic for saving edited profile data
-    setEditModalVisible(false);
-  };
-  const isLogin = localStorage.getItem("USER");
+  const [artist, setArtist] = useState<any>(null);
+  const [artworks, setArtworks] = useState<any[]>([]);
 
   const handleShareProfile = () => {
     // Copy URL to clipboard
@@ -66,43 +51,39 @@ const ArtistProfile: React.FC = () => {
         message.error("Failed to copy profile link!");
       });
   };
-  const { _id } = useParams();
-  const [artist, setArtist] = useState<any>(null);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/users/${_id}`);
-        console.log(response);
-
         setArtist(response.data);
       } catch (error) {
         console.error("Error fetching user details:", error);
       }
     };
 
+    const fetchArtworks = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/artworks?user=${_id}`
+        );
+        setArtworks(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching artworks:", error);
+      }
+    };
+
     fetchUser();
+    fetchArtworks();
   }, [_id]);
 
-  //   useEffect(() => {
-  //     fetch(`http://localhost:5000/users/${_id}`)
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         setArtist(data);
-  //         console.log(data);
-  //       });
-  //   }, []);
   return (
     <div className="profile-container">
       <Row gutter={16}>
         <Col span={24}>
           <div className="profile-content">
-            <Card
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <Card>
               <Meta
                 avatar={<Avatar src={artist && artist.avatar} />}
                 title={artist && artist.nickname}
@@ -116,49 +97,39 @@ const ArtistProfile: React.FC = () => {
                   </>
                 }
               />
-              {[
-                <Button
-                  size="large"
-                  className="profile-btn"
-                  icon={<ShareAltOutlined />}
-                  key="upload"
-                  onClick={handleShareProfile}
-                >
-                  Share Profile
-                </Button>,
-                <Button
-                  size="large"
-                  className="profile-btn"
-                  icon={<PlusOutlined />}
-                  key="edit"
-                  //   onClick={showEditModal}
-                >
-                  Follow Artist
-                </Button>,
-              ]}
+              <Button
+                size="large"
+                className="profile-btn"
+                icon={<ShareAltOutlined />}
+                onClick={handleShareProfile}
+              >
+                Share Profile
+              </Button>
+              <Button
+                size="large"
+                className="profile-btn"
+                icon={<PlusOutlined />}
+              >
+                Follow Artist
+              </Button>
             </Card>
-
-            {/* <Modal
-              title="Edit Profile"
-              open={editModalVisible}
-              onOk={handleEditModalOk}
-              onCancel={handleEditModalCancel}
-            >
-              <Form layout="vertical">
-                <Form.Item label="Full Name">
-                  <Input placeholder="Enter your full name" />
-                </Form.Item>
-                <Form.Item label="Bio">
-                  <Input.TextArea placeholder="Enter your bio" />
-                </Form.Item>
-              </Form>
-            </Modal> */}
           </div>
         </Col>
       </Row>
       <Row gutter={16} style={{ marginTop: 20 }}>
         <Col span={24}>
-          <Tabs defaultActiveKey="1" items={items} size="large" type="card" />
+          <Tabs defaultActiveKey="1" size="large" type="card">
+            <Tabs.TabPane tab="Contributed Artwork" key="1">
+              {artworks.map((artwork) => (
+                <Card key={artwork._id}>
+                  <Meta
+                    title={artwork.title}
+                    description={artwork.description}
+                  />
+                </Card>
+              ))}
+            </Tabs.TabPane>
+          </Tabs>
         </Col>
       </Row>
     </div>
