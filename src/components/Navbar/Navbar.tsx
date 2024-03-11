@@ -71,16 +71,16 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   };
 
   const items: MenuProps["items"] = [
-    {
-      label: <div style={{ height: "10px" }}></div>,
-      key: 0,
-    },
+    // {
+    //   label: <div style={{ height: "10px" }}></div>,
+    //   key: 0,
+    // },
     {
       label: (
         <Link
           id="profile"
           className="dropdown-item"
-          to={`/profile/${currentUser.id}`}
+          to={`/profile`}
         >
           <strong>View profile</strong>
         </Link>
@@ -89,15 +89,23 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     },
     {
       label: (
-        <Link
-          id="profile"
-          className="dropdown-item"
-          to={`/cart`}
-        >
-          <strong>View Cart</strong>
+        <Link id="profile" className="dropdown-item" to={`/cart`}>
+          <strong>View cart</strong>
         </Link>
       ),
       key: 2,
+    },
+    {
+      label: (
+        <Link
+          id="profile"
+          className="dropdown-item"
+          to={`/request/history`}
+        >
+          <strong>View request history</strong>
+        </Link>
+      ),
+      key: 3,
     },
     {
       label: (
@@ -105,7 +113,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
           <strong>Reset password</strong>
         </Link>
       ),
-      key: 3,
+      key: 4,
     },
     {
       type: "divider",
@@ -123,7 +131,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
           </p>
         </div>
       ),
-      key: 4,
+      key: 5,
     },
   ];
 

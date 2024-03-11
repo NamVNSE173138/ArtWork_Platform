@@ -55,6 +55,8 @@ label.ant-form-item-required {
     flex-direction: column;
     margin-bottom: 50px;
     position: relative;
+    z-index: 1;
+    margin-top: 6%;
 }
 
 .image-card-container {
@@ -181,4 +183,8 @@ span.ant-avatar.ant-avatar-circle.ant-avatar-image.avt-user.css-dev-only-do-not-
     position: absolute;
     right: 15%;
     margin: 20px;
+}
+
+.ant-notification-notice-wrapper {
+    margin-top: 50px;
 }

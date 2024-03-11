@@ -210,13 +210,6 @@
 
 // export default Favorite;
 
-
-
-
-
-
-
-
 import React, { useEffect, useState } from "react";
 import {
     Flex,
