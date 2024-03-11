@@ -6,6 +6,10 @@ const UserRequestSchema = new Schema({
         type: String,
         required: true,
     },
+    quantity: {
+        type: Number,
+        required: true,
+    },
     description: {
         type: String,
         required: false,

@@ -112,7 +112,6 @@ module.exports = {
     try {
       const userInfo = decodeToken(token);
       const userId = userInfo?.data?.checkEmail?._id;
-      console.log(userId);
       const artwork = await FavoriteList.find({ user: userId }).populate(
         "artwork",
         "imageUrl"

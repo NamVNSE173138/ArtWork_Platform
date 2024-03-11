@@ -19,6 +19,11 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
+  bio: {
+    type: String,
+    required: false,
+    default: '',
+  },
   numOfFollower: {
     type: Number,
     required: true
@@ -30,11 +35,6 @@ const userSchema = new Schema({
   status: {
     type: Boolean,
     required: true
-  },
-  bio: {
-    type: String,
-    required: false,
-    default: '',
   },
 }, {
   timestamps: true

@@ -8,6 +8,10 @@ router.post("/", UserRequestController.createNewUserRequest);
 
 router.get("/:id", UserRequestController.findUserRequestById);
 
+router.get("/user/:id", UserRequestController.findUserRequestByUserId);
+
+router.get("/artist/:id", UserRequestController.findUserRequestByArtistId);
+
 router.patch("/:id", UserRequestController.updateUserRequest);
 
 router.delete("/:id", UserRequestController.deleteUserRequest);

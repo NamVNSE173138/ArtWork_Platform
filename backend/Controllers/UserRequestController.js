@@ -26,7 +26,7 @@ module.exports = {
     findUserRequestById: async (req, res, next) => {
         const id = req.params.id;
         try {
-            const userRequest = await UserRequest.findById(id)
+            const userRequest = await UserRequest.findById(id).populate("user")
             if (!userRequest) {
                 throw createError(404, "UserRequest does not exist.");
             }
@@ -40,6 +40,43 @@ module.exports = {
             next(error);
         }
     },
+
+    findUserRequestByUserId: async (req, res, next) => {
+        const userId = req.params.id;
+        try {
+            const userRequest = await UserRequest.find({ user: userId }).populate('artist')
+            if (!userRequest) {
+                throw createError(404, "UserRequest does not exist.");
+            }
+            res.send(userRequest);
+        } catch (error) {
+            console.log(error.message);
+            if (error instanceof mongoose.CastError) {
+                next(createError(400, "Invalid UserRequest id"));
+                return;
+            }
+            next(error);
+        }
+    },
+
+    findUserRequestByArtistId: async (req, res, next) => {
+        const artistId = req.params.id;
+        try {
+            const userRequest = await UserRequest.find({ artist: artistId }).populate('user').sort({ "createdAt": -1 })
+            if (!userRequest) {
+                throw createError(404, "UserRequest does not exist.");
+            }
+            res.send(userRequest);
+        } catch (error) {
+            console.log(error.message);
+            if (error instanceof mongoose.CastError) {
+                next(createError(400, "Invalid UserRequest id"));
+                return;
+            }
+            next(error);
+        }
+    },
+
 
     updateUserRequest: async (req, res, next) => {
         try {

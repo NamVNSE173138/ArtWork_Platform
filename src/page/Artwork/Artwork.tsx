@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./Artwork.module.css";
-import { List, Button, Avatar, Typography, Spin, Badge, Flex } from "antd";
+import { List, Button, Avatar, Typography, Spin, Badge, Flex, Watermark } from "antd";
 import {
   LoadingOutlined,
   HeartFilled,
@@ -177,12 +177,11 @@ export default function Artwork() {
 
   const fetchCurrentUserData = async () => {
     setIsLoading(true);
-    await axios
-      .get(`http://localhost:5000/users/getUserInfo`, {
-        headers: {
-          token: userToken, //userToken = localStorage("USER")
-        },
-      })
+    await axios.get(`http://localhost:5000/users/getUserInfo`, {
+      headers: {
+        token: userToken, //userToken = localStorage("USER")
+      },
+    })
       .then((res) => {
         setCurrentUser(res.data);
         setIsLoading(false);
@@ -220,7 +219,6 @@ export default function Artwork() {
 
   const likeArtwork = async () => {
     try {
-      console.log("dfbnkdjbskdhbkh");
       console.log(localStorage.getItem("USER"));
 
       console.log("user", currentUser.id);
@@ -272,7 +270,19 @@ export default function Artwork() {
         ) : (
           <>
             <div className={styles.leftSection}>
-              <img className={styles.image} src={artwork.imageUrl} alt="" />
+              {artwork.price > 0
+                ?
+                <Watermark
+                  content="ArtAttack"
+                  inherit={artwork.price > 0 ? true : false}
+                  zIndex={100}
+                  gap={[60, 60]}
+                >
+                  <img className={styles.image} src={artwork.imageUrl} alt="" />
+                </Watermark>
+                :
+                <img className={styles.image} src={artwork.imageUrl} alt="" />
+              }
             </div>
             <div className={styles.rightSection}>
               <div className={styles.titleSection}>
@@ -321,6 +331,17 @@ export default function Artwork() {
                 </Button>
               </div>
               <div className={styles.commentSection}>
+                <div style={{ padding: '10px 0' }}>
+                  <Text strong>
+                    Comment &ensp;
+                    <Badge
+                      className="site-badge-count-109"
+                      count={commentList.length}
+                      showZero
+                      style={{ backgroundColor: '#000000' }}
+                    />
+                  </Text>
+                </div>
                 {commentList.length > 0 ? (
                   <List
                     itemLayout="horizontal"
@@ -427,18 +448,22 @@ export default function Artwork() {
                   onClick={likeArtwork}
                   disabled={isLiked}
                 />
-                <Button
-                  size="large"
-                  className="download-btn"
-                  icon={<DownloadOutlined />}
-                >
-                  Download
-                </Button>
+                {artwork.price > 0
+                  ?
+                  <BuyArtwork artwork={artwork._id} user={currentUser.id} />
+                  :
+                  <Button
+                    size="large"
+                    className="download-btn"
+                    icon={<DownloadOutlined />}
+                  >
+                    Download
+                  </Button>
+                }
                 <Button className="share-btn" size="large">
                   Share
                 </Button>
                 <ReportForm artwork={artwork._id} />
-                <BuyArtwork artwork={artwork._id} user={currentUser.id} />
               </div>
             </div>
           </>

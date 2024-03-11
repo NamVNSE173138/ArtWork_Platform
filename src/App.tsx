@@ -12,13 +12,17 @@ import Reset from "./page/Authentication/Reset";
 import Navigator from "./page/Navigator/Navigator";
 import Artwork from "./page/Artwork/Artwork";
 import FavoriteList from "./page/FavoriteList/FavoriteList";
-import ArtistList from "./page/UserRequest/ArtistList";
-import RequestRequirements from "./page/UserRequest/RequestRequirements";
+import ArtistList from "./page/VisualizeRequest/ArtistList";
+import RequestRequirements from "./page/VisualizeRequest/RequestRequirements";
 import ArtistProfile from "./components/ArtistProfile/ArtistProfile";
 import ArtworkRequest from "./page/ArtworkRequest";
 import ProfilePage from "./components/Profile/Profile";
 // import NotificationPage from "./page/NotificationPage/NotificationPage";
 import CartPage from "./page/Cart/CartPage";
+import VisualizeRequest from "./page/VisualizeRequest/RequestHistory";
+import UserRequestList from "./components/Profile/UserRequestList";
+import RequestApproval from "./page/VisualizeRequest/RequestApproval";
+import UserRequestOnArtist from "./page/UserRequest on Artist/UserRequestOnArtist";
 import VnPayPayment from "./components/VNPay/VnPayPayment";
 
 function App() {
@@ -32,19 +36,18 @@ function App() {
       <Route path="/forgot" element={<Forgot />} />
       <Route path="/reset/:id" element={<Reset />} />
       <Route path="/upload" element={<UploadImageForm />} />
-      <Route path="/profile/:userId" element={<ProfilePage />} />
+      <Route path="/profile/" element={<ProfilePage />} />
+      <Route path="/profile/requests" element={<UserRequestOnArtist />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/home" element={<Home />} />
       <Route path="/artwork/:id" element={<Artwork />} />
       <Route path="/favoriteList" element={<FavoriteList />} />
       <Route path="/request" element={<ArtistList />} />
-      <Route
-        path="/request/requirements/:id"
-        element={<RequestRequirements />}
-      />
+      <Route path="/request/history" element={<VisualizeRequest />} />
+      <Route path="/request/requirements/:id" element={<RequestRequirements />} />
+      <Route path="/userRequest/approval/:id" element={<RequestApproval />} />
       <Route path="/artistList/:_id" element={<ArtistProfile />} />
       <Route path="/artworkRequest" element={<ArtworkRequest />} />
-
       <Route path="/cart" element={<CartPage />} />
       <Route path="/order/vnpay_return" element={<VnPayPayment />} />
       {/* <Route path="/notifications" element={<NotificationPage />} /> */}

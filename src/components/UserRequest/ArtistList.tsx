@@ -4,9 +4,6 @@ import {
   Avatar,
   Button,
   Card,
-  Cascader,
-  DatePicker,
-  Descriptions,
   Form,
   FormInstance,
   Input,
@@ -23,14 +20,12 @@ import {
   theme,
 } from "antd";
 import {
-  LikeOutlined,
-  MessageOutlined,
   PlusCircleOutlined,
   PlusOutlined,
-  StarOutlined,
 } from "@ant-design/icons";
 import "./ArtistList.css";
 import TextArea from "antd/es/input/TextArea";
+import axios, { AxiosResponse } from "axios";
 
 const ArtistList = () => {
   const navigate = useNavigate()
@@ -64,6 +59,7 @@ const ArtistList = () => {
   const handleCancel = () => {
     setOpen(false);
   };
+
   const formRef = useRef<FormInstance>(null);
   interface UserData {
     id: string;
@@ -77,14 +73,31 @@ const ArtistList = () => {
     createAt?: string;
     updateAt?: string;
   }
+
   const [artistData, setArtistData] = useState<UserData[]>([]);
-  useEffect(() => {
-    fetch("http://localhost:5000/users/artists")
-      .then((response) => response.json())
-      .then((data: UserData[]) => {
-        setArtistData(data);
+  const userToken = localStorage.getItem("USER")
+  const [currentUserId, setCurrentUserId] = useState("")
+
+  const fetchCurrentUserData = async () => {
+    await axios.get(`http://localhost:5000/users/getUserInfo`, {
+      headers: {
+        token: userToken, //userToken = localStorage("USER")
+      },
+    })
+      .then((res) => {
+        console.log("Current user: ", res.data)
+        setCurrentUserId(res.data.id)
       })
-      .catch((error) => console.error("Error fetching data:", error));
+      .catch((err) => console.log(err));
+  }
+
+  useEffect(() => {
+    fetchCurrentUserData()
+    axios.get(`http://localhost:5000/users/artists/${currentUserId}`)
+      .then((res: AxiosResponse) => {
+        setArtistData(res.data);
+      })
+      .catch((error: any) => console.error("Error fetching data:", error));
   }, []);
 
   const formItemLayout = {
