@@ -2,7 +2,6 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Home from "./page/Home";
 import UploadImageForm from "./page/Upload";
-
 import Admin from "./page/Admin/Admin";
 import SignIn from "./page/Authentication/SignIn";
 import EmailSignup from "./page/Authentication/EmailSignup";
@@ -29,7 +28,6 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Navigator />} />
-      <Route path="/admin" element={<Admin />} />
       <Route path="/signin" element={<SignIn />} />
       <Route path="/signup/email" element={<EmailSignup />} />
       <Route path="/signup" element={<SignUp />} />

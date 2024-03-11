@@ -18,12 +18,9 @@ const BuyForm = (record: any) => {
     price: 0,
   });
 
-  console.log("yolo: ", record);
-
   const showModal = () => {
     setIsModalOpen(true);
     getArtworkId(record.artwork).then((res) => {
-      console.log("RES: ", res);
       setFormData({
         ...formData,
         artwork: res._id,
@@ -55,8 +52,6 @@ const BuyForm = (record: any) => {
     });
     message.success("Added To Cart!!!");
   };
-
-  console.log("BUY: ", formData);
 
   return (
     <>

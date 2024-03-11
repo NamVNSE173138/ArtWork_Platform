@@ -42,7 +42,7 @@ const ArtistList: React.FC = () => {
         "http://localhost:5000/artworks"
       );
       console.log("response: ", response);
-      // console.log(response.data);
+      console.log(response.data);
 
       return response.data;
     } catch (error) {
