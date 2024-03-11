@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+.requestForm {
+    margin-top: 5%;
+}
+
+.requestForm * {
+    font-family: "Kanit", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+
+#followButton {
+    font-size: 120%;
+    display: flex;
+    align-items: center;
+    padding: 4% 3%;
+    background-color: #1b80c3;
+}
+
+#followButton:hover {
+    background-color: #145c8c;
+}
+
+.formButton {
+    background-color: #ffffff;
+    border: solid 1px;
+    border-radius: 20px;
+    padding: 1% 5%;
+    color: #000;
+    width: 50%;
+    font-size: 125%;
+}
+
+.formButton:hover {
+    background-color: #737373;
+    color: #FFF;
+}
+
+#submitButton {
+    background-color: #145c8c;
+    color: #FFF;
+}
+
+#submitButton:hover {
+    background-color: #0c3957;
+}
+
+.messageInput {
+    width: 100%;
+    min-width: 300px;
+    height: 150px;
+    resize: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+}
+
+#artistName:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.requirementCard {
+    min-width: fit-content;
+    max-width: 500px;
+    margin: 5% auto 0 auto;
+    box-shadow: 2px 2px 2px 2px;
+    padding: 0 2%;
+}
+
+.requirementCard * {
+    font-size: 100%;
+}
+
+.inputCard {
+    box-shadow: 2px 2px 2px 2px;
+    max-width: fit-content;
+    margin: 1% auto;
+    padding: 1%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

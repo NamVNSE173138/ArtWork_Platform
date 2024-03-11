@@ -22,6 +22,16 @@ module.exports = {
     }
   },
 
+  getArtistListExceptLoginUser: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const results = await User.find({ role: "artist", _id: { $ne: id } }, { __v: 0 }).sort({ 'numOfFollower': -1 });
+      res.send(results);
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+
   createNewUser: async (req, res, next) => {
     try {
       const user = new User(req.body);

@@ -13,18 +13,19 @@ import {
   message,
   Badge,
   Typography,
+  Flex,
 } from "antd";
 import {
   EditOutlined,
-  CameraOutlined,
   ShareAltOutlined,
+  BuildOutlined,
 } from "@ant-design/icons";
 import type { TabsProps } from "antd";
 import "./Profile.css"; // Create this stylesheet for additional styling if needed
 import Contributed from "../ContributedArtwork/ContributedArtwork";
 import Favorite from "../Favorite/Favorite";
 import Navbar from "../Navbar/Navbar";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
 const { Meta } = Card;
 const { Text } = Typography;
@@ -34,6 +35,7 @@ interface User {
   email: string;
   nickname: string;
   role: string;
+  bio: string;
   numOfFollower: number;
   avatar: string;
   password: string;
@@ -63,16 +65,31 @@ interface FavoriteList {
 
 
 const ProfilePage: React.FC = () => {
+  const navigate = useNavigate()
   const [editModalVisible, setEditModalVisible] = useState(false);
-  const { id } = useParams();
-  console.log("user profile page", id);
+  const token = localStorage.getItem("USER");
   const [favoriteList, setFavoriteList] = useState<FavoriteList[]>([]);
+
+  const fetchFavoriteList = async () => {
+    await axios.get('http://localhost:5000/artworks/getUserFavoriteList', {
+      headers: {
+        token: token
+      }
+    })
+      .then((res) => {
+        console.log("Favorite list data: ", res.data.data)
+        setFavoriteList(res.data.data);
+      })
+      .catch((err) => console.log(err))
+
+  }
+
   const items: TabsProps["items"] = [
     {
       key: "1",
       label: (
-        <Badge count={100} overflowCount={99} offset={[15, 0]} showZero>
-          <Text>Favorited</Text>
+        <Badge count={favoriteList.length} overflowCount={99} offset={[15, 0]} showZero>
+          <Text>Favorite</Text>
         </Badge>
       ),
       children: <Favorite />,
@@ -109,12 +126,16 @@ const ProfilePage: React.FC = () => {
     password: "",
     nickname: "",
     role: "",
+    bio: "",
     numOfFollower: 0,
     avatar: "",
     status: false,
     createAt: "",
     updateAt: "",
   });
+
+  const [requestList, setRequestList] = useState([])
+
   const fetchCurrentUserData = async () => {
     setIsLoading(true);
     await axios
@@ -126,16 +147,23 @@ const ProfilePage: React.FC = () => {
       .then((res) => {
         console.log("Current user: ", res.data);
         setCurrentUser(res.data);
+        if (res.data.role === "artist") {
+          axios.get(`http://localhost:5000/userRequests/artist/${res.data.id}`)
+            .then((res) => {
+              console.log("Request list: ", res.data)
+              setRequestList(res.data)
+            })
+            .catch((err) => console.log(err))
+        }
         setIsLoading(false);
       })
       .catch((err) => console.log(err));
   };
+
   useEffect(() => {
     fetchCurrentUserData();
+    fetchFavoriteList();
   }, []);
-  useEffect(() => {
-    console.log("Current user: ", currentUser);
-  }, [currentUser]);
 
   const handleShareProfile = () => {
     // Copy URL to clipboard
@@ -164,18 +192,20 @@ const ProfilePage: React.FC = () => {
                   alignItems: "center",
                 }}
               >
-                <Meta
-                  avatar={<Avatar src={currentUser.avatar} />}
-                  title={currentUser.nickname}
-                  description={
-                    <>
-                      {currentUser.email} <br />
-                      <i>Role: {currentUser.role}</i>
-                    </>
-                  }
-                />
+                <Flex justify="center" align="center">
+                  <Meta
+                    avatar={<Avatar src={currentUser.avatar} />}
+                    title={currentUser.nickname}
+                    description={
+                      <>
+                        {currentUser.email} <br />
+                        <i>{currentUser.bio}</i>
+                      </>
+                    }
+                  />
+                </Flex>
 
-                {[
+                <Flex>
                   <Button
                     size="large"
                     className="profile-btn"
@@ -184,7 +214,7 @@ const ProfilePage: React.FC = () => {
                     onClick={handleShareProfile}
                   >
                     Share Profile
-                  </Button>,
+                  </Button>
                   <Button
                     size="large"
                     className="profile-btn"
@@ -193,8 +223,25 @@ const ProfilePage: React.FC = () => {
                     onClick={showEditModal}
                   >
                     Edit Profile
-                  </Button>,
-                ]}
+                  </Button>
+                </Flex>
+                {
+                  currentUser.role === "artist"
+                    ?
+                    <Badge dot={requestList.length > 0} offset={[-22, 25]}>
+                      <Button
+                        size="large"
+                        className="profile-btn"
+                        icon={<BuildOutlined />}
+                        key="edit"
+                        onClick={() => navigate('/profile/requests')}
+                        style={{ border: 'solid 1px' }}
+                      >
+                        Personal artwork visualizing requests
+                      </Button>
+                    </Badge>
+                    : null
+                }
               </Card>
 
               <Modal

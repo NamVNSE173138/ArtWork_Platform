@@ -101,7 +101,7 @@ const CartPage = () => {
     );
   };
 
-  const handleNothing = () => {};
+  const handleNothing = () => { };
 
   const ShowCart = () => {
     let subtotal = 0;
@@ -109,6 +109,17 @@ const CartPage = () => {
     cart.forEach((item: any) => {
       subtotal += item.price;
     });
+    let total = subtotal + taxes;
+
+    const handleCheckout = async () => {
+      try {
+        const response = await axios.post('http://localhost:5000/checkouts/create_payment_url', { amount: total });
+        console.log("url vnpay", response.data);
+        window.location.href = response.data;
+      } catch (error) {
+        console.error('Error during checkout:', error);
+      }
+    };
 
     return (
       <>
@@ -201,7 +212,8 @@ const CartPage = () => {
                           <strong>Estimated Total</strong>
                         </div>
                         <span>
-                          <strong>${subtotal + taxes}</strong>
+                          {/* <strong>${subtotal + taxes}</strong> */}
+                          <strong>${total}</strong>
                         </span>
                       </li>
                     </ul>
@@ -213,6 +225,7 @@ const CartPage = () => {
                         height: "50px",
                         fontWeight: "bold",
                       }}
+                      onClick={handleCheckout}
                     >
                       Checkout
                     </Button>

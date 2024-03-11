@@ -1,6 +1,9 @@
 const createError = require("http-errors");
 const mongoose = require("mongoose");
-const moment = require("moment")
+const moment = require("moment");
+const { decodeToken } = require("../Config/config");
+const Checkout = require("../Models/checkout");
+require('dotenv').config();
 function sortObject(obj) {
     let sorted = {};
     let str = [];
@@ -19,6 +22,8 @@ function sortObject(obj) {
 module.exports = {
     createPaymentUrl: async (req, res, next) => {
 
+
+
         process.env.TZ = 'Asia/Ho_Chi_Minh';
 
         let date = new Date();
@@ -31,22 +36,25 @@ module.exports = {
 
         // let config = require('config');
 
-        // let tmnCode = config.get('vnp_TmnCode');
-        // let secretKey = config.get('vnp_HashSecret');
-        // let vnpUrl = config.get('vnp_Url');
-        // let returnUrl = config.get('vnp_ReturnUrl');
-        let tmnCode = "J6FWHWSG";
-        let secretKey = "NTPZPCKNVCMJUQPPVTKQTGAOCEKAGQLY";
-        let vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        let returnUrl = "http://localhost:8888/order/vnpay_return";
+        let tmnCode = process.env.VNP_TMNCODE;
+        let secretKey = process.env.VNP_SECRETKEY;
+        let vnpUrl = process.env.VNP_URL;
+        let returnUrl = process.env.VNP_RETURNURL;
+
+
+        // let tmnCode = "J6FWHWSG";
+        // let secretKey = "NTPZPCKNVCMJUQPPVTKQTGAOCEKAGQLY";
+        // let vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+        // let returnUrl = "http://localhost:8888/order/vnpay_return";
+
+
         // let returnUrl = "http://localhost:3000/order/vnpay_return";
         let orderId = moment(date).format('DDHHmmss');
         let amount = req.body.amount;
-        let bankCode = req.body.bankCode;
-        // let amount = 50000;
-        // let bankCode = "VNBANK";
-
-        let locale = req.body.language;
+        let bankCode = "VNBANK";
+        // let bankCode = req.body.bankCode;
+        // let locale = req.body.language;
+        let locale = "vn";
         if (locale === null || locale === '') {
             locale = 'vn';
         }
@@ -61,7 +69,7 @@ module.exports = {
         vnp_Params['vnp_TxnRef'] = orderId;
         vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId;
         vnp_Params['vnp_OrderType'] = 'other';
-        vnp_Params['vnp_Amount'] = amount * 100;
+        vnp_Params['vnp_Amount'] = amount * 100 * 24000;
         vnp_Params['vnp_ReturnUrl'] = returnUrl;
         vnp_Params['vnp_IpAddr'] = ipAddr;
         vnp_Params['vnp_CreateDate'] = createDate;
@@ -80,5 +88,37 @@ module.exports = {
         vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
         console.log("vnurl", vnpUrl);
         res.send(vnpUrl)
+    },
+
+    saveBillTransaction: async (req, res, next) => {
+
+        const token = req.headers.token;
+        console.log("token to vnpay", token);
+        try {
+            const userInfo = decodeToken(token);
+            const userId = userInfo?.data?.checkEmail?._id
+
+            const queryString = req.url.split('?')[1];
+            const urlParams = new URLSearchParams(queryString);
+
+            const amount = urlParams.get('vnp_Amount');
+            const bankName = urlParams.get('vnp_BankCode');
+            const payDate = urlParams.get('vnp_PayDate');
+            const transCode = urlParams.get('vnp_BankTranNo');
+
+            const billData = {
+                user: userId,
+                amount,
+                bankName,
+                payDate,
+                transCode,
+            };
+
+            const bill = new Checkout(billData);
+            const result = await bill.save();
+            res.send(result);
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 }

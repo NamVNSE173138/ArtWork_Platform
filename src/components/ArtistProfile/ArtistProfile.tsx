@@ -1,12 +1,36 @@
+// ArtistProfile.tsx
 import React, { useEffect, useState } from "react";
-import { Row, Col, Card, Avatar, Button, Tabs, message } from "antd";
-import { ShareAltOutlined, PlusOutlined } from "@ant-design/icons";
-import "./ArtistProfile.css";
+import {
+  Row,
+  Col,
+  Card,
+  Avatar,
+  Button,
+  Tabs,
+  Modal,
+  Form,
+  Input,
+  message,
+} from "antd";
+import {
+  EditOutlined,
+  CameraOutlined,
+  ShareAltOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
+import type { TabsProps } from "antd";
+import "./ArtistProfile.css"; // Create this stylesheet for additional styling if needed
+import Contributed from "../ContributedArtwork/ContributedArtwork";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-
 const { Meta } = Card;
-
+const items: TabsProps["items"] = [
+  {
+    key: "2",
+    label: "Contributed Artwork",
+    children: "Content of Tab Pane 2",
+  },
+];
 const ArtistProfile: React.FC = () => {
   const { _id } = useParams();
   console.log(_id);
@@ -15,6 +39,7 @@ const ArtistProfile: React.FC = () => {
   const [artworks, setArtworks] = useState<any[]>([]);
 
   const handleShareProfile = () => {
+    // Copy URL to clipboard
     const url = window.location.href;
     navigator.clipboard
       .writeText(url)
@@ -101,7 +126,6 @@ const ArtistProfile: React.FC = () => {
                     title={artwork.title}
                     description={artwork.description}
                   />
-                  {artwork.user === _id && console.log(artwork.image)}
                 </Card>
               ))}
             </Tabs.TabPane>

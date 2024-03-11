@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import axios, { AxiosResponse } from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Flex, Image, Typography, Button, message } from 'antd';
+import { Flex, Image, Typography, Button, message, Avatar } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import styles from './UserRequest.module.css'
 import { useFormik } from "formik";
@@ -40,6 +40,7 @@ interface User {
 
 export interface FormValues {
     name: string,
+    quantity: number,
     description: string,
     priceEst: number,
     message: string,
@@ -156,6 +157,7 @@ export default function RequestRequirements() {
 
     const defaultValues: FormValues = {
         name: "",
+        quantity: 1,
         description: "",
         priceEst: 0,
         message: "",
@@ -165,6 +167,7 @@ export default function RequestRequirements() {
         initialValues: defaultValues,
         validationSchema: Yup.object({
             name: Yup.string().required(""),
+            quantity: Yup.number().integer("").min(1).max(50),
             description: Yup.string().required(""),
             priceEst: Yup.number().min(0.000001).required(""),
             message: Yup.string()
@@ -176,6 +179,7 @@ export default function RequestRequirements() {
             console.log("Form values: ", values)
             await axios.post(`http://localhost:5000/userRequests`, {
                 name: values.name,
+                quantity: 1,
                 description: values.description,
                 priceEst: Math.round(values.priceEst * 100) / 100,
                 message: values.message,
@@ -203,12 +207,14 @@ export default function RequestRequirements() {
             <Navbar onSubmit={onSearchSubmit} />
             {contextHolder}
             <form onSubmit={requestForm.handleSubmit} style={{ minWidth: '100%' }}>
-                <Flex justify='center' align='center' style={{ marginTop: '5%' }}>
+                <Flex justify='center' align='center' className={styles.requestForm}>
                     <Flex justify='space-evenly' align='center' gap={20} style={{ width: '30%' }}>
-                        <Image src={artist.avatar} alt='' width={200} preview={false} style={{ borderRadius: '20px' }} />
-                        <Flex vertical>
+                        <Flex vertical justify='center' align='center'>
                             <Flex justify='space-evenly' align='center' gap={20}>
-                                <Text strong style={{ fontSize: '150%', minWidth: 'max-content' }}>{artist.nickname}</Text>
+                                <Avatar src={artist.avatar} alt='' />
+                                <Text strong style={{ fontSize: '150%', minWidth: 'max-content' }} id={styles.artistName}
+                                    onClick={() => { navigate(`../../artistList/${artist._id}`) }}>
+                                    {artist.nickname}</Text>
                                 <Button
                                     type="primary"
                                     shape="round"
@@ -218,20 +224,17 @@ export default function RequestRequirements() {
                                     <PlusCircleOutlined /> Follow
                                 </Button>
                             </Flex>
-                            <Flex justify='center' vertical gap={10}>
-                                <Text>{artist.bio}</Text>
-                                <textarea name="message" rows={8} cols={8} wrap="soft" placeholder='Your personal desires...'
-                                    className={styles.messageInput}
-                                    value={requestForm.values.message}
-                                    onChange={requestForm.handleChange}
-                                    onBlur={requestForm.handleBlur}
-                                />
-                            </Flex>
+                            <Text>{artist.bio}</Text>
+                            <textarea name="message" rows={8} cols={8} wrap="soft" placeholder='Note to artist...' style={{ marginTop: '3%' }}
+                                className={styles.messageInput}
+                                value={requestForm.values.message}
+                                onChange={requestForm.handleChange}
+                                onBlur={requestForm.handleBlur}
+                            />
                         </Flex>
                     </Flex>
                     <Flex style={{ width: '50%' }} justify='center' align='center' vertical>
-                        <Title style={{ fontFamily: 'sans-serif', fontSize: '180%' }}>Tell the artist about your art...</Title>
-
+                        <Title style={{ fontSize: '180%', fontWeight: '700' }}>Tell the artist about your art...</Title>
 
                         <Flex vertical style={{ width: '80%', margin: '0 auto' }} gap={10}>
                             <Text>Name of the artwork <strong style={{ color: 'red' }}>*</strong></Text>
@@ -249,12 +252,26 @@ export default function RequestRequirements() {
                                 onBlur={requestForm.handleBlur}
                             />
 
-                            <Text>Estimated price <strong style={{ color: 'red' }}>*</strong></Text>
-                            <input className={styles.formInput} type='number' name='priceEst' defaultValue={0}
-                                value={requestForm.values.priceEst}
-                                onChange={requestForm.handleChange}
-                                onBlur={requestForm.handleBlur}
-                            />
+                            <Flex align='center' justify='space-between' gap={5}>
+                                <Flex vertical>
+                                    <Text>Quantity <strong style={{ color: 'red' }}>*</strong></Text>
+                                    <input className={styles.formNumberInput} type='number' name='quantity'
+                                        value={requestForm.values.quantity}
+                                        onChange={requestForm.handleChange}
+                                        onBlur={requestForm.handleBlur}
+                                    />
+                                </Flex>
+
+                                <Flex vertical>
+                                    <Text>Estimated price each ($) <strong style={{ color: 'red' }}>*</strong></Text>
+                                    <input className={styles.formNumberInput} type='number' name='priceEst'
+                                        value={requestForm.values.priceEst}
+                                        onChange={requestForm.handleChange}
+                                        onBlur={requestForm.handleBlur}
+                                    />
+                                </Flex>
+                            </Flex>
+
                             <Flex justify='center' align='center' gap={5} style={{ marginTop: '2%' }}>
                                 <button type='submit' className={styles.formButton} id={styles.submitButton}>
                                     <strong>SEND REQUEST</strong>
