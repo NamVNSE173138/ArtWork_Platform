@@ -211,7 +211,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                 to="/upload"
                 onClick={toggleNav}
               >
-                BECOME AN ARTIST
+                {currentUser.role === 'artist'
+                  ? <>UPLOAD NEW ARTWORK</>
+                  : <>BECOME AN ARTIST</>
+                }
               </Link>
             </li>
             <li>

@@ -160,6 +160,7 @@ export default function PendingRequest() {
             .then((res) => {
                 console.log("Delete request: ", res.data)
                 setUserRequestList(userRequestList.filter((item: any) => item._id !== id))
+                message.success("Request is recalled successfully.")
             })
             .catch((err) => {
                 console.log(err)
@@ -167,8 +168,11 @@ export default function PendingRequest() {
     }
 
     return (
-        <Table columns={columns} dataSource={userRequestList}
-            pagination={{ hideOnSinglePage: true }}
-            scroll={{ y: 500 }} />
+        <>
+            {contextHolder}
+            <Table columns={columns} dataSource={userRequestList}
+                pagination={{ hideOnSinglePage: true }}
+                scroll={{ y: 500 }} />
+        </>
     )
 }
