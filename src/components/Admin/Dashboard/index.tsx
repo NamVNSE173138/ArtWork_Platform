@@ -63,11 +63,13 @@ function Dashboard(): JSX.Element {
                 borderRadius: 20,
                 fontSize: 24,
                 padding: 8,
+                margin: 8,
               }}
             />
           }
           title={"Requests"}
           value={requests}
+          backgroundColor="rgba(0,255,0,0.25)"
         />
         <DashboardCard
           icon={
@@ -78,11 +80,13 @@ function Dashboard(): JSX.Element {
                 borderRadius: 20,
                 fontSize: 24,
                 padding: 8,
+                margin: 8,
               }}
             />
           }
           title={"Artworks"}
           value={artworks}
+          backgroundColor="rgba(0,0,255,0.25)"
         />
         <DashboardCard
           icon={
@@ -93,11 +97,13 @@ function Dashboard(): JSX.Element {
                 borderRadius: 20,
                 fontSize: 24,
                 padding: 8,
+                margin: 8,
               }}
             />
           }
           title={"Users"}
           value={users}
+          backgroundColor="rgba(0,255,255,0.25)"
         />
         <DashboardCard
           icon={
@@ -108,11 +114,13 @@ function Dashboard(): JSX.Element {
                 borderRadius: 20,
                 fontSize: 24,
                 padding: 8,
+                margin: 8,
               }}
             />
           }
           title={"Reports"}
           value={reports}
+          backgroundColor="rgba(255,0,0,0.25)"
         />
       </Space>
       <Space>
@@ -127,13 +135,22 @@ function DashboardCard({
   title,
   value,
   icon,
+  backgroundColor,
 }: {
   title: string;
   value: number;
   icon: JSX.Element;
+  backgroundColor: string;
 }): JSX.Element {
   return (
-    <Card style={{ width: "310px" }}>
+    <Card
+      style={{
+        width: "310px",
+        height: "100px",
+        border: "1px solid gray",
+        backgroundColor,
+      }}
+    >
       <Space direction="horizontal">
         {icon}
         <Statistic title={title} value={value} />

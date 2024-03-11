@@ -44,7 +44,7 @@ module.exports = {
     findUserRequestByUserId: async (req, res, next) => {
         const userId = req.params.id;
         try {
-            const userRequest = await UserRequest.find({ user: userId }).populate('artist')
+            const userRequest = await UserRequest.find({ user: userId }).populate('artist').sort({ "createdAt": -1 })
             if (!userRequest) {
                 throw createError(404, "UserRequest does not exist.");
             }

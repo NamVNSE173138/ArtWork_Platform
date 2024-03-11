@@ -18,6 +18,9 @@ import {
   LogoutOutlined,
   MenuOutlined,
   SearchOutlined,
+  ShoppingCartOutlined,
+  SolutionOutlined,
+  SyncOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -78,7 +81,8 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     {
       label: (
         <Link id="profile" className="dropdown-item" to={`/profile`}>
-          <strong>View profile</strong>
+          <UserOutlined style={{ fontSize: "20px", marginRight: "5px" }} /> View
+          Profile
         </Link>
       ),
       key: 1,
@@ -86,7 +90,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     {
       label: (
         <Link id="profile" className="dropdown-item" to={`/cart`}>
-          <strong>View cart</strong>
+          <ShoppingCartOutlined
+            style={{ fontSize: "20px", marginRight: "5px" }}
+          />{" "}
+          View Cart
         </Link>
       ),
       key: 2,
@@ -94,7 +101,8 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     {
       label: (
         <Link id="profile" className="dropdown-item" to={`/request/history`}>
-          <strong>View request history</strong>
+          <SolutionOutlined style={{ fontSize: "20px", marginRight: "5px" }} />{" "}
+          Request History
         </Link>
       ),
       key: 3,
@@ -102,7 +110,8 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     {
       label: (
         <Link id="profile" className="dropdown-item" to={`/forgot`}>
-          <strong>Reset password</strong>
+          <SyncOutlined style={{ fontSize: "20px", marginRight: "5px" }} />{" "}
+          Change Password
         </Link>
       ),
       key: 4,
@@ -202,7 +211,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                 to="/upload"
                 onClick={toggleNav}
               >
-                BECOME AN ARTIST
+                {currentUser.role === 'artist'
+                  ? <>UPLOAD NEW ARTWORK</>
+                  : <>BECOME AN ARTIST</>
+                }
               </Link>
             </li>
             <li>

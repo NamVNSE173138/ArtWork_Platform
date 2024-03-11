@@ -118,8 +118,7 @@ const Admin: React.FC = () => {
                 href: "/admin",
                 title: (
                   <>
-                    <UserOutlined />
-                    <span>Admin</span>
+                    <UserOutlined /> Admin
                   </>
                 ),
               },

@@ -24,17 +24,18 @@ const ReportForm = (record: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState<ReportData | null>({
     artwork: "",
-    user: "65bc7471c22e1a44d323b6a0",
+    user: "",
     description: "",
     status: false,
   });
 
-  // console.log("Report Artwork ID: ", record);
+  console.log("Report Artwork ID: ", record);
 
   const showModal = () => {
     setIsModalOpen(true);
     setFormData({
       ...formData,
+      user: record.user,
       artwork: record.artwork,
     });
   };
@@ -44,7 +45,7 @@ const ReportForm = (record: any) => {
     setFormData({
       ...formData,
       artwork: "",
-      user: "65bc7471c22e1a44d323b6a0",
+      user: "",
       description: "",
       status: false,
     });
@@ -57,7 +58,7 @@ const ReportForm = (record: any) => {
     setFormData({
       ...formData,
       artwork: "",
-      user: "65bc7471c22e1a44d323b6a0",
+      user: "",
       description: "",
       status: false,
     });
