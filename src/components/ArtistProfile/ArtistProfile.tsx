@@ -21,8 +21,11 @@ import {
 import type { TabsProps } from "antd";
 import "./ArtistProfile.css"; // Create this stylesheet for additional styling if needed
 import Contributed from "../ContributedArtwork/ContributedArtwork";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import { Box } from "@mui/material";
+import Masonry from "@mui/lab/Masonry";
+import LazyLoad from "react-lazyload";
 const { Meta } = Card;
 const items: TabsProps["items"] = [
   {
@@ -119,15 +122,40 @@ const ArtistProfile: React.FC = () => {
       <Row gutter={16} style={{ marginTop: 20 }}>
         <Col span={24}>
           <Tabs defaultActiveKey="1" size="large" type="card">
-            <Tabs.TabPane tab="Contributed Artwork" key="1">
-              {artworks.map((artwork) => (
-                <Card key={artwork._id}>
-                  <Meta
-                    title={artwork.title}
-                    description={artwork.description}
-                  />
-                </Card>
-              ))}
+            <Tabs.TabPane tab="Contributed Artwork" key="1" className="hi">
+              {/* {artworks.map(
+                (artwork,index) =>
+                  // Move the curly brace to the beginning of the JSX expression
+                  artwork.user === _id && (
+                    <img alt={artwork.name} src={artwork.imageUrl} />
+                  )
+              )} */}
+              <Box sx={{ width: 1000, minHeight: 829 }}>
+                <Masonry columns={5} spacing={2}>
+                  {artworks.map(
+                    (artwork, index) =>
+                      artwork.user === _id && (
+                        <div key={index}>
+                          <LazyLoad once>
+                            <Link to={`/artwork/${artwork._id}`}>
+                              <img
+                                // srcSet={`${item.img}?w=162&auto=format&dpr=2 2x`}
+                                src={`${artwork.imageUrl}?w=162&auto=format`}
+                                alt={artwork.name}
+                                loading="lazy"
+                                style={{
+                                  borderRadius: "15px",
+                                  display: "block",
+                                  width: "100%",
+                                }}
+                              />
+                            </Link>
+                          </LazyLoad>
+                        </div>
+                      )
+                  )}
+                </Masonry>
+              </Box>
             </Tabs.TabPane>
           </Tabs>
         </Col>

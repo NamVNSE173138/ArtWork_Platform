@@ -207,10 +207,12 @@ export default function RequestApproval() {
                     })
                         .then((res) => {
                             console.log("Post artist request: ", res.data)
+                            message.success("Your deal request has been sent to user. You will be announced when the user responses.", 5)
                         })
                         .catch((err) => console.log(err))
                 })
                 .catch((err) => console.log(err))
+            artistRequestForm.resetForm()
         }
     })
 

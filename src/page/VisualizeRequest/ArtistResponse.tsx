@@ -151,7 +151,8 @@ export default function ArtistResponse() {
     ]
 
     return (
-        <Table columns={columns} dataSource={artistRequestList}
-            pagination={{ defaultPageSize: 10, hideOnSinglePage: true }} />
+        // <Table columns={columns} dataSource={artistRequestList}
+        //     pagination={{ defaultPageSize: 10, hideOnSinglePage: true }} />
+        <p>Artist's response</p>
     )
 }
