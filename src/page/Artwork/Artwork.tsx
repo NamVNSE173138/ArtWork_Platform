@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./Artwork.module.css";
-import { List, Button, Avatar, Typography, Spin, Badge, Flex, Watermark, Tag } from "antd";
+import { List, Button, Avatar, Typography, Spin, Badge, Flex, message, Tag, Tooltip } from "antd";
 import {
   LoadingOutlined,
   HeartFilled,
@@ -14,11 +14,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import axios from "axios";
 import nFormatter from "../../assistants/Formatter";
-import { FormikProps, Formik, useFormik } from "formik";
+import { FormikProps, useFormik } from "formik";
 import moment from "moment";
 import ReportForm from "../../components/ReportForm/ReportForm";
 import BuyArtwork from "../../components/BuyForm/BuyForm";
 import Favorite from "../../components/Favorite/Favorite";
+import * as Yup from "yup";
+
 interface User {
   id: string;
   email: string;
@@ -64,6 +66,7 @@ interface FavoriteList {
 
 export default function Artwork() {
   const { Text, Title } = Typography;
+  const [messageApi, contextHolder] = message.useMessage()
   const { id } = useParams();
   const userToken = localStorage.getItem("USER");
   const [isLoading, setIsLoading] = useState(false);
@@ -146,33 +149,42 @@ export default function Artwork() {
       },
       text: "",
     },
+    enableReinitialize: true,
+    validationSchema: Yup.object({
+      text: Yup.string().required()
+    }),
     onSubmit: (values: Comment, { resetForm }) => {
-      setNewCommentIncoming(true);
-      axios
-        .post(
-          "http://localhost:5000/comments",
-          {
-            artwork: id,
-            user: currentUser.id,
-            text: values.text,
-            numOfLike: 0,
-          },
+      if (values.text.length > 0) {
+        setNewCommentIncoming(true);
+        axios.post("http://localhost:5000/comments", {
+          artwork: id,
+          user: currentUser.id,
+          text: values.text.trim(),
+          numOfLike: 0,
+        },
           {
             headers: {
               token: userToken,
             },
           }
         )
-        .then((res) => {
-          console.log(res.data);
-          setIsLoading(false);
+          .then((res) => {
+            console.log(res.data);
+            setIsLoading(false);
+          })
+          .catch((err) => console.log(err));
+        resetForm()
+        setTimeout(() => {
+          setNewCommentIncoming(false);
+        }, 500);
+      } else {
+        messageApi.open({
+          type: 'warning',
+          content: 'Comments should not be left empty !'
         })
-        .catch((err) => console.log(err));
-      resetForm();
-      setTimeout(() => {
-        setNewCommentIncoming(false);
-      }, 500);
-    },
+        resetForm()
+      }
+    }
   });
 
   const fetchCurrentUserData = async () => {
@@ -261,6 +273,7 @@ export default function Artwork() {
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />
+      {contextHolder}
       <div className={styles.artworkContainer}>
         {isLoading ? (
           <Spin
@@ -272,14 +285,9 @@ export default function Artwork() {
           <>
             <div className={styles.leftSection}>
               {artwork.price > 0 ? (
-                <Watermark
-                  content="ArtAttack"
-                  inherit={artwork.price > 0 ? true : false}
-                  zIndex={100}
-                  gap={[60, 60]}
-                >
+                <Badge.Ribbon text={<Text strong style={{ color: '#FFF' }}>{artwork.price} $</Text>} color="red">
                   <img className={styles.image} src={artwork.imageUrl} alt="" />
-                </Watermark>
+                </Badge.Ribbon>
               ) : (
                 <img className={styles.image} src={artwork.imageUrl} alt="" />
               )}
@@ -289,9 +297,13 @@ export default function Artwork() {
                 <Title style={{ minWidth: "fit-content", marginTop: "50px" }}>
                   {artwork.name}
                   <br />
-                  <i style={{ fontSize: "16px", fontWeight: "lighter" }}>
-                    Description: {artwork.description}
-                  </i>
+                  <span id={styles.description}>
+                    <Tooltip title={artwork.description} placement="topLeft">
+                      <Text italic>
+                        Description: {artwork.description}
+                      </Text>
+                    </Tooltip>
+                  </span>
                   {/* <br /> */}
                   <div
                     style={{
@@ -306,7 +318,9 @@ export default function Artwork() {
                   </div>
                 </Title>
                 <Text style={{ minWidth: "max-content" }}>
-                  {moment(artwork.createdAt).fromNow()}
+                  {artwork.createdAt
+                    ? moment(artwork.createdAt).fromNow()
+                    : null}
                 </Text>
               </div>
               <div className={styles.artistSection}>
@@ -443,14 +457,13 @@ export default function Artwork() {
                     autoComplete="off"
                     onChange={commentForm.handleChange}
                     onBlur={commentForm.handleBlur}
-                    value={commentForm.values.text}
+                    value={commentForm.values.text.trimStart()}
                     placeholder="Say out your thought..."
                   />
                   <Button
                     type="primary"
                     htmlType="submit"
                     id={styles.submitButton}
-                    disabled={commentForm.values.text === ""}
                   >
                     <SendOutlined />
                   </Button>
@@ -479,7 +492,6 @@ export default function Artwork() {
                   Share
                 </Button>
                 <ReportForm artwork={artwork._id} user={currentUser.id} />
-                <BuyArtwork artwork={artwork._id} user={currentUser.id} />
               </div>
             </div>
           </>

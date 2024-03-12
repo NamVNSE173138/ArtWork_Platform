@@ -40,7 +40,6 @@ interface User {
 
 export interface FormValues {
     name: string,
-    quantity: number,
     description: string,
     priceEst: number,
     message: string,
@@ -157,7 +156,6 @@ export default function RequestRequirements() {
 
     const defaultValues: FormValues = {
         name: "",
-        quantity: 1,
         description: "",
         priceEst: 0,
         message: "",
@@ -167,7 +165,6 @@ export default function RequestRequirements() {
         initialValues: defaultValues,
         validationSchema: Yup.object({
             name: Yup.string().required(""),
-            quantity: Yup.number().integer("").min(1).max(50),
             description: Yup.string().required(""),
             priceEst: Yup.number().min(0.000001).required(""),
             message: Yup.string()
@@ -189,14 +186,17 @@ export default function RequestRequirements() {
             })
                 .then((res: AxiosResponse) => {
                     console.log("Send request: ", res.data)
+                    requestForm.resetForm()
                     messageApi
                         .open({
                             type: 'loading',
                             content: 'Sending request...',
                             duration: 2,
                         })
-                        .then(() => message.success('Your request is sent. Please stay tuned for responses from the artist', 5))
-                    requestForm.resetForm()
+                        .then(() => message.success('Your request is sent. Please stay tuned for responses from the artist', 3))
+                    setTimeout(() => {
+                        navigate('/request')
+                    }, 2500)
                 })
                 .catch((err) => console.log(err))
         }
@@ -252,29 +252,18 @@ export default function RequestRequirements() {
                                 onBlur={requestForm.handleBlur}
                             />
 
-                            <Flex align='center' justify='space-between' gap={5}>
-                                <Flex vertical>
-                                    <Text>Quantity <strong style={{ color: 'red' }}>*</strong></Text>
-                                    <input className={styles.formNumberInput} type='number' name='quantity'
-                                        value={requestForm.values.quantity}
-                                        onChange={requestForm.handleChange}
-                                        onBlur={requestForm.handleBlur}
-                                    />
-                                </Flex>
-
-                                <Flex vertical>
-                                    <Text>Estimated price each ($) <strong style={{ color: 'red' }}>*</strong></Text>
-                                    <input className={styles.formNumberInput} type='number' name='priceEst'
-                                        value={requestForm.values.priceEst}
-                                        onChange={requestForm.handleChange}
-                                        onBlur={requestForm.handleBlur}
-                                    />
-                                </Flex>
+                            <Flex vertical>
+                                <Text>Estimated price each ($) <strong style={{ color: 'red' }}>*</strong></Text>
+                                <input className={styles.formNumberInput} type='number' name='priceEst'
+                                    value={requestForm.values.priceEst}
+                                    onChange={requestForm.handleChange}
+                                    onBlur={requestForm.handleBlur}
+                                />
                             </Flex>
 
                             <Flex justify='center' align='center' gap={5} style={{ marginTop: '2%' }}>
                                 <button type='submit' className={styles.formButton} id={styles.submitButton}>
-                                    <strong>SEND REQUEST</strong>
+                                    <strong>SEND</strong>
                                 </button>
                                 <button type='reset' className={styles.formButton} style={{ maxWidth: '30%' }}>
                                     <strong>RESET</strong>

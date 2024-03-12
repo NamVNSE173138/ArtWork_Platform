@@ -2,32 +2,11 @@ import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import axios, { AxiosResponse } from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Flex, Space, Typography, Button, message, Table, Avatar, Popconfirm } from 'antd';
+import { Flex, Space, Typography, Button, message, Table, Image, Popconfirm, Tooltip } from 'antd';
 import type { TableProps } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
-import styles from './UserRequest.module.css'
+import { DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import dateFormat from '../../assistants/date.format';
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import nFormatter from '../../assistants/Formatter';
 import moment from 'moment';
-
-interface Pin {
-    _id: string;
-    artworkId: number;
-    userId: number;
-    artworkName: string;
-    createTime: Date;
-    tags: string;
-    numOfLike: number;
-    price: string;
-    describe: string;
-    imageUrl: string;
-}
-
-interface ArtworkResponse {
-    data: Pin[];
-}
 
 interface User {
     _id: string,
@@ -43,10 +22,9 @@ interface User {
     updatedAt?: string,
 }
 
-export interface UserRequest {
+interface UserRequest {
     _id: string,
     name: string,
-    quantity: number,
     description: string,
     priceEst: number,
     message: string,
@@ -89,45 +67,46 @@ export default function UserRequestList() {
 
     const columns: TableProps<UserRequest>['columns'] = [
         {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: 'User',
+            title: 'From user',
             dataIndex: 'user',
             key: 'user',
+            align: 'center',
             render: (_, { user }) => (
                 <Flex justify='start' align='center' gap={10} style={{ cursor: 'pointer' }}>
-                    <Avatar src={user.avatar} alt='' size={50} />
+                    <Image src={user.avatar} alt='' style={{ borderRadius: '50%', width: '50px' }} />
                     <Text strong onClick={() => navigate(`../../artistList/${user._id}`)}>{user.nickname}</Text>
                 </Flex>
             )
         },
         {
-            title: 'Quantity',
-            dataIndex: 'quantity',
-            key: 'quantity',
+            title: "Artwork request's name",
+            dataIndex: 'name',
+            key: 'name',
+            align: 'center',
         },
         {
-            title: 'Estimated price each ($)',
+            title: 'Estimated price ($)',
             dataIndex: 'priceEst',
             key: 'priceEst',
+            align: 'center',
         },
         {
             title: 'Description',
             dataIndex: 'description',
             key: 'description',
+            align: 'center',
         },
         {
             title: 'Message',
             dataIndex: 'message',
             key: 'message',
+            align: 'center',
         },
         {
             title: 'Sent at',
             dataIndex: 'createdAt',
             key: 'createdAt',
+            align: 'center',
             render: (_, { createdAt }) => (
                 <Space size="middle">
                     <Flex vertical>
@@ -159,6 +138,15 @@ export default function UserRequestList() {
                 </Space>
             ),
         },
+        {
+            title:
+                <Tooltip title='Reload' overlayInnerStyle={{ backgroundColor: '#FFF', color: '#000' }}>
+                    <Button onClick={() => fetchUserRequest()} style={{ display: 'flex', alignItems: 'center' }}>
+                        <ReloadOutlined />
+                    </Button>
+                </Tooltip>,
+            width: '70px'
+        }
     ]
 
     const deleteRequest = async (id: string) => {

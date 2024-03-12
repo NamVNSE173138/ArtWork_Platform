@@ -13,6 +13,15 @@ module.exports = {
     }
   },
 
+  getPrivateArtwork: async (req, res, next) => {
+    try {
+      const results = await Artwork.find({ status: false }, { __v: 0 });
+      res.send(results);
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+
   createNewArtwork: async (req, res, next) => {
     try {
       const artwork = new Artwork(req.body);

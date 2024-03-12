@@ -19,7 +19,7 @@ import ProfilePage from "./components/Profile/Profile";
 // import NotificationPage from "./page/NotificationPage/NotificationPage";
 import CartPage from "./page/Cart/CartPage";
 import VisualizeRequest from "./page/VisualizeRequest/RequestHistory";
-import UserRequestList from "./components/Profile/UserRequestList";
+import UserRequestList from "./page/UserRequest on Artist/UserRequestList";
 import RequestApproval from "./page/VisualizeRequest/RequestApproval";
 import UserRequestOnArtist from "./page/UserRequest on Artist/UserRequestOnArtist";
 import VnPayPayment from "./components/VNPay/VnPayPayment";
