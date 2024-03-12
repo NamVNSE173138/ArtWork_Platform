@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import axios, { AxiosResponse } from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Flex, Space, Typography, Button, message, Table, Avatar, Popconfirm } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { Flex, Space, Typography, Button, message, Table, Avatar, Popconfirm, Tooltip } from 'antd';
 import type { TableProps } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import styles from './UserRequest.module.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -103,29 +103,28 @@ export default function PendingRequest() {
             )
         },
         {
-            title: 'Quantity',
-            dataIndex: 'quantity',
-            key: 'quantity',
-        },
-        {
-            title: 'Estimated price',
+            title: 'Estimated price ($)',
             dataIndex: 'priceEst',
             key: 'priceEst',
+            align: 'center',
         },
         {
             title: 'Description',
             dataIndex: 'description',
             key: 'description',
+            align: 'center',
         },
         {
             title: 'Message',
             dataIndex: 'message',
             key: 'message',
+            align: 'center',
         },
         {
             title: 'Sent at',
             dataIndex: 'createdAt',
             key: 'createdAt',
+            align: 'center',
             render: (_, { createdAt }) => (
                 <Space size="middle">
                     <Flex vertical>
@@ -138,6 +137,7 @@ export default function PendingRequest() {
         {
             title: 'Action',
             key: 'action',
+            align: 'center',
             render: (_, { _id }) => (
                 <Space size="middle">
                     <Popconfirm
@@ -153,6 +153,15 @@ export default function PendingRequest() {
                 </Space>
             ),
         },
+        {
+            title:
+                <Tooltip title='Reload' overlayInnerStyle={{ backgroundColor: '#FFF', color: '#000' }}>
+                    <Button onClick={() => fetchUserRequest()} style={{ display: 'flex', alignItems: 'center' }}>
+                        <ReloadOutlined />
+                    </Button>
+                </Tooltip>,
+            width: '70px'
+        }
     ]
 
     const deleteRequest = async (id: string) => {

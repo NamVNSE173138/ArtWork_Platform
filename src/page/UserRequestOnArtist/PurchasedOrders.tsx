@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import axios, { AxiosResponse } from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Flex, Space, Tooltip, Typography, Button, message, Table, Avatar, Popconfirm, Image } from 'antd';
+import { Flex, Space, Typography, Button, Tooltip, message, Table, Avatar, Popconfirm, Image } from 'antd';
 import type { TableProps } from 'antd';
 import { DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import dateFormat from '../../assistants/date.format';
@@ -60,15 +60,15 @@ interface ArtistRequest {
     updatedAt: string,
 }
 
-export default function ApprovalsSent() {
+export default function PurchasedOrders() {
     const navigate = useNavigate()
     const { Text, Title } = Typography
     const [messageApi, contextHolder] = message.useMessage()
 
-    const userToken = localStorage.getItem("USER")
-    const [artistRequestList, setArtistRequestList] = useState([])
+    const [purchasedOrderList, setPurchasedOrderList] = useState([])
 
-    const fetchUserRequest = async () => {
+    const userToken = localStorage.getItem("USER")
+    const fetchPurchasedOrderList = async () => {
         await axios.get(`http://localhost:5000/users/getUserInfo`, {
             headers: {
                 token: userToken, //userToken = localStorage("USER")
@@ -76,10 +76,9 @@ export default function ApprovalsSent() {
         })
             .then((res) => {
                 console.log("Current user data: ", res.data)
-                axios.get(`http://localhost:5000/artistRequests/artist/${res.data.id}`)
+                axios.get(`http://localhost:5000/artistRequests/artist/purchased/${res.data.id}`)
                     .then((res) => {
-                        console.log("User request list: ", res.data)
-                        setArtistRequestList(res.data)
+                        setPurchasedOrderList(res.data)
                     })
                     .catch((err) => console.log(err))
             })
@@ -88,8 +87,12 @@ export default function ApprovalsSent() {
     };
 
     useEffect(() => {
-        fetchUserRequest()
+        fetchPurchasedOrderList()
     }, [])
+
+    const handleEarn = (amount: number) => {
+        message.success("+" + amount + " $")
+    }
 
     const columns: TableProps<ArtistRequest>['columns'] = [
         {
@@ -105,7 +108,7 @@ export default function ApprovalsSent() {
             )
         },
         {
-            title: 'To user',
+            title: 'User',
             dataIndex: 'user',
             key: 'user',
             align: 'center',
@@ -117,24 +120,27 @@ export default function ApprovalsSent() {
             )
         },
         {
-            title: 'Offered price ($)',
+            title: 'Earned ($)',
             dataIndex: 'price',
             key: 'price',
             align: 'center',
             render: (_, { price }) => (
-                <Text strong>{price} $</Text>
+                <Text strong
+                    style={{ backgroundColor: '#2382EC', padding: '2% 5%', borderRadius: '10px', color: '#FFF' }}>
+                    {price} $
+                </Text>
             )
         },
         {
-            title: 'Sent at',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
+            title: 'Purchased',
+            dataIndex: 'updatedAt',
+            key: 'updatedAt',
             align: 'center',
-            render: (_, { createdAt }) => (
+            render: (_, { updatedAt }) => (
                 <Space size="middle">
                     <Flex vertical>
-                        <Text strong>{moment(createdAt).fromNow()}</Text>
-                        <Text style={{ fontSize: '80%' }} >{dateFormat(createdAt, 'HH:MM dd/mm/yyyy')}</Text>
+                        <Text strong>{moment(updatedAt).fromNow()}</Text>
+                        <Text style={{ fontSize: '80%' }} >{dateFormat(updatedAt, 'HH:MM dd/mm/yyyy')}</Text>
                     </Flex>
                 </Space>
             ),
@@ -143,24 +149,18 @@ export default function ApprovalsSent() {
             title: 'Action',
             key: 'action',
             align: 'center',
-            render: (_, { _id }) => (
+            render: (_, { price }) => (
                 <Space size="middle">
-                    <Popconfirm
-                        title="Recall this request ?"
-                        icon={<DeleteOutlined style={{ color: 'red' }} />}
-                        onConfirm={() => deleteRequest(_id)}
-                    >
-                        <Button type='primary' danger style={{ display: 'flex', alignItems: 'center' }}>
-                            Recall
-                        </Button>
-                    </Popconfirm>
+                    <Button type='primary' onClick={() => handleEarn(price)} style={{ display: 'flex', alignItems: 'center', backgroundColor: '#24B60D' }}>
+                        <strong>EARN</strong>
+                    </Button>
                 </Space>
             ),
         },
         {
             title:
                 <Tooltip title='Reload' overlayInnerStyle={{ backgroundColor: '#FFF', color: '#000' }}>
-                    <Button onClick={() => fetchUserRequest()} style={{ display: 'flex', alignItems: 'center' }}>
+                    <Button onClick={() => fetchPurchasedOrderList()} style={{ display: 'flex', alignItems: 'center' }}>
                         <ReloadOutlined />
                     </Button>
                 </Tooltip>,
@@ -169,33 +169,13 @@ export default function ApprovalsSent() {
     ]
 
     const deleteRequest = async (id: string) => {
-        await axios.get(`http://localhost:5000/artistRequests/${id}`)
-            .then((res) => {
-                console.log("User request id reverted: ", res.data.userRequest_id)
-                axios.patch(`http://localhost:5000/userRequests/status/${res.data.userRequest._id}`, {
-                    status: false,
-                })
-                    .then((res) => {
-                        console.log(res.data)
-                    })
-                    .catch((err) => console.log(err))
-            })
-            .catch((err) => console.log(err))
-        await axios.delete(`http://localhost:5000/artistRequests/${id}`)
-            .then((res) => {
-                console.log("Delete request: ", res.data)
-                setArtistRequestList(artistRequestList.filter((item: any) => item._id !== id))
-                message.info("Request recalled.", 5)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+
     }
 
     return (
         <>
             {contextHolder}
-            < Table columns={columns} dataSource={artistRequestList}
+            < Table columns={columns} dataSource={purchasedOrderList}
                 pagination={{ hideOnSinglePage: true }
                 }
                 scroll={{ y: 500, scrollToFirstRowOnChange: true }} />

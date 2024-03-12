@@ -18,7 +18,7 @@ module.exports = {
                         model: 'User',
                     }
                     ]
-                })
+                }).sort({ 'createdAt': -1 })
             res.send(results);
         } catch (error) {
             console.log(error.message);
@@ -50,7 +50,7 @@ module.exports = {
                         model: 'User',
                     }
                     ]
-                })
+                }).sort({ 'createdAt': -1 })
             if (!artistRequest) {
                 throw createError(404, "ArtistRequest does not exist.");
             }
@@ -68,7 +68,7 @@ module.exports = {
     findArtistRequestByUserRequestId: async (req, res, next) => {
         const id = req.params.id;
         try {
-            const artistRequest = await ArtistRequest.find({ 'userRequest': id })
+            const artistRequest = await ArtistRequest.find({ 'userRequest': id, 'status': false })
                 .populate([{
                     path: 'userRequest',
                     populate: [{
@@ -85,7 +85,7 @@ module.exports = {
                     path: 'artwork',
                     model: 'Artwork',
                 }
-                ])
+                ]).sort({ 'createdAt': -1 })
             if (!artistRequest) {
                 throw createError(404, "ArtistRequest does not exist.");
             }
@@ -106,7 +106,7 @@ module.exports = {
     findArtistRequestByArtistId: async (req, res, next) => {
         const id = req.params.id;
         try {
-            const artistRequest = await ArtistRequest.find({ 'artist': id })
+            const artistRequest = await ArtistRequest.find({ 'artist': id, 'status': false })
                 .populate([{
                     path: 'userRequest',
                     model: 'UserRequest',
@@ -201,7 +201,7 @@ module.exports = {
                     path: 'artwork',
                     model: 'Artwork',
                 }
-                ])
+                ]).sort({ 'createdAt': -1 })
             if (!artistRequest) {
                 throw createError(404, "ArtistRequest does not exist.");
             }

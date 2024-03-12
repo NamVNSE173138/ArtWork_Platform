@@ -19,9 +19,8 @@ import ProfilePage from "./components/Profile/Profile";
 // import NotificationPage from "./page/NotificationPage/NotificationPage";
 import CartPage from "./page/Cart/CartPage";
 import VisualizeRequest from "./page/VisualizeRequest/RequestHistory";
-import UserRequestList from "./page/UserRequest on Artist/UserRequestList";
-import RequestApproval from "./page/VisualizeRequest/RequestApproval";
-import UserRequestOnArtist from "./page/UserRequest on Artist/UserRequestOnArtist";
+import RequestApproval from "./page/UserRequestOnArtist/RequestApproval";
+import UserRequestOnArtist from "./page/UserRequestOnArtist/UserRequestOnArtist";
 import VnPayPayment from "./components/VNPay/VnPayPayment";
 
 function App() {

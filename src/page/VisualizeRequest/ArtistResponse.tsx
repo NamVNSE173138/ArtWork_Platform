@@ -4,10 +4,12 @@ import axios, { Axios, AxiosResponse } from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Flex, Space, Typography, Button, message, Table, Avatar, Image, Modal, Tooltip } from 'antd';
 import type { TableProps } from 'antd';
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { ReloadOutlined } from '@ant-design/icons';
 import styles from './UserRequest.module.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import moment from 'moment';
+import dateFormat from '../../assistants/date.format';
 
 interface Artwork {
     _id: string;
@@ -92,8 +94,8 @@ export default function ArtistResponse() {
         fetchArtistRequest()
     }, [])
 
-    const onGet = () => {
-
+    const onGet = (price: number) => {
+        console.log("Price: ", price)
     }
 
     const rejectRequest = async () => {
@@ -172,13 +174,27 @@ export default function ArtistResponse() {
             align: 'center',
         },
         {
+            title: 'Sent at',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            align: 'center',
+            render: (_, { createdAt }) => (
+                <Space size="middle">
+                    <Flex vertical>
+                        <Text strong>{moment(createdAt).fromNow()}</Text>
+                        <Text style={{ fontSize: '80%' }} >{dateFormat(createdAt, 'HH:MM dd/mm/yyyy')}</Text>
+                    </Flex>
+                </Space>
+            ),
+        },
+        {
             title: 'Action',
             key: 'action',
             align: 'center',
             width: '100px',
-            render: () => (
+            render: (_, { price }) => (
                 <Flex justify='center' align='center' gap={5}>
-                    <Button type='primary' onClick={onGet}
+                    <Button type='primary' onClick={() => onGet(price)}
                         style={{ display: 'flex', alignItems: 'center', backgroundColor: 'green' }}
                     >
                         <strong>ACCEPT</strong>
@@ -191,6 +207,15 @@ export default function ArtistResponse() {
                 </Flex>
             ),
         },
+        {
+            title:
+                <Tooltip title='Reload' overlayInnerStyle={{ backgroundColor: '#FFF', color: '#000' }}>
+                    <Button onClick={() => fetchArtistRequest()} style={{ display: 'flex', alignItems: 'center' }}>
+                        <ReloadOutlined />
+                    </Button>
+                </Tooltip>,
+            width: '70px'
+        }
     ]
 
     return (

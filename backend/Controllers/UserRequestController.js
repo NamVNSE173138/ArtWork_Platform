@@ -6,7 +6,7 @@ const UserRequest = require('../Models/userRequest');
 module.exports = {
     getAllUserRequest: async (req, res, next) => {
         try {
-            const results = await UserRequest.find({ status: "false" });
+            const results = await UserRequest.find({ status: "false" }).sort({ 'createdAt': -1 })
             res.send(results);
         } catch (error) {
             console.log(error.message);
@@ -26,7 +26,7 @@ module.exports = {
     findUserRequestById: async (req, res, next) => {
         const id = req.params.id;
         try {
-            const userRequest = await UserRequest.findById(id).populate("user")
+            const userRequest = await UserRequest.findById(id).populate("user").sort({ 'createdAt': -1 })
             if (!userRequest) {
                 throw createError(404, "UserRequest does not exist.");
             }

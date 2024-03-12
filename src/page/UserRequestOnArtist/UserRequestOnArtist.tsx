@@ -52,7 +52,7 @@ export default function UserRequestOnArtist() {
             })
             .catch((err) => console.log(err));
     }
-    
+
     useEffect(() => {
         fetchPurchasedOrderList()
     }, [])
@@ -84,7 +84,7 @@ export default function UserRequestOnArtist() {
             {contextHolder}
             <Flex vertical justify='center' align='center'>
                 <Title style={{ fontFamily: '"Kanit", sans-serif', paddingBottom: '1%' }}>PERSONAL ARTWORK VISUALIZING REQUEST</Title>
-                <Tabs centered items={items} />
+                <Tabs centered items={items} style={{ margin: '0 auto', width: '95%' }} />
             </Flex>
         </>
     )

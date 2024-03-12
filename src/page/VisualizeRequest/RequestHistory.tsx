@@ -74,14 +74,14 @@ export default function RequestHistory() {
     const items: TabsProps['items'] = [
         {
             key: '1',
-            label: 'Pending request',
+            label: 'Pending requests',
             children: <PendingRequest />
         },
         {
             key: '2',
             label:
                 <Badge dot={artistRequestList.length > 0}>
-                    <Text>Responses</Text>
+                    <Text>Artist's responses</Text>
                 </Badge>,
             children: <ArtistResponse />
         },
@@ -95,7 +95,7 @@ export default function RequestHistory() {
                 <Title style={{ fontFamily: 'monospace' }}>ARTWORK PERSONAL VISUALIZING REQUEST HISTORY</Title>
             </Flex>
             <Tabs defaultActiveKey='1' centered items={items}
-                style={{ margin: '0 auto', width: '90%' }} />
+                style={{ margin: '0 auto', width: '95%' }} />
         </>
     )
 }
