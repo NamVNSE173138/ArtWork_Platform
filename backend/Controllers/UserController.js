@@ -94,12 +94,14 @@ module.exports = {
   },
 
   updateUser: async (req, res, next) => {
+    const { token } = req.headers;
     try {
-      const id = req.params.id;
-      const updates = req.body;
+      const userInfo = decodeToken(token);
+      const userId = userInfo?.data?.checkEmail?._id;
+      const { nickname, avatar, bio } = req.body;
       const options = { new: true };
 
-      const result = await User.findByIdAndUpdate(id, updates, options);
+      const result = await User.findByIdAndUpdate(userId, { nickname, avatar, bio }, options);
       if (!result) {
         throw createError(404, "User does not exist");
       }

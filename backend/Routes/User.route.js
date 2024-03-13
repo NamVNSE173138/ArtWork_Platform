@@ -17,7 +17,7 @@ router.get('/getUserInfo', userController.getUserInfo);
 
 router.get('/:id', userController.findUserById);
 
-router.patch('/:id', userController.updateUser);
+router.patch('/updateUserInfo', userController.updateUser);
 
 router.patch('/updateRole/:id', userController.updateArtistRole);
 

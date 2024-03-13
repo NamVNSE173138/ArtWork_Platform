@@ -63,6 +63,7 @@ interface FavoriteList {
 }
 
 const ProfilePage: React.FC = () => {
+  const [form] = Form.useForm();
   const navigate = useNavigate();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const token = localStorage.getItem("USER");
@@ -71,6 +72,7 @@ const ProfilePage: React.FC = () => {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const imageUrl = e.target.value;
     setAvatarPreview(imageUrl);
+    console.log("current img", imageUrl);
   };
   const fetchFavoriteList = async () => {
     await axios
@@ -120,9 +122,56 @@ const ProfilePage: React.FC = () => {
     setEditModalVisible(false);
   };
 
-  const handleEditModalOk = () => {
-    setEditModalVisible(false);
+  const handleEditModalOk = async () => {
+    try {
+      const values = await form.validateFields();
+      const updatedUser = {
+        ...currentUser,
+        ...values
+      };
+
+      await axios.patch(
+        `http://localhost:5000/users/updateUserInfo`,
+        {
+          nickname: updatedUser.nickname,
+          avatar: updatedUser.avatar,
+          bio: updatedUser.bio
+        },
+        {
+          headers: {
+            token: token
+          }
+        }
+      );
+
+      message.success("Profile updated successfully");
+
+      localStorage.removeItem("USER");
+
+      navigate("/signin");
+      // Update currentUser state with the updated information
+      setCurrentUser(updatedUser);
+
+      // Update avatarPreview if avatar URL is changed
+      if (values.avatar !== currentUser.avatar) {
+        setAvatarPreview(values.avatar);
+        setCurrentUser(prevState => ({
+          ...prevState,
+          avatar: values.avatar
+        }));
+      }
+
+      setEditModalVisible(false);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      message.error("Failed to update profile. Please try again later.");
+    }
   };
+
+
+
+
+
   const userToken = localStorage.getItem("USER");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -141,6 +190,7 @@ const ProfilePage: React.FC = () => {
   });
 
   const [requestList, setRequestList] = useState([]);
+
 
   const fetchCurrentUserData = async () => {
     setIsLoading(true);
@@ -174,7 +224,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <>
-      <Navbar onSubmit={() => {}} />
+      <Navbar onSubmit={() => { }} />
       <div className="profile-container">
         <Row gutter={16}>
           <Col span={24}>
@@ -225,18 +275,17 @@ const ProfilePage: React.FC = () => {
                   </Badge>
                 ) : null}
               </Card>
-
               <Modal
                 title="Edit Profile"
                 open={editModalVisible}
                 onOk={handleEditModalOk}
                 onCancel={handleEditModalCancel}
               >
-                <Form layout="vertical">
-                  <Form.Item label="Full Name">
+                <Form layout="vertical" form={form}>
+                  <Form.Item label="Full Name" name="nickname" initialValue={currentUser.nickname}>
                     <Input placeholder="Enter your full name" />
                   </Form.Item>
-                  <Form.Item label="Avatar">
+                  <Form.Item label="Avatar" name="avatar" initialValue={currentUser.avatar}>
                     <Input
                       placeholder="Enter avatar URL"
                       onChange={handleAvatarChange}
@@ -246,6 +295,7 @@ const ProfilePage: React.FC = () => {
                         src={avatarPreview}
                         alt="Avatar Preview"
                         style={{
+                          display: "flex",
                           margin: "10px auto",
                           height: "150px",
                           width: "150px",
@@ -255,11 +305,12 @@ const ProfilePage: React.FC = () => {
                       />
                     )}
                   </Form.Item>
-                  <Form.Item label="Bio">
+                  <Form.Item label="Bio" name="bio" initialValue={currentUser.bio}>
                     <Input.TextArea placeholder="Enter your bio" />
                   </Form.Item>
                 </Form>
               </Modal>
+
             </div>
           </Col>
         </Row>
