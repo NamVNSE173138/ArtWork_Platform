@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Navbar from "../../components/Navbar/Navbar";
-import Artist from "../../components/ArtistList/ArtistList";
-import { Spin } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import Navbar from "../components/Navbar/Navbar";
+import ArtistProfile from "../components/ArtistProfile/ArtistProfile";
+import { useParams } from "react-router-dom";
 
 interface Pin {
   _id: string;
@@ -15,39 +14,39 @@ interface Pin {
   numOfLike: number;
   price: string;
   describe: string;
-  imageUrl: string;
+  urls: {
+    regular: string;
+  };
 }
-
+interface User {
+  _id: string;
+  email: string;
+  password: string;
+  nickName: string;
+  role: string;
+  numOfFollower: number;
+  avatar: string;
+  status: boolean;
+}
 interface ArtworkResponse {
   data: Pin[];
 }
 
-const ArtistList: React.FC = () => {
+const ArtistProfilePage: React.FC = () => {
+  const userToken = localStorage.getItem("USER");
   const [pins, setPins] = useState<Pin[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [image, setImage] = useState([]);
-  useEffect(() => {
-    fetch("http://localhost:5000/artworks")
-      .then((response) => response.json())
-      .then((res) => {
-        setImage(res);
-        // console.log(res);
-      });
-  }, []);
-  // console.log(image);
-
   const getImages = async () => {
     try {
       const response = await axios.get<ArtworkResponse>(
-        "http://localhost:5000/artworks"
+        "http://localhost:5000/artworks "
       );
-      console.log("response: ", response);
-      console.log(response.data);
+      console.log("Image:", response.data);
 
       return response.data;
     } catch (error) {
       console.error("Error fetching artwork:", error);
-      throw error;
+      throw error; // Propagate the error
     }
   };
 
@@ -56,7 +55,9 @@ const ArtistList: React.FC = () => {
 
     try {
       const res = await getImages();
-      const newPins = Array.isArray(res.data) ? res.data : [];
+      const newPins = Array.isArray(res.data)
+        ? [...res.data, ...pins]
+        : [...pins];
 
       newPins.sort(() => 0.5 - Math.random());
       setPins(newPins);
@@ -74,7 +75,9 @@ const ArtistList: React.FC = () => {
       const res = await getImages();
 
       // Check if res.data is defined and is an array before sorting
-      const pinData = Array.isArray(res.data) ? res.data : [];
+      const pinData = Array.isArray(res.data)
+        ? res.data.sort(() => 0.5 - Math.random())
+        : [];
 
       setPins(pinData);
     } catch (error) {
@@ -83,18 +86,21 @@ const ArtistList: React.FC = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     getNewPins();
+    if (userToken) {
+      console.log("Decoded token: ", userToken);
+    } else {
+      console.log("No token found");
+    }
   }, []);
 
-  useEffect(() => {}, [pins]);
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />
-      <Artist />
+      <ArtistProfile />
     </>
   );
 };
 
-export default ArtistList;
+export default ArtistProfilePage;

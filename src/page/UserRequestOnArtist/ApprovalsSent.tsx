@@ -2,32 +2,11 @@ import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import axios, { AxiosResponse } from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Flex, Space, Typography, Button, message, Table, Avatar, Popconfirm } from 'antd';
+import { Flex, Space, Tooltip, Typography, Button, message, Table, Avatar, Popconfirm, Image } from 'antd';
 import type { TableProps } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
-import styles from './UserRequest.module.css'
+import { DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import dateFormat from '../../assistants/date.format';
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import nFormatter from '../../assistants/Formatter';
 import moment from 'moment';
-
-interface Pin {
-    _id: string;
-    artworkId: number;
-    userId: number;
-    artworkName: string;
-    createTime: Date;
-    tags: string;
-    numOfLike: number;
-    price: string;
-    describe: string;
-    imageUrl: string;
-}
-
-interface ArtworkResponse {
-    data: Pin[];
-}
 
 interface User {
     _id: string,
@@ -43,7 +22,21 @@ interface User {
     updatedAt?: string,
 }
 
-export interface UserRequest {
+interface Artwork {
+    _id: string;
+    user: User;
+    name: string;
+    tags: [string];
+    numOfLike: number;
+    price: number;
+    description: string;
+    imageUrl: string;
+    status: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+interface UserRequest {
     _id: string,
     name: string,
     quantity: number,
@@ -56,13 +49,24 @@ export interface UserRequest {
     updatedAt: string,
 }
 
-export default function UserRequestList() {
+interface ArtistRequest {
+    _id: string,
+    artwork: Artwork,
+    price: number,
+    artist: User,
+    user: User,
+    userRequest: UserRequest,
+    createdAt: string,
+    updatedAt: string,
+}
+
+export default function ApprovalsSent() {
     const navigate = useNavigate()
     const { Text, Title } = Typography
     const [messageApi, contextHolder] = message.useMessage()
 
     const userToken = localStorage.getItem("USER")
-    const [userRequestList, setUserRequestList] = useState([])
+    const [artistRequestList, setArtistRequestList] = useState([])
 
     const fetchUserRequest = async () => {
         await axios.get(`http://localhost:5000/users/getUserInfo`, {
@@ -72,10 +76,10 @@ export default function UserRequestList() {
         })
             .then((res) => {
                 console.log("Current user data: ", res.data)
-                axios.get(`http://localhost:5000/userRequests/artist/${res.data.id}`)
+                axios.get(`http://localhost:5000/artistRequests/artist/${res.data.id}`)
                     .then((res) => {
                         console.log("User request list: ", res.data)
-                        setUserRequestList(res.data)
+                        setArtistRequestList(res.data)
                     })
                     .catch((err) => console.log(err))
             })
@@ -87,16 +91,24 @@ export default function UserRequestList() {
         fetchUserRequest()
     }, [])
 
-    const columns: TableProps<UserRequest>['columns'] = [
+    const columns: TableProps<ArtistRequest>['columns'] = [
         {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
+            title: 'Artwork',
+            dataIndex: 'artwork',
+            key: 'artwork',
+            align: 'center',
+            render: (_, { artwork }) => (
+                <Flex justify='start' align='center' gap={10} style={{ cursor: 'pointer' }}>
+                    <Image src={artwork.imageUrl} alt='' width={100} />
+                    <Text strong>{artwork.name}</Text>
+                </Flex>
+            )
         },
         {
-            title: 'User',
+            title: 'To user',
             dataIndex: 'user',
             key: 'user',
+            align: 'center',
             render: (_, { user }) => (
                 <Flex justify='start' align='center' gap={10} style={{ cursor: 'pointer' }}>
                     <Avatar src={user.avatar} alt='' size={50} />
@@ -105,29 +117,19 @@ export default function UserRequestList() {
             )
         },
         {
-            title: 'Quantity',
-            dataIndex: 'quantity',
-            key: 'quantity',
-        },
-        {
-            title: 'Estimated price each ($)',
-            dataIndex: 'priceEst',
-            key: 'priceEst',
-        },
-        {
-            title: 'Description',
-            dataIndex: 'description',
-            key: 'description',
-        },
-        {
-            title: 'Message',
-            dataIndex: 'message',
-            key: 'message',
+            title: 'Offered price ($)',
+            dataIndex: 'price',
+            key: 'price',
+            align: 'center',
+            render: (_, { price }) => (
+                <Text strong>{price} $</Text>
+            )
         },
         {
             title: 'Sent at',
             dataIndex: 'createdAt',
             key: 'createdAt',
+            align: 'center',
             render: (_, { createdAt }) => (
                 <Space size="middle">
                     <Flex vertical>
@@ -140,32 +142,50 @@ export default function UserRequestList() {
         {
             title: 'Action',
             key: 'action',
+            align: 'center',
             render: (_, { _id }) => (
                 <Space size="middle">
-                    <Button type='primary' style={{ display: 'flex', alignItems: 'center' }}
-                        onClick={() => navigate(`/userRequest/approval/${_id}`)}>
-                        Approve
-                    </Button>
                     <Popconfirm
                         title="Recall this request ?"
-                        // description="Are you sure to delete this task?"
                         icon={<DeleteOutlined style={{ color: 'red' }} />}
                         onConfirm={() => deleteRequest(_id)}
                     >
                         <Button type='primary' danger style={{ display: 'flex', alignItems: 'center' }}>
-                            Deny
+                            Recall
                         </Button>
                     </Popconfirm>
                 </Space>
             ),
         },
+        {
+            title:
+                <Tooltip title='Reload' overlayInnerStyle={{ backgroundColor: '#FFF', color: '#000' }}>
+                    <Button onClick={() => fetchUserRequest()} style={{ display: 'flex', alignItems: 'center' }}>
+                        <ReloadOutlined />
+                    </Button>
+                </Tooltip>,
+            width: '70px'
+        }
     ]
 
     const deleteRequest = async (id: string) => {
-        await axios.delete(`http://localhost:5000/userRequests/${id}`)
+        await axios.get(`http://localhost:5000/artistRequests/${id}`)
+            .then((res) => {
+                console.log("User request id reverted: ", res.data.userRequest_id)
+                axios.patch(`http://localhost:5000/userRequests/status/${res.data.userRequest._id}`, {
+                    status: false,
+                })
+                    .then((res) => {
+                        console.log(res.data)
+                    })
+                    .catch((err) => console.log(err))
+            })
+            .catch((err) => console.log(err))
+        await axios.delete(`http://localhost:5000/artistRequests/${id}`)
             .then((res) => {
                 console.log("Delete request: ", res.data)
-                setUserRequestList(userRequestList.filter((item: any) => item._id !== id))
+                setArtistRequestList(artistRequestList.filter((item: any) => item._id !== id))
+                message.info("Request recalled.", 5)
             })
             .catch((err) => {
                 console.log(err)
@@ -173,8 +193,11 @@ export default function UserRequestList() {
     }
 
     return (
-        <Table columns={columns} dataSource={userRequestList}
-            pagination={{ hideOnSinglePage: true }}
-            scroll={{ y: 500, scrollToFirstRowOnChange: true }} />
+        <>
+            {contextHolder}
+            <Table columns={columns} dataSource={artistRequestList}
+                pagination={{ hideOnSinglePage: true }}
+                scroll={{ y: 500, scrollToFirstRowOnChange: true }} />
+        </>
     )
 }

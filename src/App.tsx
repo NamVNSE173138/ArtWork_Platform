@@ -13,15 +13,14 @@ import Artwork from "./page/Artwork/Artwork";
 import FavoriteList from "./page/FavoriteList/FavoriteList";
 import ArtistList from "./page/VisualizeRequest/ArtistList";
 import RequestRequirements from "./page/VisualizeRequest/RequestRequirements";
-import ArtistProfile from "./components/ArtistProfile/ArtistProfile";
+import ArtistProfile from "./page/ArtistProfile";
 import ArtworkRequest from "./page/ArtworkRequest";
 import ProfilePage from "./components/Profile/Profile";
 import NotificationPage from "./page/NotificationPage/NotificationPage";
 import CartPage from "./page/Cart/CartPage";
 import VisualizeRequest from "./page/VisualizeRequest/RequestHistory";
-import UserRequestList from "./components/Profile/UserRequestList";
-import RequestApproval from "./page/VisualizeRequest/RequestApproval";
-import UserRequestOnArtist from "./page/UserRequest on Artist/UserRequestOnArtist";
+import RequestApproval from "./page/UserRequestOnArtist/RequestApproval";
+import UserRequestOnArtist from "./page/UserRequestOnArtist/UserRequestOnArtist";
 import VnPayPayment from "./components/VNPay/VnPayPayment";
 
 function App() {

@@ -21,9 +21,6 @@ function sortObject(obj) {
 }
 module.exports = {
     createPaymentUrl: async (req, res, next) => {
-
-
-
         process.env.TZ = 'Asia/Ho_Chi_Minh';
 
         let date = new Date();

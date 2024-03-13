@@ -1,32 +1,12 @@
 import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import axios, { AxiosResponse } from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { Flex, Space, Typography, Button, message, Table, Avatar, Popconfirm, Tooltip } from 'antd';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Flex, Space, Typography, Button, message, Table, Image, Popconfirm, Tooltip } from 'antd';
 import type { TableProps } from 'antd';
 import { DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
-import styles from './UserRequest.module.css'
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import moment from 'moment';
 import dateFormat from '../../assistants/date.format';
-
-interface Pin {
-    _id: string;
-    artworkId: number;
-    userId: number;
-    artworkName: string;
-    createTime: Date;
-    tags: string;
-    numOfLike: number;
-    price: string;
-    describe: string;
-    imageUrl: string;
-}
-
-interface ArtworkResponse {
-    data: Pin[];
-}
+import moment from 'moment';
 
 interface User {
     _id: string,
@@ -42,19 +22,19 @@ interface User {
     updatedAt?: string,
 }
 
-export interface UserRequest {
+interface UserRequest {
     _id: string,
     name: string,
-    quantity: number,
     description: string,
     priceEst: number,
     message: string,
     artist: User,
-    createdAt?: string,
-    updatedAt?: string,
+    user: User,
+    createdAt: string,
+    updatedAt: string,
 }
 
-export default function PendingRequest() {
+export default function UserRequestList() {
     const navigate = useNavigate()
     const { Text, Title } = Typography
     const [messageApi, contextHolder] = message.useMessage()
@@ -70,7 +50,7 @@ export default function PendingRequest() {
         })
             .then((res) => {
                 console.log("Current user data: ", res.data)
-                axios.get(`http://localhost:5000/userRequests/user/${res.data.id}`)
+                axios.get(`http://localhost:5000/userRequests/artist/${res.data.id}`)
                     .then((res) => {
                         console.log("User request list: ", res.data)
                         setUserRequestList(res.data)
@@ -87,20 +67,22 @@ export default function PendingRequest() {
 
     const columns: TableProps<UserRequest>['columns'] = [
         {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: 'Artist',
-            dataIndex: 'artist',
-            key: 'artist',
-            render: (_, { artist }) => (
+            title: 'From user',
+            dataIndex: 'user',
+            key: 'user',
+            align: 'center',
+            render: (_, { user }) => (
                 <Flex justify='start' align='center' gap={10} style={{ cursor: 'pointer' }}>
-                    <Avatar src={artist.avatar} alt='' size={50} />
-                    <Text strong onClick={() => navigate(`../../artistList/${artist._id}`)}>{artist.nickname}</Text>
+                    <Image src={user.avatar} alt='' style={{ borderRadius: '50%', width: '50px' }} />
+                    <Text strong onClick={() => navigate(`../../artistList/${user._id}`)}>{user.nickname}</Text>
                 </Flex>
             )
+        },
+        {
+            title: "Artwork request's name",
+            dataIndex: 'name',
+            key: 'name',
+            align: 'center',
         },
         {
             title: 'Estimated price ($)',
@@ -137,9 +119,12 @@ export default function PendingRequest() {
         {
             title: 'Action',
             key: 'action',
-            align: 'center',
             render: (_, { _id }) => (
                 <Space size="middle">
+                    <Button type='primary' style={{ display: 'flex', alignItems: 'center' }}
+                        onClick={() => navigate(`/userRequest/approval/${_id}`)}>
+                        Approve
+                    </Button>
                     <Popconfirm
                         title="Recall this request ?"
                         // description="Are you sure to delete this task?"
@@ -147,7 +132,7 @@ export default function PendingRequest() {
                         onConfirm={() => deleteRequest(_id)}
                     >
                         <Button type='primary' danger style={{ display: 'flex', alignItems: 'center' }}>
-                            Recall
+                            Deny
                         </Button>
                     </Popconfirm>
                 </Space>
@@ -169,7 +154,6 @@ export default function PendingRequest() {
             .then((res) => {
                 console.log("Delete request: ", res.data)
                 setUserRequestList(userRequestList.filter((item: any) => item._id !== id))
-                message.success("Request is recalled successfully.")
             })
             .catch((err) => {
                 console.log(err)
@@ -177,11 +161,8 @@ export default function PendingRequest() {
     }
 
     return (
-        <>
-            {contextHolder}
-            <Table columns={columns} dataSource={userRequestList}
-                pagination={{ hideOnSinglePage: true }}
-                scroll={{ y: 500 }} />
-        </>
+        <Table columns={columns} dataSource={userRequestList}
+            pagination={{ hideOnSinglePage: true }}
+            scroll={{ y: 500, scrollToFirstRowOnChange: true }} />
     )
 }

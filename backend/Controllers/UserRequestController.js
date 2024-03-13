@@ -6,7 +6,7 @@ const UserRequest = require('../Models/userRequest');
 module.exports = {
     getAllUserRequest: async (req, res, next) => {
         try {
-            const results = await UserRequest.find({ status: "false" });
+            const results = await UserRequest.find({ status: "false" }).sort({ 'createdAt': -1 })
             res.send(results);
         } catch (error) {
             console.log(error.message);
@@ -26,7 +26,7 @@ module.exports = {
     findUserRequestById: async (req, res, next) => {
         const id = req.params.id;
         try {
-            const userRequest = await UserRequest.findById(id).populate("user")
+            const userRequest = await UserRequest.findById(id).populate("user").sort({ 'createdAt': -1 })
             if (!userRequest) {
                 throw createError(404, "UserRequest does not exist.");
             }
@@ -44,7 +44,7 @@ module.exports = {
     findUserRequestByUserId: async (req, res, next) => {
         const userId = req.params.id;
         try {
-            const userRequest = await UserRequest.find({ user: userId }).populate('artist')
+            const userRequest = await UserRequest.find({ user: userId, status: false }).populate('artist').sort({ "createdAt": -1 })
             if (!userRequest) {
                 throw createError(404, "UserRequest does not exist.");
             }
@@ -62,7 +62,7 @@ module.exports = {
     findUserRequestByArtistId: async (req, res, next) => {
         const artistId = req.params.id;
         try {
-            const userRequest = await UserRequest.find({ artist: artistId }).populate('user').sort({ "createdAt": -1 })
+            const userRequest = await UserRequest.find({ artist: artistId, status: false }).populate('user').sort({ "createdAt": -1 })
             if (!userRequest) {
                 throw createError(404, "UserRequest does not exist.");
             }
@@ -79,6 +79,26 @@ module.exports = {
 
 
     updateUserRequest: async (req, res, next) => {
+        try {
+            const id = req.params.id;
+            const updates = req.body;
+            const options = { new: true };
+
+            const result = await UserRequest.findByIdAndUpdate(id, updates, options);
+            if (!result) {
+                throw createError(404, "UserRequest does not exist");
+            }
+            res.send(result);
+        } catch (error) {
+            console.log(error.message);
+            if (error instanceof mongoose.CastError) {
+                return next(createError(400, "Invalid UserRequest Id"));
+            }
+            next(error);
+        }
+    },
+
+    updateUserRequestStatus: async (req, res, next) => {
         try {
             const id = req.params.id;
             const updates = req.body;

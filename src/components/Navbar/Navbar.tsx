@@ -70,6 +70,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
       localStorage.removeItem("USER");
       setIsLoadingLogOut(false);
       navigate("/home");
+      navigate(0)
     }, 2000);
   };
 
@@ -211,7 +212,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                 to="/upload"
                 onClick={toggleNav}
               >
-                BECOME AN ARTIST
+                {currentUser.role === 'artist'
+                  ? <>UPLOAD NEW ARTWORK</>
+                  : <>BECOME AN ARTIST</>
+                }
               </Link>
             </li>
             <li>

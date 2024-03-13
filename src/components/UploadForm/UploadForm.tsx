@@ -290,7 +290,7 @@ const UploadImageForm: React.FC = () => {
       Promise.all(promises.filter(Boolean))
         .then(() => {
           message.success("Images posted successfully");
-          // navigate(0); // Redirect to another page after successful submission
+          navigate(0);
         })
         .catch((error) => {
           console.error("Error:", error);
