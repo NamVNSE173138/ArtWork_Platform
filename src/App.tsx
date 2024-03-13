@@ -16,7 +16,7 @@ import RequestRequirements from "./page/VisualizeRequest/RequestRequirements";
 import ArtistProfile from "./page/ArtistProfile";
 import ArtworkRequest from "./page/ArtworkRequest";
 import ProfilePage from "./components/Profile/Profile";
-// import NotificationPage from "./page/NotificationPage/NotificationPage";
+import NotificationPage from "./page/NotificationPage/NotificationPage";
 import CartPage from "./page/Cart/CartPage";
 import VisualizeRequest from "./page/VisualizeRequest/RequestHistory";
 import RequestApproval from "./page/UserRequestOnArtist/RequestApproval";
@@ -48,7 +48,7 @@ function App() {
       <Route path="/artworkRequest" element={<ArtworkRequest />} />
       <Route path="/cart" element={<CartPage />} />
       <Route path="/order/vnpay_return" element={<VnPayPayment />} />
-      {/* <Route path="/notifications" element={<NotificationPage />} /> */}
+      <Route path="/notifications" element={<NotificationPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

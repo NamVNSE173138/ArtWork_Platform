@@ -15,7 +15,7 @@ exports.getNotificationsById = async (req, res) => {
     const { token } = req.headers;
     const userInfo = decodeToken(token);
     const userId = userInfo?.data?.checkEmail?._id;
-    const results = await Notification.find({ artist: userId }).populate('user artwork', 'nickname user');
+    const results = await Notification.find({ artist: userId }).populate('user artwork', 'nickname user avatar');
     if (results) {
       res.send(results);
     }
@@ -40,6 +40,20 @@ exports.createNotification = async (req, res) => {
   }
 };
 
+//TEST
+exports.declineNotification = async (req, res) => {
+  try {
+    const { token } = req.headers;
+    const userInfo = decodeToken(token);
+    const userId = userInfo?.data?.checkEmail?._id;
+    console.log("CURRET: ", userId);
+    const notification = await Notification.create({ user: userId, artist: req.params.id, type: "Decline", status: false });
+    res.status(201).json({ status: 'success', data: notification });
+  } catch (err) {
+    res.status(400).json({ status: 'fail', message: err.message });
+  }
+}
+
 exports.getNotificationsByUser = async (req, res) => {
   try {
     const notifications = await Notification.find({ artist: req.params.userId }).populate('user', 'nickname');
@@ -57,3 +71,12 @@ exports.markNotificationAsRead = async (req, res) => {
     res.status(400).json({ status: 'fail', message: err.message });
   }
 };
+
+exports.deleteNotification = async (req, res) => {
+  try {
+    const notification = await Notification.findByIdAndDelete(req.params.id);
+    res.status(200).json({ status: 'success', data: notification });
+  } catch (err) {
+    res.status(400).json({ status: 'fail', message: err.message });
+  }
+}
