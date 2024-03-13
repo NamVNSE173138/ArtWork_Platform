@@ -19,7 +19,4 @@ router.delete("/:id", artworkController.deleteArtwork);
 
 router.post("/favoriteList/:id", artworkController.likeArtwork);
 
-router.get("/getUserFavoriteList", artworkController.getUserFavoriteList)
-
-
 module.exports = router;
