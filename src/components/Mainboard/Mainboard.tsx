@@ -326,13 +326,13 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
                     icon={<ShoppingCartOutlined />}
                     onClick={() => handleAddToCart(pin._id)}
                   />
-                  <Button
+                  {/* <Button
                     // size="large"
                     className="like-btn"
                     icon={<HeartFilled />}
                     onClick={() => likeArtwork(pin._id)}
                     disabled={isLiked}
-                  />
+                  /> */}
                   <Button
                     // size="large"
                     className="add-btn"

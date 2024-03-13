@@ -9,6 +9,7 @@ import {
   PlusCircleOutlined,
   LikeOutlined,
   LikeFilled,
+  HeartOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
@@ -130,7 +131,7 @@ export default function Artwork() {
   const [commentList, setCommentList] = useState<Comment[]>([]);
   const [newCommentIncoming, setNewCommentIncoming] = useState(false);
 
-  const [isLiked, setIsLiked] = useState(false); // State to track if artwork is liked
+  const [isLiked, setIsLiked] = useState(false);
   const [favoriteList, setFavoriteList] = useState<FavoriteList[]>([]);
 
   const commentForm: FormikProps<Comment> = useFormik<Comment>({
@@ -230,15 +231,61 @@ export default function Artwork() {
       .catch((err) => console.log(err));
   };
 
+  const fetchFavoriteList = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/favoriteList", {
+        headers: {
+          Authorization: userToken,
+        },
+      });
+      console.log("Favorite List:", response.data);
+      // Check if the current artwork is in the user's favorite list
+      const isArtworkLiked = response.data.some(
+        (item: any) => item.artwork?._id === id
+      );
+      setIsLiked(isArtworkLiked);
+    } catch (error: any) {
+      console.error("Error fetching favorite list:", error.message);
+    }
+  };
+
+  // const likeArtwork = async () => {
+  //   try {
+  //     console.log(localStorage.getItem("USER"));
+
+  //     console.log("user", currentUser.id);
+  //     if (!currentUser || !currentUser.id) {
+  //       console.error("Current user data is not available");
+  //       return;
+  //     }
+  //     // Make a POST request to likeArtwork API endpoint
+  //     const response = await axios.post(
+  //       `http://localhost:5000/artworks/favoriteList/${artwork._id}`,
+  //       { user: currentUser.id },
+  //       {
+  //         headers: {
+  //           Authorization: userToken,
+  //         },
+  //       }
+  //     );
+  //     console.log("Response:", response.data);
+  //     if (response.status == 200) {
+  //       console.log("favorite", response.data);
+  //       setIsLiked(true); // Set isLiked state to true after successfully liking the artwork
+  //       setFavoriteList([...favoriteList, artwork]); // Add artwork to favorite list
+  //     }
+  //   } catch (error: any) {
+  //     console.error("Error liking artwork:", error.message);
+  //     // Handle error
+  //   }
+  // };
   const likeArtwork = async () => {
     try {
-      console.log(localStorage.getItem("USER"));
-
-      console.log("user", currentUser.id);
       if (!currentUser || !currentUser.id) {
         console.error("Current user data is not available");
         return;
       }
+
       // Make a POST request to likeArtwork API endpoint
       const response = await axios.post(
         `http://localhost:5000/artworks/favoriteList/${artwork._id}`,
@@ -249,11 +296,19 @@ export default function Artwork() {
           },
         }
       );
+
       console.log("Response:", response.data);
-      if (response.status == 200) {
-        console.log("favorite", response.data);
-        setIsLiked(true); // Set isLiked state to true after successfully liking the artwork
-        setFavoriteList([...favoriteList, artwork]); // Add artwork to favorite list
+
+      if (response.status === 200) {
+        if (isLiked) {
+          const updatedFavoriteList = favoriteList.filter(
+            (item) => item.artwork?._id !== artwork._id
+          );
+          setFavoriteList(updatedFavoriteList);
+        } else {
+          setFavoriteList([...favoriteList, artwork]);
+        }
+        setIsLiked(!isLiked);
       }
     } catch (error: any) {
       console.error("Error liking artwork:", error.message);
@@ -261,9 +316,11 @@ export default function Artwork() {
     }
   };
 
+
   useEffect(() => {
     fetchCurrentUserData();
     fetchArtworkData();
+    fetchFavoriteList();
   }, []);
 
   useEffect(() => {
@@ -473,9 +530,11 @@ export default function Artwork() {
                 <Button
                   size="large"
                   className="like-modal-btn"
-                  icon={<HeartFilled />}
+                  // icon={<HeartFilled />}
+                  icon={isLiked ? <HeartFilled /> : <HeartOutlined />}
+                  // icon={isLiked ? <HeartOutlined /> : <HeartFilled />}
                   onClick={likeArtwork}
-                  disabled={isLiked}
+                // disabled={isLiked}
                 />
                 {artwork.price > 0 ? (
                   <BuyArtwork artwork={artwork._id} user={currentUser.id} />

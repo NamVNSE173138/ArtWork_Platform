@@ -91,18 +91,18 @@ const VnPayPayment: React.FC = () => {
                     return;
                 }
 
-                const queryString = window.location.search;
-                console.log("url", queryString);
+                // const queryString = window.location.search;
+                // console.log("url", queryString);
 
-                const urlParams = new URLSearchParams(queryString);
+                // const urlParams = new URLSearchParams(queryString);
 
-                console.log("vnpurl", queryString);
+                // console.log("vnpurl", queryString);
 
 
-                const amount = urlParams.get('vnp_Amount');
-                const bankName = urlParams.get('vnp_BankCode');
-                const payDate = urlParams.get('vnp_PayDate');
-                const transCode = urlParams.get('vnp_BankTranNo');
+                // const amount = urlParams.get('vnp_Amount');
+                // const bankName = urlParams.get('vnp_BankCode');
+                // const payDate = urlParams.get('vnp_PayDate');
+                // const transCode = urlParams.get('vnp_BankTranNo');
 
                 // const billData = {
                 //     userId,
