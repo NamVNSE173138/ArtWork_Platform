@@ -8,9 +8,11 @@ router.get('/:id', NotificationController.getNotificationsById);
 
 router.post('/', NotificationController.createNotification);
 
-router.put('/:notificationId', NotificationController.markNotificationAsRead);
+router.patch('/:notificationId', NotificationController.markNotificationAsRead);
 
 router.delete('/:id', NotificationController.deleteNotification);
+
+router.post('/request/:id', NotificationController.requestNotification);
 
 router.post('/decline/:id', NotificationController.declineNotification);
 

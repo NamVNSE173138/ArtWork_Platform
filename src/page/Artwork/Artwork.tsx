@@ -32,6 +32,7 @@ import ReportForm from "../../components/ReportForm/ReportForm";
 import BuyArtwork from "../../components/BuyForm/BuyForm";
 import Favorite from "../../components/Favorite/Favorite";
 import * as Yup from "yup";
+import { createFollower, deleteFollower } from "../../api/follow/followAPI";
 
 interface User {
   id: string;
@@ -76,12 +77,20 @@ interface FavoriteList {
   updateAt?: string;
 }
 
+interface FollowList {
+  _id: string;
+  follower: User;
+  following: Artwork;
+  status: boolean;
+}
+
 export default function Artwork() {
   const { Text, Title } = Typography;
   const [messageApi, contextHolder] = message.useMessage();
   const { id } = useParams();
   const userToken = localStorage.getItem("USER");
   const [isLoading, setIsLoading] = useState(false);
+  const [follows, setFollows] = useState<FollowList[]>([]);
 
   const onSearchSubmit = async (term: string) => {
     console.log(term);
@@ -235,6 +244,25 @@ export default function Artwork() {
       .catch((err) => console.log(err));
   };
 
+  const getFollowingList = async (id: any) => {
+    setIsLoading(true);
+    if (currentUser.id) {
+      await axios
+        .get(`http://localhost:5000/follows/following/${id}`, {
+          headers: {
+            token: userToken,
+          },
+        })
+        .then((res: any) => {
+          setFollows(
+            res.data.filter((item: any) => item.following === artwork.user)
+          );
+          setIsLoading(false);
+        })
+        .catch((err: any) => console.log(err));
+    }
+  };
+
   const fetchCommentListData = async () => {
     await axios
       .get(`http://localhost:5000/comments/artwork/${id}`)
@@ -310,12 +338,27 @@ export default function Artwork() {
   useEffect(() => {
     fetchCurrentUserData();
     fetchArtworkData();
+    getFollowingList(currentUser.id);
     fetchFavoriteList();
-  }, []);
+  }, [currentUser.id]);
 
   useEffect(() => {
     fetchCommentListData();
   }, [newCommentIncoming]);
+
+  const handleFollow = () => {
+    createFollower(artwork.user);
+    setTimeout(() => {
+      getFollowingList(currentUser.id);
+    }, 500);
+  };
+
+  const handleUnfollow = () => {
+    deleteFollower(follows[0]._id);
+    setTimeout(() => {
+      getFollowingList(currentUser.id);
+    }, 500);
+  };
 
   return (
     <>
@@ -407,8 +450,19 @@ export default function Artwork() {
                   shape="round"
                   size="large"
                   id={styles.followButton}
+                  onClick={follows.length > 0 ? handleUnfollow : handleFollow}
                 >
-                  <PlusCircleOutlined /> Follow
+                  {follows.length > 0 ? (
+                    <>
+                      <span>Following</span>
+                      {/* <CheckCircleOutlined /> */}
+                    </>
+                  ) : (
+                    <>
+                      <PlusCircleOutlined />
+                      <span>Follow</span>
+                    </>
+                  )}
                 </Button>
               </div>
               <div className={styles.commentSection}>

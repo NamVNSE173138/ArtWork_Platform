@@ -127,7 +127,10 @@ module.exports = {
         // res
         //   .status(400)
         //   .json({ message: "You have already liked this artwork" });
-        const deletedLike = await FavoriteList.findOneAndDelete({ user: userId, artwork: id });
+        const deletedLike = await FavoriteList.findOneAndDelete({
+          user: userId,
+          artwork: id,
+        });
         res.send({ message: "You have unliked this artwork", deletedLike });
       }
     } catch (error) {
@@ -154,6 +157,22 @@ module.exports = {
       const { artistId } = req.params;
       const artworks = await Artwork.find(
         { user: artistId, status: true },
+        { __v: 0 }
+      );
+      res.send(artworks);
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+  getArtworksOfUser: async (req, res, next) => {
+    const { token } = req.headers;
+
+    try {
+      const userInfo = decodeToken(token);
+      const userId = userInfo?.data?.checkEmail?._id;
+      console.log(userId);
+      const artworks = await Artwork.find(
+        { user: userId, status: true },
         { __v: 0 }
       );
       res.send(artworks);

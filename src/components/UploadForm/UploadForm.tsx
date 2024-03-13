@@ -235,20 +235,28 @@ const UploadImageForm: React.FC = () => {
     Array(imageCards.length).fill(false)
   );
   const navigate = useNavigate();
+  const containsOnlyWhitespace = (str: string): boolean => {
+    return str.trim() === "";
+  };
+
   const handleSubmit = () => {
     if (selectedImageIndexes.length === 0) {
       message.error("Please select at least one image to post.");
-      return; // Prevent form submission
+      return;
     }
     const selectedImages = selectedImageIndexes.map(
       (index) => imageCards[index]
     );
     let allImagesValid = true;
     const promises = selectedImages.map((image, index) => {
-      if (!image.name || !image.description) {
+      if (
+        containsOnlyWhitespace(image.name) ||
+        containsOnlyWhitespace(image.description) ||
+        image.tags.some(containsOnlyWhitespace)
+      ) {
         allImagesValid = false; // Set flag to false
         message.error(
-          "Please fill both the name and description for images you choose."
+          "Please ensure that name, description, and tags do not contain only whitespace."
         );
         return null; // Prevent form submission
       }

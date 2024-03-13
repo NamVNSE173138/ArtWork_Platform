@@ -41,12 +41,24 @@ exports.createNotification = async (req, res) => {
 };
 
 //TEST
+exports.requestNotification = async (req, res) => {
+  try {
+    const { token } = req.headers;
+    const userInfo = decodeToken(token);
+    const userId = userInfo?.data?.checkEmail?._id;
+
+    const notification = await Notification.create({ user: userId, artist: req.params.id, type: "Request", status: false });
+    res.status(201).json({ status: 'success', data: notification });
+  } catch (err) {
+    res.status(400).json({ status: 'fail', message: err.message });
+  }
+}
+
 exports.declineNotification = async (req, res) => {
   try {
     const { token } = req.headers;
     const userInfo = decodeToken(token);
     const userId = userInfo?.data?.checkEmail?._id;
-    console.log("CURRET: ", userId);
     const notification = await Notification.create({ user: userId, artist: req.params.id, type: "Decline", status: false });
     res.status(201).json({ status: 'success', data: notification });
   } catch (err) {

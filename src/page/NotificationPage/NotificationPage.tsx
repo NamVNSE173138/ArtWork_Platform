@@ -110,8 +110,6 @@ const Notification = () => {
     fetchData();
   }, [currentUser.id]);
 
-  console.log("NOTIFY: ", currentUser);
-
   const handleNothing = () => {};
 
   function Notification({
@@ -121,9 +119,42 @@ const Notification = () => {
     notification: NotificationProps;
     description: string;
   }) {
+    const navigateToArtwork = () => {
+      navigate(`/artwork/${notification.artwork?._id}`);
+    };
+
+    const navigateRequest = () => {
+      navigate("/profile/requests");
+    };
+
+    const navigateToBuy = () => {
+      navigate(`/home`);
+    };
+
+    let onClickAction: any;
+
+    switch (notification.type) {
+      case "Like":
+        onClickAction = navigateToArtwork;
+        break;
+      case "Request":
+        onClickAction = navigateRequest;
+        break;
+      case "Buy":
+        onClickAction = navigateToBuy;
+        break;
+      default:
+        onClickAction = () => {}; // Default action if type is unknown
+        break;
+    }
     return (
       <div
         className="flex items-center gap-4 border p-4 rounded"
+        style={{
+          width: "1000px",
+          margin: "10px 0px 0px 250px",
+          backgroundColor: notification.status ? "white" : "#f0f0f0",
+        }}
         key={notification._id}
       >
         <div>
@@ -149,9 +180,10 @@ const Notification = () => {
             if (notification.status === false) {
               markNotificationAsRead(notification._id);
             } else {
-              console.log("DAD: ", notification);
+              console.log("DAD: ", notification._id);
             }
             // navigate(`/artwork/${notification.artwork?._id}`);
+            onClickAction();
           }}
         >
           {notification.status ? "View" : "Read"}
@@ -172,34 +204,40 @@ const Notification = () => {
       <div className="notification-container">
         <h1 className="text-center text-4xl font-bold mb-12">Notifications</h1>
         <div className="flex flex-col gap-8 max-w-xl mx-auto">
-          {notifications.map((notification: any) => {
-            let description = "";
+          {notifications
+            .sort(
+              (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            )
+            .map((notification: any) => {
+              let description = "";
 
-            switch (notification.type) {
-              case "Like":
-                description = " liked your post!";
-                break;
-              case "Buy":
-                description = " want to buy your artwork.";
-                break;
-              case "Request":
-                description = " want to hire you.";
-                break;
-              case "Decline":
-                description = " has declined your request.";
-                break;
-              default:
-                break;
-            }
+              switch (notification.type) {
+                case "Like":
+                  description = " liked your post!";
+                  break;
+                case "Buy":
+                  description = " want to buy your artwork.";
+                  break;
+                case "Request":
+                  description = " want to hire you.";
+                  break;
+                case "Decline":
+                  description = " has declined your request.";
+                  break;
+                default:
+                  break;
+              }
 
-            return (
-              <Notification
-                key={notification._id}
-                description={description}
-                notification={notification}
-              />
-            );
-          })}
+              return (
+                <Notification
+                  key={notification._id}
+                  description={description}
+                  notification={notification}
+                />
+              );
+            })}
 
           {notifications === undefined && (
             <div className="animate-pulse flex flex-col gap-8">
