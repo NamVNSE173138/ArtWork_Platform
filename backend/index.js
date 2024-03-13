@@ -24,6 +24,9 @@ app.use('/reports', ReportRoute);
 const NotificationRoute = require('./Routes/Notification.route.js');
 app.use('/notifications', NotificationRoute);
 
+const FollowRoute = require('./Routes/Follow.route.js');
+app.use('/follows', FollowRoute);
+
 const CommentRoute = require('./Routes/Comment.route.js')
 app.use('/comments', CommentRoute)
 

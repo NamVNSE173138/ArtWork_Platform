@@ -59,7 +59,26 @@ export const deleteNotification = (id) => {
     })
 }
 
-//TEST
+export const requestNotification = (id) => {
+  return fetch(`http://localhost:5000/notifications/request/${id}`, {
+    method: 'POST',
+    headers: {
+      token: userToken,
+    },
+  }).then(res => {
+    if (!res.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return res.json();
+  })
+    .then(responseData => {
+      console.log("Create successful", responseData);
+    })
+    .catch(error => {
+      console.error('There was a problem with the createReport request:', error);
+    });
+}
+
 export const declineNotification = (id) => {
   return fetch(`http://localhost:5000/notifications/decline/${id}`, {
     method: 'POST',
