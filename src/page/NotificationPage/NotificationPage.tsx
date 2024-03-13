@@ -124,6 +124,11 @@ const Notification = () => {
     return (
       <div
         className="flex items-center gap-4 border p-4 rounded"
+        style={{
+          width: "1000px",
+          margin: "10px 0px 0px 250px",
+          backgroundColor: notification.status ? "white" : "#f0f0f0",
+        }}
         key={notification._id}
       >
         <div>
@@ -149,9 +154,9 @@ const Notification = () => {
             if (notification.status === false) {
               markNotificationAsRead(notification._id);
             } else {
-              console.log("DAD: ", notification);
+              console.log("DAD: ", notification._id);
             }
-            // navigate(`/artwork/${notification.artwork?._id}`);
+            navigate(`/artwork/${notification.artwork?._id}`);
           }}
         >
           {notification.status ? "View" : "Read"}
