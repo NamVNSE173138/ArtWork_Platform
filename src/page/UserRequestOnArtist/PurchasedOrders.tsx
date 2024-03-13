@@ -65,6 +65,7 @@ export default function PurchasedOrders() {
     const { Text, Title } = Typography
     const [messageApi, contextHolder] = message.useMessage()
 
+    const [currentUser, setCurrentUser] = useState<any>({})
     const [purchasedOrderList, setPurchasedOrderList] = useState([])
 
     const userToken = localStorage.getItem("USER")
@@ -75,10 +76,16 @@ export default function PurchasedOrders() {
             },
         })
             .then((res) => {
-                console.log("Current user data: ", res.data)
-                axios.get(`http://localhost:5000/artistRequests/artist/purchased/${res.data.id}`)
+                axios.get(`http://localhost:5000/users/${res.data.id}`)
                     .then((res) => {
-                        setPurchasedOrderList(res.data)
+                        console.log("Current user data fetched: ", res.data)
+                        console.log("Balance: ", res.data.balance)
+                        setCurrentUser(res.data)
+                        axios.get(`http://localhost:5000/artistRequests/artist/purchased/${res.data._id}`)
+                            .then((res) => {
+                                setPurchasedOrderList(res.data)
+                            })
+                            .catch((err) => console.log(err))
                     })
                     .catch((err) => console.log(err))
             })
@@ -91,23 +98,34 @@ export default function PurchasedOrders() {
     }, [])
 
     const handleEarn = async (id: string) => {
-        await axios.get(`http://localhost:5000/artistRequests/${id}`)
-            .then((res) => {
-                messageApi
-                    .open({
-                        type: 'loading',
-                        content: '',
-                        duration: 1,
+        messageApi
+            .open({
+                type: 'loading',
+                content: '',
+                duration: 1,
+            })
+            .then(async () => {
+                await axios.get(`http://localhost:5000/artistRequests/${id}`)
+                    .then((res) => {
+                        axios.patch(`http://localhost:5000/users/${currentUser._id}`, {
+                            balance: (currentUser.balance > 0) ? (currentUser.balance + res.data.price) : res.data.price
+                        })
+                            .then((res) => {
+                                console.log("Update user's balance: ", res.data)
+                            })
+                            .catch((err) => console.log(err))
+                        message.success(`You have earned ${res.data.price} $. Double-check your balance !`, 5)
+
                     })
-                    .then(() => message.success(`You have earned ${res.data.price} $. Double-check your balance !`, 5))
+                    .catch((err) => console.log(err))
+
+                await axios.delete(`http://localhost:5000/artistRequests/${id}`)
+                    .then((res) => {
+                        console.log("Deleted artist request: ", res.data)
+                        fetchPurchasedOrderList()
+                    })
+                    .catch((err) => console.log(err))
             })
-            .catch((err) => console.log(err))
-        await axios.delete(`http://localhost:5000/artistRequests/${id}`)
-            .then((res) => {
-                console.log("Deleted artist request: ", res.data)
-                fetchPurchasedOrderList()
-            })
-            .catch((err) => console.log(err))
     }
 
     const columns: TableProps<ArtistRequest>['columns'] = [

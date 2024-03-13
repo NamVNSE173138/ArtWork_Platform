@@ -177,7 +177,8 @@ module.exports = {
         nickname: userInfo?.data?.checkEmail?.nickname,
         avatar: userInfo?.data?.checkEmail?.avatar,
         role: userInfo?.data?.checkEmail?.role,
-        numOfFollower: userInfo?.data?.checkEmail?.numOfFollower
+        numOfFollower: userInfo?.data?.checkEmail?.numOfFollower,
+        balance: userInfo?.data?.checkEmail?.balance
       }
       // console.log(data)
       if (!userInfo) {

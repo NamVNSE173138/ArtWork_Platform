@@ -23,6 +23,8 @@ import RequestApproval from "./page/UserRequestOnArtist/RequestApproval";
 import UserRequestOnArtist from "./page/UserRequestOnArtist/UserRequestOnArtist";
 import VnPayPayment from "./components/VNPay/VnPayPayment";
 import NotFound from "./page/404";
+import OrderStatus from "./page/Order/OrderStatus";
+import Order from "./page/Order/Order";
 
 function App() {
   return (
@@ -47,6 +49,8 @@ function App() {
       <Route path="/artistList/:_id" element={<ArtistProfile />} />
       <Route path="/artworkRequest" element={<ArtworkRequest />} />
       <Route path="/cart" element={<CartPage />} />
+      <Route path="/order" element={<Order />} />
+      <Route path="/order/status" element={<OrderStatus />} />
       <Route path="/order/vnpay_return" element={<VnPayPayment />} />
       <Route path="/notifications" element={<NotificationPage />} />
       <Route path="*" element={<NotFound />} />

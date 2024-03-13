@@ -10,6 +10,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import moment from 'moment';
 import dateFormat from '../../assistants/date.format';
+import { generateCode } from '../../assistants/Generators';
 
 interface Artwork {
     _id: string;
@@ -95,32 +96,38 @@ export default function ArtistResponse() {
     }, [])
 
     const onGet = async (id: string) => {
-        console.log("ID: ", id)
+        const code = generateCode(10, '')
         await axios.get(`http://localhost:5000/artistRequests/${id}`)
             .then((res) => {
-                // axios.post('http://localhost:5000/checkouts/create_payment_url', {
-                //     amount: res.data.price,
-                // })
-                //     .then((res) => {
-                //         console.log("PAYMENT URL: ", res.data)
-                //         window.location.href = res.data
-                //     })
-                //     .catch((err) => console.log(err))
+                console.log("Data: ", res.data)
+                axios.post('http://localhost:5000/orders', {
+                    amount: res.data.price,
+                    user: res.data.user,
+                    artwork: res.data.artwork._id,
+                    code: code,
+                    status: false,
+                })
+                    .then((res) => {
+                        console.log(res.data)
+                        return;
+                    })
+                    .catch((err) => console.log(err.message))
+
+                axios.post('http://localhost:5000/checkouts/create_payment_url', {
+                    amount: res.data.price,
+                    code: code,
+                })
+                    .then((res) => {
+                        window.location.href = res.data
+                    })
+                    .catch((err) => console.log("Payment url create error: ", err.message))
 
                 //SUCCESSFULLY PURCHASED VIA VNPAY
                 axios.patch(`http://localhost:5000/artistRequests/status/${id}`, {
                     status: true,
                 })
                     .then((res) => {
-                        console.log("Update artist request status", res.data)
                         fetchArtistResponse()
-                        messageApi
-                            .open({
-                                type: 'loading',
-                                content: 'Loading...',
-                                duration: 1,
-                            })
-                            .then(() => message.success('Purchased successfully. The artwork has been added to your own gallery', 2.5))
                     })
                     .catch((err) => console.log(err))
             })

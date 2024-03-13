@@ -32,6 +32,11 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
+  balance: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
   status: {
     type: Boolean,
     required: true

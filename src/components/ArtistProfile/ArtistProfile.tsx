@@ -1,4 +1,3 @@
-// ArtistProfile.tsx
 import React, { useEffect, useState } from "react";
 import {
   Row,
@@ -6,11 +5,11 @@ import {
   Card,
   Avatar,
   Button,
-  Tabs,
   Modal,
   Form,
   Input,
   message,
+  List,
 } from "antd";
 import {
   EditOutlined,
@@ -18,25 +17,18 @@ import {
   ShareAltOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import type { TabsProps } from "antd";
 import "./ArtistProfile.css"; // Create this stylesheet for additional styling if needed
-import Contributed from "../ContributedArtwork/ContributedArtwork";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Box } from "@mui/material";
 import Masonry from "@mui/lab/Masonry";
 import LazyLoad from "react-lazyload";
+import InfiniteScroll from "react-infinite-scroll-component";
+
 const { Meta } = Card;
-const items: TabsProps["items"] = [
-  {
-    key: "2",
-    label: "Contributed Artwork",
-    children: "Content of Tab Pane 2",
-  },
-];
+
 const ArtistProfile: React.FC = () => {
   const { _id } = useParams();
-  console.log(_id);
 
   const [artist, setArtist] = useState<any>(null);
   const [artworks, setArtworks] = useState<any[]>([]);
@@ -68,7 +60,7 @@ const ArtistProfile: React.FC = () => {
     const fetchArtworks = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/artworks?user=${_id}`
+          `http://localhost:5000/artworks/artworkOf/${_id}`
         );
         setArtworks(response.data);
         console.log(response.data);
@@ -80,12 +72,31 @@ const ArtistProfile: React.FC = () => {
     fetchUser();
     fetchArtworks();
   }, [_id]);
+  console.log(artworks);
 
+  // const [artistArtwork, setArtistArtwork] = useState(artworks.slice(0, 30));
+  // console.log(artistArtwork);
+
+  // const [hasMore, setHasMore] = useState(true);
+  // const fetchMoreData = () => {
+  //   if (artistArtwork.length >= artworks.length) {
+  //     setHasMore(false);
+  //     return;
+  //   }
+  //   setTimeout(() => {
+  //     setArtistArtwork(
+  //       artistArtwork.concat(
+  //         artworks.slice(artistArtwork.length, artistArtwork.length + 20)
+  //       )
+  //     );
+  //   }, 1000);
+  // };
+  const navigate = useNavigate();
   return (
-    <div className="profile-container">
+    <div className="profile-artist-container">
       <Row gutter={16}>
         <Col span={24}>
-          <div className="profile-content">
+          <div className="profile-artist-content">
             <Card>
               <Meta
                 avatar={<Avatar src={artist && artist.avatar} />}
@@ -119,47 +130,26 @@ const ArtistProfile: React.FC = () => {
           </div>
         </Col>
       </Row>
-      <Row gutter={16} style={{ marginTop: 20 }}>
-        <Col span={24}>
-          <Tabs defaultActiveKey="1" size="large" type="card">
-            <Tabs.TabPane tab="Contributed Artwork" key="1" className="hi">
-              {/* {artworks.map(
-                (artwork,index) =>
-                  // Move the curly brace to the beginning of the JSX expression
-                  artwork.user === _id && (
-                    <img alt={artwork.name} src={artwork.imageUrl} />
-                  )
-              )} */}
-              <Box sx={{ width: 1000, minHeight: 829 }}>
-                <Masonry columns={5} spacing={2}>
-                  {artworks.map(
-                    (artwork, index) =>
-                      artwork.user === _id && (
-                        <div key={index}>
-                          <LazyLoad once>
-                            <Link to={`/artwork/${artwork._id}`}>
-                              <img
-                                // srcSet={`${item.img}?w=162&auto=format&dpr=2 2x`}
-                                src={`${artwork.imageUrl}?w=162&auto=format`}
-                                alt={artwork.name}
-                                loading="lazy"
-                                style={{
-                                  borderRadius: "15px",
-                                  display: "block",
-                                  width: "100%",
-                                }}
-                              />
-                            </Link>
-                          </LazyLoad>
-                        </div>
-                      )
-                  )}
-                </Masonry>
-              </Box>
-            </Tabs.TabPane>
-          </Tabs>
-        </Col>
-      </Row>
+      <List
+        grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 2, xl: 3, xxl: 3 }}
+        className="artwork-artist-list"
+        itemLayout="vertical"
+        size="large"
+        pagination={{ pageSize: 6 }}
+        dataSource={artworks}
+        renderItem={(item: any) => (
+          <List.Item key={item._id}>
+            <Card style={{ width: "100%" }} actions={[]}>
+              <img
+                alt={item.name}
+                src={item.imageUrl}
+                className="list-image"
+                onClick={() => navigate(`/artwork/${item._id}`)}
+              />
+            </Card>
+          </List.Item>
+        )}
+      />
     </div>
   );
 };
