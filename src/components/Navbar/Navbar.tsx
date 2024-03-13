@@ -18,8 +18,7 @@ import {
   BellOutlined,
   LoadingOutlined,
   LogoutOutlined,
-  MenuOutlined,
-  SearchOutlined,
+  FileDoneOutlined,
   ShoppingCartOutlined,
   SolutionOutlined,
   SyncOutlined,
@@ -87,15 +86,11 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   };
 
   const items: MenuProps["items"] = [
-    // {
-    //   label: <div style={{ height: "10px" }}></div>,
-    //   key: 0,
-    // },
     {
       label: (
         <Link id="profile" className="dropdown-item" to={`/profile`}>
-          <UserOutlined style={{ fontSize: "20px", marginRight: "5px" }} /> View
-          Profile
+          <UserOutlined style={{ fontSize: "20px", marginRight: "5px" }} />
+          View profile
         </Link>
       ),
       key: 1,
@@ -106,7 +101,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
           <ShoppingCartOutlined
             style={{ fontSize: "20px", marginRight: "5px" }}
           />{" "}
-          View Cart
+          View cart
         </Link>
       ),
       key: 2,
@@ -115,16 +110,16 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
       label: (
         <Link id="profile" className="dropdown-item" to={`/request/history`}>
           <SolutionOutlined style={{ fontSize: "20px", marginRight: "5px" }} />{" "}
-          Request History
+          Request history
         </Link>
       ),
       key: 3,
     },
     {
       label: (
-        <Link id="profile" className="dropdown-item" to={`/notifications`}>
-          <BellOutlined style={{ fontSize: "20px", marginRight: "5px" }} /> View
-          Notification
+        <Link id="profile" className="dropdown-item" to={`/order`}>
+          <FileDoneOutlined style={{ fontSize: "20px", marginRight: "5px" }} />
+          Order history
         </Link>
       ),
       key: 4,
@@ -133,7 +128,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
       label: (
         <Link id="profile" className="dropdown-item" to={`/forgot`}>
           <SyncOutlined style={{ fontSize: "20px", marginRight: "5px" }} />{" "}
-          Change Password
+          Change password
         </Link>
       ),
       key: 5,
@@ -162,6 +157,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     console.log("Search value:", value);
     // Call the onSubmit prop passed from the parent component
     onSubmit(value);
+    navigate("/home");
   };
 
   const handleSearch = (value: string) => {
@@ -194,7 +190,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
         },
       })
       .then((res) => {
-        console.log("Current user: ", res.data);
+        // console.log("Current user: ", res.data);
         setCurrentUser(res.data);
         setIsLoading(false);
       })
@@ -227,7 +223,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   }, [currentUser.id]);
 
   useEffect(() => {
-    console.log("Current user: ", currentUser);
+    // console.log("Current user: ", currentUser);
   }, [currentUser]);
 
   return (

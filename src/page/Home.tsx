@@ -4,18 +4,20 @@ import Navbar from "../components/Navbar/Navbar";
 import Mainboard from "../components/Mainboard/Mainboard";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import { PinProps } from "../components/Mainboard/Pin";
+import { log } from "console";
 
 interface Pin {
   _id: string;
-  artworkId: number;
-  userId: number;
-  artworkName: string;
-  createTime: Date;
-  tags: string;
+  user: string;
+  name: string;
+  tags: [string];
   numOfLike: number;
-  price: string;
-  describe: string;
+  price: number;
+  description: string;
   imageUrl: string;
+  createAt: Date;
+  updatedAt: Date;
 }
 
 interface ArtworkResponse {
@@ -23,25 +25,22 @@ interface ArtworkResponse {
 }
 
 const Home: React.FC = () => {
-  const [pins, setPins] = useState<Pin[]>([]);
+  const [pins, setPins] = useState<PinProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [image, setImage] = useState([]);
-  useEffect(() => {
-    fetch("http://localhost:5000/artworks")
-      .then((response) => response.json())
-      .then((res) => {
-        setImage(res);
-        console.log(res);
-      });
-  }, []);
-  // console.log(image);
 
-  const getImages = async () => {
+  const getImages = async (term?: string) => {
     try {
       const response = await axios.get<ArtworkResponse>(
-        "http://localhost:5000/artworks"
+        `http://localhost:5000/artworks${term ? `?search=${term}` : ""}`
       );
+      console.log(response);
+
       console.log("Data: ", response.data);
+
+      if (!response.data) {
+        console.log("No data available");
+        return [];
+      }
 
       return response.data;
     } catch (error) {
@@ -51,11 +50,14 @@ const Home: React.FC = () => {
   };
 
   const onSearchSubmit = async (term: string) => {
+    console.log("Search term from Navbar:", term);
+
     setLoading(true);
 
     try {
-      const res = await getImages();
-      const newPins = Array.isArray(res.data) ? res.data : [];
+      const res = await getImages(term);
+
+      const newPins = Array.isArray(res) ? res : [];
 
       newPins.sort(() => 0.5 - Math.random());
       setPins(newPins);
@@ -72,8 +74,7 @@ const Home: React.FC = () => {
     try {
       const res = await getImages();
 
-      // Check if res.data is defined and is an array before sorting
-      const pinData = Array.isArray(res.data) ? res.data : [];
+      const pinData = Array.isArray(res) ? res : [];
 
       setPins(pinData);
     } catch (error) {
@@ -87,14 +88,13 @@ const Home: React.FC = () => {
     getNewPins();
   }, []);
 
-  useEffect(() => {}, [pins]);
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />
       {loading ? (
         <Spin indicator={<LoadingOutlined style={{ fontSize: 60 }} spin />} />
       ) : (
-        <Mainboard pins={image} />
+        <Mainboard pins={pins} />
       )}
     </>
   );

@@ -6,9 +6,13 @@ router.get("/", OrderController.getAllOrders);
 
 router.get("/:id", OrderController.getOrderById);
 
+router.get("/user/:id", OrderController.getOrderByUserId);
+
 router.post("/", OrderController.postNewOrder);
 
-router.put("/:id", OrderController.updateOrder);
+router.patch("/:id", OrderController.updateOrder);
+
+router.patch("/code/:code", OrderController.updateOrderByCode);
 
 router.delete("/:id", OrderController.deleteOrder);
 

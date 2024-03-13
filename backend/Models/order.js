@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const OrderSchema = new Schema({
+  amount: {
+    type: Number,
+    required: true,
+  },
   user: {
     type: Schema.Types.ObjectId,
     ref: 'users',
@@ -10,19 +14,17 @@ const OrderSchema = new Schema({
   artwork: {
     type: Schema.Types.ObjectId,
     ref: 'artworks',
-  },
-  amount: {
-    type: Number,
     required: true,
   },
-  bankName: {
+  code: {
     type: String,
-    required: false,
+    required: true,
   },
-  transCode: {
-    type: String,
-    required: false,
-  },
+  status: {
+    type: Boolean,
+    required: true,
+    default: false
+  }
 }, {
   timestamps: true
 })
