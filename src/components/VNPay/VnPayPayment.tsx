@@ -62,25 +62,26 @@ const VnPayPayment: React.FC = () => {
     useEffect(() => {
         const saveBillTransaction = async () => {
             try {
-
                 console.log("token to vnpay in client", userToken);
 
                 console.log("user", currentUser.id);
                 if (!currentUser || !currentUser.id) {
                     console.error("Current user data is not available");
-                    return;
+                    // return;
                 }
 
                 const queryString = window.location.search;
                 const urlParams = new URLSearchParams(queryString);
 
-                console.log("vnpurl", queryString);
+                console.log("vnp url", queryString);
 
 
                 const amount = urlParams.get('vnp_Amount');
                 const bankName = urlParams.get('vnp_BankCode');
                 const payDate = urlParams.get('vnp_PayDate');
                 const transCode = urlParams.get('vnp_BankTranNo');
+
+                console.log("Amount: ", amount)
 
                 // const billData = {
                 //     userId,

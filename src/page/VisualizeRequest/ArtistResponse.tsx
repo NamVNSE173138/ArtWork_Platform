@@ -108,7 +108,6 @@ export default function ArtistResponse() {
                     .catch((err) => console.log("Payment url create error: ", err.message))
 
 
-
                 //SUCCESSFULLY PURCHASED VIA VNPAY
                 // axios.patch(`http://localhost:5000/artistRequests/status/${id}`, {
                 //     status: true,

@@ -83,7 +83,7 @@ module.exports = {
         let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
         vnp_Params['vnp_SecureHash'] = signed;
         vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
-        console.log("vnurl", vnpUrl);
+        console.log("vnpUrl", vnpUrl);
         res.send(vnpUrl)
     },
 
@@ -93,6 +93,7 @@ module.exports = {
         console.log("token to vnpay", token);
         try {
             const userInfo = decodeToken(token);
+            console.log("Decoded VNPay token: ", userInfo)
             const userId = userInfo?.data?.checkEmail?._id
 
             const queryString = req.url.split('?')[1];
