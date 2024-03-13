@@ -70,15 +70,11 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
       localStorage.removeItem("USER");
       setIsLoadingLogOut(false);
       navigate("/home");
-      navigate(0)
+      navigate(0);
     }, 2000);
   };
 
   const items: MenuProps["items"] = [
-    // {
-    //   label: <div style={{ height: "10px" }}></div>,
-    //   key: 0,
-    // },
     {
       label: (
         <Link id="profile" className="dropdown-item" to={`/profile`}>
@@ -141,6 +137,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     console.log("Search value:", value);
     // Call the onSubmit prop passed from the parent component
     onSubmit(value);
+    navigate("/home");
   };
 
   const handleSearch = (value: string) => {
@@ -173,7 +170,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
         },
       })
       .then((res) => {
-        console.log("Current user: ", res.data);
+        // console.log("Current user: ", res.data);
         setCurrentUser(res.data);
         setIsLoading(false);
       })
@@ -185,7 +182,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   }, []);
 
   useEffect(() => {
-    console.log("Current user: ", currentUser);
+    // console.log("Current user: ", currentUser);
   }, [currentUser]);
 
   return (
@@ -212,10 +209,11 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                 to="/upload"
                 onClick={toggleNav}
               >
-                {currentUser.role === 'artist'
-                  ? <>UPLOAD NEW ARTWORK</>
-                  : <>BECOME AN ARTIST</>
-                }
+                {currentUser.role === "artist" ? (
+                  <>UPLOAD NEW ARTWORK</>
+                ) : (
+                  <>BECOME AN ARTIST</>
+                )}
               </Link>
             </li>
             <li>

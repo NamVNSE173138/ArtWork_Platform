@@ -6,13 +6,28 @@ const { decodeToken } = require("../Config/config.js");
 module.exports = {
   getAllArtwork: async (req, res, next) => {
     try {
-      const results = await Artwork.find({ status: true }, { __v: 0 });
+      const { search } = req.query;
+      const { user } = req.query;
+      const condition = search
+        ? {
+            status: true,
+            $or: [
+              { name: { $regex: new RegExp(search), $options: "i" } },
+              { tags: { $regex: new RegExp(search), $options: "i" } },
+              { description: { $regex: new RegExp(search), $options: "i" } },
+            ],
+          }
+        : {
+            user: user, // Filter by user ID
+            status: true,
+          };
+
+      const results = await Artwork.find(condition, { __v: 0 });
       res.send(results);
     } catch (error) {
       console.log(error.message);
     }
   },
-
   getPrivateArtwork: async (req, res, next) => {
     try {
       const results = await Artwork.find({ status: false }, { __v: 0 });
@@ -94,12 +109,14 @@ module.exports = {
     const token = req.headers.authorization;
     console.log("token", token);
     try {
-
       const userInfo = decodeToken(token);
-      const userId = userInfo?.data?.checkEmail?._id
+      const userId = userInfo?.data?.checkEmail?._id;
       console.log("USID", userId);
 
-      const checkLikeExist = await FavoriteList.findOne({ artwork: id, user: userId })
+      const checkLikeExist = await FavoriteList.findOne({
+        artwork: id,
+        user: userId,
+      });
 
       if (!checkLikeExist) {
         const favoriteList = new FavoriteList({ user: userId, artwork: id });

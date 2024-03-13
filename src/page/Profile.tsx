@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
+import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
 import ProfilePage from "../components/Profile/Profile";
 import { useParams } from "react-router-dom";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 interface Pin {
   _id: string;
@@ -33,31 +35,40 @@ interface ArtworkResponse {
 }
 
 const SignupForm: React.FC = () => {
-  const userToken = localStorage.getItem("USER")
+  const userToken = localStorage.getItem("USER");
   const [pins, setPins] = useState<Pin[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const getImages = async () => {
+
+  const getImages = async (term?: string) => {
     try {
       const response = await axios.get<ArtworkResponse>(
-        "http://localhost:5000/artworks "
+        `http://localhost:5000/artworks${term ? `?search=${term}` : ""}`
       );
-      console.log("Image:", response.data);
+      console.log(response);
+
+      console.log("Data: ", response.data);
+
+      if (!response.data) {
+        console.log("No data available");
+        return [];
+      }
 
       return response.data;
     } catch (error) {
       console.error("Error fetching artwork:", error);
-      throw error; // Propagate the error
+      throw error;
     }
   };
 
   const onSearchSubmit = async (term: string) => {
+    console.log("Search term from Navbar:", term);
+
     setLoading(true);
 
     try {
-      const res = await getImages();
-      const newPins = Array.isArray(res.data)
-        ? [...res.data, ...pins]
-        : [...pins];
+      const res = await getImages(term);
+
+      const newPins = Array.isArray(res) ? res : [];
 
       newPins.sort(() => 0.5 - Math.random());
       setPins(newPins);
@@ -74,10 +85,7 @@ const SignupForm: React.FC = () => {
     try {
       const res = await getImages();
 
-      // Check if res.data is defined and is an array before sorting
-      const pinData = Array.isArray(res.data)
-        ? res.data.sort(() => 0.5 - Math.random())
-        : [];
+      const pinData = Array.isArray(res) ? res : [];
 
       setPins(pinData);
     } catch (error) {
@@ -89,16 +97,20 @@ const SignupForm: React.FC = () => {
   useEffect(() => {
     getNewPins();
     if (userToken) {
-      console.log("Decoded token: ", userToken)
+      console.log("Decoded token: ", userToken);
     } else {
-      console.log("No token found")
+      console.log("No token found");
     }
   }, []);
 
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />
-      <ProfilePage />
+      {loading ? (
+        <Spin indicator={<LoadingOutlined style={{ fontSize: 60 }} spin />} />
+      ) : (
+        <ProfilePage />
+      )}
     </>
   );
 };
