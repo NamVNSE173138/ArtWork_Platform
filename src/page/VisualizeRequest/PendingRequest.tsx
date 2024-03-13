@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import axios, { AxiosResponse } from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Flex, Space, Typography, Button, message, Table, Avatar, Popconfirm } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { Flex, Space, Typography, Button, message, Table, Avatar, Popconfirm, Tooltip } from 'antd';
 import type { TableProps } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import styles from './UserRequest.module.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -60,9 +60,9 @@ export default function PendingRequest() {
     const [messageApi, contextHolder] = message.useMessage()
 
     const userToken = localStorage.getItem("USER")
-    const [userRequestList, setUserRequestList] = useState([])
+    const [pendingRequestList, setPendingRequestList] = useState([])
 
-    const fetchUserRequest = async () => {
+    const fetchPendingRequest = async () => {
         await axios.get(`http://localhost:5000/users/getUserInfo`, {
             headers: {
                 token: userToken, //userToken = localStorage("USER")
@@ -73,7 +73,7 @@ export default function PendingRequest() {
                 axios.get(`http://localhost:5000/userRequests/user/${res.data.id}`)
                     .then((res) => {
                         console.log("User request list: ", res.data)
-                        setUserRequestList(res.data)
+                        setPendingRequestList(res.data)
                     })
                     .catch((err) => console.log(err))
             })
@@ -82,7 +82,7 @@ export default function PendingRequest() {
     };
 
     useEffect(() => {
-        fetchUserRequest()
+        fetchPendingRequest()
     }, [])
 
     const columns: TableProps<UserRequest>['columns'] = [
@@ -103,29 +103,28 @@ export default function PendingRequest() {
             )
         },
         {
-            title: 'Quantity',
-            dataIndex: 'quantity',
-            key: 'quantity',
-        },
-        {
-            title: 'Estimated price',
+            title: 'Estimated price ($)',
             dataIndex: 'priceEst',
             key: 'priceEst',
+            align: 'center',
         },
         {
             title: 'Description',
             dataIndex: 'description',
             key: 'description',
+            align: 'center',
         },
         {
             title: 'Message',
             dataIndex: 'message',
             key: 'message',
+            align: 'center',
         },
         {
-            title: 'Sent at',
+            title: 'Sent',
             dataIndex: 'createdAt',
             key: 'createdAt',
+            align: 'center',
             render: (_, { createdAt }) => (
                 <Space size="middle">
                     <Flex vertical>
@@ -138,6 +137,7 @@ export default function PendingRequest() {
         {
             title: 'Action',
             key: 'action',
+            align: 'center',
             render: (_, { _id }) => (
                 <Space size="middle">
                     <Popconfirm
@@ -153,14 +153,23 @@ export default function PendingRequest() {
                 </Space>
             ),
         },
+        {
+            title:
+                <Tooltip title='Reload' overlayInnerStyle={{ backgroundColor: '#FFF', color: '#000' }}>
+                    <Button onClick={() => fetchPendingRequest()} style={{ display: 'flex', alignItems: 'center' }}>
+                        <ReloadOutlined />
+                    </Button>
+                </Tooltip>,
+            width: '70px'
+        }
     ]
 
     const deleteRequest = async (id: string) => {
         await axios.delete(`http://localhost:5000/userRequests/${id}`)
             .then((res) => {
                 console.log("Delete request: ", res.data)
-                setUserRequestList(userRequestList.filter((item: any) => item._id !== id))
-                message.success("Request is recalled successfully.")
+                setPendingRequestList(pendingRequestList.filter((item: any) => item._id !== id))
+                message.info("Request recalled.", 5)
             })
             .catch((err) => {
                 console.log(err)
@@ -170,7 +179,7 @@ export default function PendingRequest() {
     return (
         <>
             {contextHolder}
-            <Table columns={columns} dataSource={userRequestList}
+            <Table columns={columns} dataSource={pendingRequestList}
                 pagination={{ hideOnSinglePage: true }}
                 scroll={{ y: 500 }} />
         </>

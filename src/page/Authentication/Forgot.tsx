@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'react-toastify/dist/ReactToastify.css';
 import styles from "./Authentication.module.css"
-import { Button, Image, Divider, Modal } from 'antd';
+import { Button, Image, Modal } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons'
 import { useNavigate } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
@@ -196,7 +196,7 @@ export default function Forgot() {
                         <span className={styles.modalButtonGroup}>
                             <Button type="default" shape="round" onClick={handleCancel}>Cancel</Button>
                             <Button type="primary" htmlType="submit" shape="round" disabled={isLoading ? true : false}>
-                                {isLoading ? <LoadingOutlined /> : <p>Verify {verifyCode}</p>}
+                                {isLoading ? <LoadingOutlined /> : <p>Verify</p>}
                             </Button>
                         </span>
                     </form>

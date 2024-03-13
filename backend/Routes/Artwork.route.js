@@ -5,6 +5,8 @@ const artworkController = require("../Controllers/ArtworkController");
 
 router.get("/", artworkController.getAllArtwork);
 
+router.get("/private", artworkController.getPrivateArtwork);
+
 router.post("/", artworkController.createNewArtwork);
 
 router.get("/getUserFavoriteList", artworkController.getUserFavoriteList);

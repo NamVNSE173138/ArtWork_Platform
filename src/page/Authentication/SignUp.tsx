@@ -284,7 +284,7 @@ export default function SignUp() {
           });
       } else {
         setCodeStatus(
-          "Incorrect verification code ! Please check your email and try again."
+          "Incorrect verification code! Please check your email and try again."
         );
         setIsLoading(false);
       }
@@ -453,7 +453,7 @@ export default function SignUp() {
                     {isLoading ? (
                       <LoadingOutlined />
                     ) : (
-                      <p>Verify {verifyCode}</p>
+                      <p>Verify</p>
                     )}
                   </Button>
                 </span>

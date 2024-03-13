@@ -7,8 +7,6 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import styles from './UserRequest.module.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import UploadImageForm from '../../components/UploadForm/UploadForm';
-import e from 'express';
 interface Artwork {
     _id: string;
     user: User;
@@ -182,7 +180,7 @@ export default function RequestApproval() {
                 createdAt: "",
                 updatedAt: "",
             },
-            price: '',
+            price: 0,
         },
         enableReinitialize: true,
         onSubmit: async (values) => {
@@ -194,20 +192,32 @@ export default function RequestApproval() {
                 numOfLike: 0,
                 tags: [values.artwork.tags],
                 imageUrl: values.artwork.imageUrl,
-                user: userRequest.user._id,
+                user: userRequest.user,
                 status: false,
             })
                 .then((res) => {
                     console.log("Post artworkId: ", res.data._id)
                     axios.post(`http://localhost:5000/artistRequests`, {
                         artwork: res.data._id,
-                        price: values.price,
+                        price: Math.round(values.price * 100) / 100,
                         userRequest: userRequest._id,
+                        user: userRequest.user,
+                        artist: userRequest.artist,
                         status: false,
                     })
                         .then((res) => {
                             console.log("Post artist request: ", res.data)
-                            message.success("Your deal request has been sent to user. You will be announced when the user responses.", 5)
+                        })
+                        .catch((err) => console.log(err))
+                    axios.patch(`http://localhost:5000/userRequests/status/${userRequest._id}`, {
+                        status: true,
+                    })
+                        .then((res) => {
+                            console.log(res.data)
+                            message.success(<Text>Your request has been sent to {userRequest.user.nickname}. Please stay alert to user's responses.</Text>, 5)
+                            setTimeout(() => {
+                                navigate('/profile/requests')
+                            }, 1000)
                         })
                         .catch((err) => console.log(err))
                 })
@@ -220,7 +230,10 @@ export default function RequestApproval() {
         <>
             {contextHolder}
             <Navbar onSubmit={onSearchSubmit} />
-            <Flex justify='space-around' align='center'>
+            <Flex justify='center'>
+                <Title style={{ fontFamily: 'monospace' }}>Visualizing personal artwork...</Title>
+            </Flex>
+            <Flex justify='center' align='center'>
                 <Card size="default" title={<Text strong style={{ fontSize: '150%' }}>REQUIREMENTS</Text>} className={styles.requirementCard}>
                     <Flex vertical justify='center' align='center' gap={10} className={styles.requirementSection}>
                         <Flex justify='center' align='center' gap={10}>
@@ -231,85 +244,82 @@ export default function RequestApproval() {
                             <Text strong>Description:</Text>
                             <Text italic>{userRequest.description}</Text>
                         </Flex>
+                        {userRequest.message
+                            ?
+                            <Flex justify='center' align='center' gap={10}>
+                                <Text strong mark>Message:</Text>
+                                <Text italic mark>{userRequest.message}</Text>
+                            </Flex>
+                            : null
+                        }
+
                         <Flex justify='center' align='center' gap={10}>
-                            <Text strong mark>Message:</Text>
-                            <Text italic mark>{userRequest.message}</Text>
-                        </Flex>
-                        <Flex justify='center' align='center' gap={10}>
-                            <Text strong code>Quantity:</Text>
-                            <Text italic code>{userRequest.quantity}</Text>
+                            <Text strong code>Price estimated:</Text>
+                            <Text italic code>{userRequest.priceEst}</Text>
                         </Flex>
                     </Flex>
                 </Card>
-                <Button style={{ display: 'flex', alignItems: 'center' }} onClick={addNewFormInput}>
-                    Add new response <PlusCircleOutlined />
-                </Button>
-            </Flex>
-            <List
-                grid={{
-                    gutter: 16,
-                    column: 1,
-                }}
-                dataSource={inputCardList}
-                style={{ marginTop: '2%' }}
-                renderItem={(item: any) => (
-                    <Card className={styles.inputCard} key={item.key}>
-                        <form onSubmit={artistRequestForm.handleSubmit}>
-                            <Flex gap={10}>
-                                <Image src={artistRequestForm.values.artwork.imageUrl} alt='' placeholder={true} preview={false}
-                                    style={{ minWidth: '200px', maxWidth: '300px' }} />
+
+                <Card className={styles.inputCard} style={{ minWidth: '200px', maxWidth: '400px', minHeight: '200px' }}>
+                    <Image src={artistRequestForm.values.artwork.imageUrl} alt='' placeholder={true} preview={false}
+                        style={{ minWidth: '300px', maxWidth: '500px' }} />
+                </Card>
+
+                <Card className={styles.inputCard}>
+                    <form onSubmit={artistRequestForm.handleSubmit}>
+                        <Flex gap={10}>
+                            <Flex vertical>
+                                <Text>Image URL <strong style={{ color: 'red' }}>*</strong></Text>
+                                <input type='text' name='artwork.imageUrl' placeholder="Enter artwork's URL here" autoComplete='off'
+                                    value={artistRequestForm.values.artwork.imageUrl}
+                                    onChange={artistRequestForm.handleChange}
+                                    onBlur={artistRequestForm.handleBlur}
+                                />
                                 <Flex vertical>
-                                    <input type='text' name='artwork.imageUrl' placeholder="Enter artwork's URL here"
-                                        value={artistRequestForm.values.artwork.imageUrl}
+                                    <Text>Name of the artwork <strong style={{ color: 'red' }}>*</strong></Text>
+                                    <input type='text' name='artwork.name' placeholder="Artwork's name" autoComplete='off'
+                                        value={artistRequestForm.values.artwork.name}
                                         onChange={artistRequestForm.handleChange}
                                         onBlur={artistRequestForm.handleBlur}
                                     />
-                                    <Flex vertical>
-                                        <Text>Name of the artwork <strong style={{ color: 'red' }}>*</strong></Text>
-                                        <input type='text' name='artwork.name' placeholder="Artwork's name"
-                                            value={artistRequestForm.values.artwork.name}
-                                            onChange={artistRequestForm.handleChange}
-                                            onBlur={artistRequestForm.handleBlur}
-                                        />
-                                    </Flex>
-                                    <Flex vertical>
-                                        <Text>Description <strong style={{ color: 'red' }}>*</strong></Text>
-                                        <input type='text' name='artwork.description' placeholder="Description"
-                                            value={artistRequestForm.values.artwork.description}
-                                            onChange={artistRequestForm.handleChange}
-                                            onBlur={artistRequestForm.handleBlur}
-                                        />
-                                    </Flex>
-                                    <Flex vertical>
-                                        <Text>Tags <strong style={{ color: 'red' }}>*</strong></Text>
-                                        <input type='text' name='artwork.tags' placeholder="Tags"
-                                            value={artistRequestForm.values.artwork.tags}
-                                            onChange={artistRequestForm.handleChange}
-                                            onBlur={artistRequestForm.handleBlur}
-                                        />
-                                    </Flex>
-                                    <Flex vertical>
-                                        <Text>Price <strong style={{ color: 'red' }}>*</strong></Text>
-                                        <input type='number' name='price' placeholder="Price"
-                                            value={artistRequestForm.values.price}
-                                            onChange={artistRequestForm.handleChange}
-                                            onBlur={artistRequestForm.handleBlur}
-                                        />
-                                    </Flex>
-                                    <Flex justify='center' align='center' gap={5} style={{ marginTop: '2%' }}>
-                                        <button type='submit' className={styles.formButton} id={styles.submitButton}>
-                                            <strong>SEND REQUEST</strong>
-                                        </button>
-                                        <button type='reset' className={styles.formButton} style={{ maxWidth: '30%' }}>
-                                            <strong>RESET</strong>
-                                        </button>
-                                    </Flex>
+                                </Flex>
+                                <Flex vertical>
+                                    <Text>Description <strong style={{ color: 'red' }}>*</strong></Text>
+                                    <input type='text' name='artwork.description' placeholder="Description" autoComplete='off'
+                                        value={artistRequestForm.values.artwork.description}
+                                        onChange={artistRequestForm.handleChange}
+                                        onBlur={artistRequestForm.handleBlur}
+                                    />
+                                </Flex>
+                                <Flex vertical>
+                                    <Text>Tags <strong style={{ color: 'red' }}>*</strong></Text>
+                                    <input type='text' name='artwork.tags' placeholder="Tags" autoComplete='off'
+                                        value={artistRequestForm.values.artwork.tags}
+                                        onChange={artistRequestForm.handleChange}
+                                        onBlur={artistRequestForm.handleBlur}
+                                    />
+                                </Flex>
+                                <Flex vertical>
+                                    <Text>Price <strong style={{ color: 'red' }}>*</strong></Text>
+                                    <input type='number' name='price' placeholder="Price" autoComplete='off'
+                                        value={artistRequestForm.values.price}
+                                        onChange={artistRequestForm.handleChange}
+                                        onBlur={artistRequestForm.handleBlur}
+                                    />
+                                </Flex>
+                                <Flex justify='center' align='center' gap={5} style={{ marginTop: '4%' }}>
+                                    <button type='submit' className={styles.formButton} id={styles.submitButton}>
+                                        <strong>SEND</strong>
+                                    </button>
+                                    <button type='reset' className={styles.formButton} style={{ maxWidth: '30%' }}>
+                                        <strong>RESET</strong>
+                                    </button>
                                 </Flex>
                             </Flex>
-                        </form>
-                    </Card>
-                )}
-            />
+                        </Flex>
+                    </form>
+                </Card>
+            </Flex>
         </>
     )
 }

@@ -47,6 +47,15 @@
     border-radius: 25px;
 }
 
+#description {
+    display: block;
+    max-width: 500px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    font-weight: 400;
+}
+
 .info {
     display: flex;
     align-items: center;

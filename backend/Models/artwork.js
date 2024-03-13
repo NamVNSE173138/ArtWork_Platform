@@ -6,6 +6,7 @@ const artworkSchema = new Schema(
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
+      required: false,
     },
     name: {
       type: String,

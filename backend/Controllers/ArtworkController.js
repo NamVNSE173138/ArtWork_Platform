@@ -6,7 +6,16 @@ const { decodeToken } = require("../Config/config.js");
 module.exports = {
   getAllArtwork: async (req, res, next) => {
     try {
-      const results = await Artwork.find({}, { __v: 0 });
+      const results = await Artwork.find({ status: true }, { __v: 0 });
+      res.send(results);
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+
+  getPrivateArtwork: async (req, res, next) => {
+    try {
+      const results = await Artwork.find({ status: false }, { __v: 0 });
       res.send(results);
     } catch (error) {
       console.log(error.message);
