@@ -20,4 +20,5 @@ router.post("/favoriteList/:id", artworkController.likeArtwork);
 
 router.get("/artworkOf/:artistId", artworkController.getArtworksByArtist);
 
+router.get("/artworkOfUser/:userId", artworkController.getArtworksOfUser);
 module.exports = router;

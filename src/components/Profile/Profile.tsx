@@ -86,32 +86,6 @@ const ProfilePage: React.FC = () => {
       .catch((err) => console.log(err));
   };
 
-  const items: TabsProps["items"] = [
-    {
-      key: "1",
-      label: (
-        <Badge
-          count={favoriteList.length}
-          overflowCount={99}
-          offset={[15, 0]}
-          showZero
-        >
-          <Text>Favorite</Text>
-        </Badge>
-      ),
-      children: <Favorite />,
-    },
-    {
-      key: "2",
-      label: (
-        <Badge count={1} overflowCount={999} offset={[15, 0]} showZero>
-          <Text>Contributed</Text>
-        </Badge>
-      ),
-      children: <Contributed />,
-    },
-  ];
-
   const showEditModal = () => {
     setEditModalVisible(true);
   };
@@ -141,6 +115,7 @@ const ProfilePage: React.FC = () => {
   });
 
   const [requestList, setRequestList] = useState([]);
+  const [artworks, setArtworks] = useState<any[]>([]);
 
   const fetchCurrentUserData = async () => {
     setIsLoading(true);
@@ -153,6 +128,7 @@ const ProfilePage: React.FC = () => {
       .then((res) => {
         console.log("Current user: ", res.data);
         setCurrentUser(res.data);
+
         if (res.data.role === "artist") {
           axios
             .get(`http://localhost:5000/userRequests/artist/${res.data.id}`)
@@ -167,11 +143,52 @@ const ProfilePage: React.FC = () => {
       .catch((err) => console.log(err));
   };
 
+  const fetchArtworks = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/artworks/artworkOf/${currentUser.id}`
+      );
+      setArtworks(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching artworks:", error);
+    }
+  };
   useEffect(() => {
     fetchCurrentUserData();
     fetchFavoriteList();
-  }, []);
-
+    fetchArtworks();
+  }, [currentUser.id]);
+  const items: TabsProps["items"] = [
+    {
+      key: "1",
+      label: (
+        <Badge
+          count={favoriteList.length}
+          overflowCount={99}
+          offset={[15, 0]}
+          showZero
+        >
+          <Text>Favorite</Text>
+        </Badge>
+      ),
+      children: <Favorite />,
+    },
+    {
+      key: "2",
+      label: (
+        <Badge
+          count={artworks.length}
+          overflowCount={99}
+          offset={[15, 0]}
+          showZero
+        >
+          <Text>Contributed</Text>
+        </Badge>
+      ),
+      children: <Contributed />,
+    },
+  ];
   return (
     <>
       <Navbar onSubmit={() => {}} />

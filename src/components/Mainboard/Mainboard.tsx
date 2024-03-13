@@ -77,11 +77,8 @@ interface Artwork {
 }
 const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
   const navigate = useNavigate();
-  const [modalIndex, setModalIndex] = useState(-1);
   // console.log(pins);
   const userToken = localStorage.getItem("USER");
-  const [isLiked, setIsLiked] = useState(false); // State to track if artwork is liked
-  const [favoriteList, setFavoriteList] = useState<FavoriteList[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState<User>({
     id: "",
@@ -137,26 +134,6 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
     updatedAt: "",
   });
 
-  // const handleDownload = (
-  //   event: React.MouseEvent<HTMLElement, MouseEvent>,
-  //   pin: PinProps
-  // ) => {
-  //   const imageUrl = pin.imageUrl;
-  //   const name = pin.name;
-  //   const extension = imageUrl.split(".").pop();
-  //   console.log(extension);
-  //   console.log(imageUrl, " ", name);
-
-  //   if (extension === "png") {
-  //     message.success("Downloading...");
-  //     saveAs(imageUrl, `${name}.png`);
-  //   } else if (extension === "jpg") {
-  //     message.success("Downloading...");
-  //     saveAs(imageUrl, `${name}.jpg`);
-  //   } else {
-  //     message.error("Unsupported file format. Only PNG and JPG are supported.");
-  //   }
-  // };
   const [dataSource, setDataSource] = useState(pins.slice(0, 20));
   console.log(dataSource);
 

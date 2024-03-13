@@ -1,25 +1,9 @@
-   .image {
-       max-width: 20rem;
-   }
+.favorite-image:hover {
+    transition: transform 0.2s ease-in-out;
+    transform: scale(1);
 
-   @media (max-width: 767px) {
-       .mainboard_container {
-           max-width: none !important;
-           column-count: 1 !important;
-       }
-   }
+}
 
-   @media (min-width: 768px) and (max-width: 1199px) {
-       .mainboard_container {
-           max-width: 600px;
-           column-count: 2 !important;
-       }
-   }
-
-
-   @media (min-width: 1200px) {
-       .mainboard_container {
-           max-width: 1000px;
-           column-count: 3;
-       }
-   }
+.favorite-image:hover {
+    transform: scale(1.05);
+}
