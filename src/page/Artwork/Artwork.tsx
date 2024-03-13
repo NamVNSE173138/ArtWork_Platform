@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
 import styles from "./Artwork.module.css";
-import { List, Button, Avatar, Typography, Spin, Badge, Flex, message, Tag, Tooltip } from "antd";
+import {
+  List,
+  Button,
+  Avatar,
+  Typography,
+  Spin,
+  Badge,
+  Flex,
+  message,
+  Tag,
+  Tooltip,
+} from "antd";
 import {
   LoadingOutlined,
   HeartFilled,
@@ -20,6 +31,7 @@ import ReportForm from "../../components/ReportForm/ReportForm";
 import BuyArtwork from "../../components/BuyForm/BuyForm";
 import Favorite from "../../components/Favorite/Favorite";
 import * as Yup from "yup";
+import { createFollower, deleteFollower } from "../../api/follow/followAPI";
 
 interface User {
   id: string;
@@ -64,12 +76,20 @@ interface FavoriteList {
   updateAt?: string;
 }
 
+interface FollowList {
+  _id: string;
+  follower: User;
+  following: Artwork;
+  status: boolean;
+}
+
 export default function Artwork() {
   const { Text, Title } = Typography;
-  const [messageApi, contextHolder] = message.useMessage()
+  const [messageApi, contextHolder] = message.useMessage();
   const { id } = useParams();
   const userToken = localStorage.getItem("USER");
   const [isLoading, setIsLoading] = useState(false);
+  const [follows, setFollows] = useState<FollowList[]>([]);
 
   const onSearchSubmit = async (term: string) => {
     console.log(term);
@@ -129,7 +149,6 @@ export default function Artwork() {
 
   const [commentList, setCommentList] = useState<Comment[]>([]);
   const [newCommentIncoming, setNewCommentIncoming] = useState(false);
-
   const [isLiked, setIsLiked] = useState(false); // State to track if artwork is liked
   const [favoriteList, setFavoriteList] = useState<FavoriteList[]>([]);
 
@@ -151,40 +170,43 @@ export default function Artwork() {
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
-      text: Yup.string().required()
+      text: Yup.string().required(),
     }),
     onSubmit: (values: Comment, { resetForm }) => {
       if (values.text.length > 0) {
         setNewCommentIncoming(true);
-        axios.post("http://localhost:5000/comments", {
-          artwork: id,
-          user: currentUser.id,
-          text: values.text.trim(),
-          numOfLike: 0,
-        },
-          {
-            headers: {
-              token: userToken,
+        axios
+          .post(
+            "http://localhost:5000/comments",
+            {
+              artwork: id,
+              user: currentUser.id,
+              text: values.text.trim(),
+              numOfLike: 0,
             },
-          }
-        )
+            {
+              headers: {
+                token: userToken,
+              },
+            }
+          )
           .then((res) => {
             console.log(res.data);
             setIsLoading(false);
           })
           .catch((err) => console.log(err));
-        resetForm()
+        resetForm();
         setTimeout(() => {
           setNewCommentIncoming(false);
         }, 500);
       } else {
         messageApi.open({
-          type: 'warning',
-          content: 'Comments should not be left empty !'
-        })
-        resetForm()
+          type: "warning",
+          content: "Comments should not be left empty !",
+        });
+        resetForm();
       }
-    }
+    },
   });
 
   const fetchCurrentUserData = async () => {
@@ -218,6 +240,25 @@ export default function Artwork() {
           .catch((err) => console.log(err));
       })
       .catch((err) => console.log(err));
+  };
+
+  const getFollowingList = async (id: any) => {
+    setIsLoading(true);
+    if (currentUser.id) {
+      await axios
+        .get(`http://localhost:5000/follows/following/${id}`, {
+          headers: {
+            token: userToken,
+          },
+        })
+        .then((res: any) => {
+          setFollows(
+            res.data.filter((item: any) => item.following === artwork.user)
+          );
+          setIsLoading(false);
+        })
+        .catch((err: any) => console.log(err));
+    }
   };
 
   const fetchCommentListData = async () => {
@@ -264,11 +305,26 @@ export default function Artwork() {
   useEffect(() => {
     fetchCurrentUserData();
     fetchArtworkData();
-  }, []);
+    getFollowingList(currentUser.id);
+  }, [currentUser.id]);
 
   useEffect(() => {
     fetchCommentListData();
   }, [newCommentIncoming]);
+
+  const handleFollow = () => {
+    createFollower(artwork.user);
+    setTimeout(() => {
+      getFollowingList(currentUser.id);
+    }, 500);
+  };
+
+  const handleUnfollow = () => {
+    deleteFollower(follows[0]._id);
+    setTimeout(() => {
+      getFollowingList(currentUser.id);
+    }, 500);
+  };
 
   return (
     <>
@@ -285,7 +341,14 @@ export default function Artwork() {
           <>
             <div className={styles.leftSection}>
               {artwork.price > 0 ? (
-                <Badge.Ribbon text={<Text strong style={{ color: '#FFF' }}>{artwork.price} $</Text>} color="red">
+                <Badge.Ribbon
+                  text={
+                    <Text strong style={{ color: "#FFF" }}>
+                      {artwork.price} $
+                    </Text>
+                  }
+                  color="red"
+                >
                   <img className={styles.image} src={artwork.imageUrl} alt="" />
                 </Badge.Ribbon>
               ) : (
@@ -299,9 +362,7 @@ export default function Artwork() {
                   <br />
                   <span id={styles.description}>
                     <Tooltip title={artwork.description} placement="topLeft">
-                      <Text italic>
-                        Description: {artwork.description}
-                      </Text>
+                      <Text italic>Description: {artwork.description}</Text>
                     </Tooltip>
                   </span>
                   {/* <br /> */}
@@ -356,8 +417,19 @@ export default function Artwork() {
                   shape="round"
                   size="large"
                   id={styles.followButton}
+                  onClick={follows.length > 0 ? handleUnfollow : handleFollow}
                 >
-                  <PlusCircleOutlined /> Follow
+                  {follows.length > 0 ? (
+                    <>
+                      <span>Following</span>
+                      {/* <CheckCircleOutlined /> */}
+                    </>
+                  ) : (
+                    <>
+                      <PlusCircleOutlined />
+                      <span>Follow</span>
+                    </>
+                  )}
                 </Button>
               </div>
               <div className={styles.commentSection}>

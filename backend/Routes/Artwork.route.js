@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Artwork = require('../Models/artwork')
+const Artwork = require("../Models/artwork");
 const artworkController = require("../Controllers/ArtworkController");
 
 router.get("/", artworkController.getAllArtwork);

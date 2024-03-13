@@ -7,7 +7,7 @@ module.exports = {
   getAllArtwork: async (req, res, next) => {
     try {
       const { search } = req.query;
-      const { user } = req.query;
+      // const { user } = req.query;
       const condition = search
         ? {
             status: true,
@@ -18,7 +18,7 @@ module.exports = {
             ],
           }
         : {
-            user: user, // Filter by user ID
+            // user: user, // Filter by user ID
             status: true,
           };
 
