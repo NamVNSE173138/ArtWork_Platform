@@ -40,6 +40,7 @@ export default function Navigator() {
       parallax.current.scrollTo(to)
     }
   }
+  const userToken = localStorage.getItem("USER")
 
   return (
     <div>
@@ -54,22 +55,26 @@ export default function Navigator() {
               ART FROM THE SOUL, ART FOR THE SOUL
             </Text>
           </span>
-          <span className={styles.navbarLogo}>
+          <span className={styles.navbarLogo} style={{ justifyItems: 'center' }}>
             <img src={Logo} alt="art" onClick={() => { window.location.reload() }} />
           </span>
-          <span className={styles.buttonGroup}>
-            <button
-              onClick={() => { navigate('/signin') }}
-              className={styles.navbarButton}>
-              SIGN IN
-            </button>
-            <button
-              onClick={() => { navigate('/signup/email') }}
-              className={styles.navbarButton}
-            >
-              CREATE A FREE ACCOUNT
-            </button>
-          </span>
+          {!userToken
+            ? <span className={styles.buttonGroup}>
+              <button
+                onClick={() => { navigate('/signin') }}
+                className={styles.navbarButton}>
+                SIGN IN
+              </button>
+              <button
+                onClick={() => { navigate('/signup/email') }}
+                className={styles.navbarButton}
+              >
+                CREATE A FREE ACCOUNT
+              </button>
+            </span>
+            : <span></span>
+          }
+
         </ParallaxLayer>
 
         <ParallaxLayer offset={0} speed={0.3} className={styles.top} />

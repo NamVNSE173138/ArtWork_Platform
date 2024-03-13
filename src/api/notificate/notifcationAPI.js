@@ -1,6 +1,8 @@
 import { toast } from "react-toastify";
 import axios from "axios";
 
+const userToken = localStorage.getItem("USER");
+
 export const getAllNotification = () => {
   return fetch(`http://localhost:5000/notifications`).then((res) => res.json());
 }
@@ -16,11 +18,11 @@ export const markNotificationAsRead = async (id) => {
   }
 };
 
-export const getReportId = (id) => {
+export const getNotificationById = (id) => {
   return fetch(`http://localhost:5000/notifications/${id}`).then((res) => res.json());
 }
 
-export const createReport = (data) => {
+export const createNotification = (data) => {
   return fetch("http://localhost:5000/notifications", {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -55,4 +57,25 @@ export const deleteNotification = (id) => {
     .catch(error => {
       toast.error(error);
     })
+}
+
+//TEST
+export const declineNotification = (id) => {
+  return fetch(`http://localhost:5000/notifications/decline/${id}`, {
+    method: 'POST',
+    headers: {
+      token: userToken,
+    },
+  }).then(res => {
+    if (!res.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return res.json();
+  })
+    .then(responseData => {
+      console.log("Create successful", responseData);
+    })
+    .catch(error => {
+      console.error('There was a problem with the createReport request:', error);
+    });
 }

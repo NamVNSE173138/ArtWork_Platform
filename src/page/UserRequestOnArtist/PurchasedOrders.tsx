@@ -90,8 +90,24 @@ export default function PurchasedOrders() {
         fetchPurchasedOrderList()
     }, [])
 
-    const handleEarn = (amount: number) => {
-        message.success("+" + amount + " $")
+    const handleEarn = async (id: string) => {
+        await axios.get(`http://localhost:5000/artistRequests/${id}`)
+            .then((res) => {
+                messageApi
+                    .open({
+                        type: 'loading',
+                        content: '',
+                        duration: 1,
+                    })
+                    .then(() => message.success(`You have earned ${res.data.price} $. Double-check your balance !`, 5))
+            })
+            .catch((err) => console.log(err))
+        await axios.delete(`http://localhost:5000/artistRequests/${id}`)
+            .then((res) => {
+                console.log("Deleted artist request: ", res.data)
+                fetchPurchasedOrderList()
+            })
+            .catch((err) => console.log(err))
     }
 
     const columns: TableProps<ArtistRequest>['columns'] = [
@@ -149,9 +165,9 @@ export default function PurchasedOrders() {
             title: 'Action',
             key: 'action',
             align: 'center',
-            render: (_, { price }) => (
+            render: (_, { _id }) => (
                 <Space size="middle">
-                    <Button type='primary' onClick={() => handleEarn(price)} style={{ display: 'flex', alignItems: 'center', backgroundColor: '#24B60D' }}>
+                    <Button type='primary' onClick={() => handleEarn(_id)} style={{ display: 'flex', alignItems: 'center', backgroundColor: '#24B60D' }}>
                         <strong>EARN</strong>
                     </Button>
                 </Space>

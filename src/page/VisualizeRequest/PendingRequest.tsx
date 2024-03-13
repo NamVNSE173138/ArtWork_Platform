@@ -60,9 +60,9 @@ export default function PendingRequest() {
     const [messageApi, contextHolder] = message.useMessage()
 
     const userToken = localStorage.getItem("USER")
-    const [userRequestList, setUserRequestList] = useState([])
+    const [pendingRequestList, setPendingRequestList] = useState([])
 
-    const fetchUserRequest = async () => {
+    const fetchPendingRequest = async () => {
         await axios.get(`http://localhost:5000/users/getUserInfo`, {
             headers: {
                 token: userToken, //userToken = localStorage("USER")
@@ -73,7 +73,7 @@ export default function PendingRequest() {
                 axios.get(`http://localhost:5000/userRequests/user/${res.data.id}`)
                     .then((res) => {
                         console.log("User request list: ", res.data)
-                        setUserRequestList(res.data)
+                        setPendingRequestList(res.data)
                     })
                     .catch((err) => console.log(err))
             })
@@ -82,7 +82,7 @@ export default function PendingRequest() {
     };
 
     useEffect(() => {
-        fetchUserRequest()
+        fetchPendingRequest()
     }, [])
 
     const columns: TableProps<UserRequest>['columns'] = [
@@ -121,7 +121,7 @@ export default function PendingRequest() {
             align: 'center',
         },
         {
-            title: 'Sent at',
+            title: 'Sent',
             dataIndex: 'createdAt',
             key: 'createdAt',
             align: 'center',
@@ -156,7 +156,7 @@ export default function PendingRequest() {
         {
             title:
                 <Tooltip title='Reload' overlayInnerStyle={{ backgroundColor: '#FFF', color: '#000' }}>
-                    <Button onClick={() => fetchUserRequest()} style={{ display: 'flex', alignItems: 'center' }}>
+                    <Button onClick={() => fetchPendingRequest()} style={{ display: 'flex', alignItems: 'center' }}>
                         <ReloadOutlined />
                     </Button>
                 </Tooltip>,
@@ -168,8 +168,8 @@ export default function PendingRequest() {
         await axios.delete(`http://localhost:5000/userRequests/${id}`)
             .then((res) => {
                 console.log("Delete request: ", res.data)
-                setUserRequestList(userRequestList.filter((item: any) => item._id !== id))
-                message.success("Request is recalled successfully.")
+                setPendingRequestList(pendingRequestList.filter((item: any) => item._id !== id))
+                message.info("Request recalled.", 5)
             })
             .catch((err) => {
                 console.log(err)
@@ -179,7 +179,7 @@ export default function PendingRequest() {
     return (
         <>
             {contextHolder}
-            <Table columns={columns} dataSource={userRequestList}
+            <Table columns={columns} dataSource={pendingRequestList}
                 pagination={{ hideOnSinglePage: true }}
                 scroll={{ y: 500 }} />
         </>

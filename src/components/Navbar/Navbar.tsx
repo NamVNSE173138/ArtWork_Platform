@@ -11,9 +11,11 @@ import {
   Dropdown,
 } from "antd";
 import type { MenuProps } from "antd";
+import { Badge } from "antd";
 import Logo from "../../assets/image/logo.jpg";
 import LogoDark from "https://art.art/wp-content/themes/art/new/img/logo_DotArt.svg";
 import {
+  BellOutlined,
   LoadingOutlined,
   LogoutOutlined,
   MenuOutlined,
@@ -25,6 +27,7 @@ import {
 } from "@ant-design/icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { getNotificationById } from "../../api/notificate/notifcationAPI";
 
 const { Search } = Input;
 interface NavbarProps {
@@ -42,6 +45,11 @@ interface User {
   createAt?: string;
   updateAt?: string;
 }
+
+interface Notification {
+  status: boolean;
+}
+
 const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   let navigate = useNavigate();
   const userToken = localStorage.getItem("USER");
@@ -50,6 +58,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [toggleMenu, setToggleMenu] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const filteredNotification = notifications.filter(
+    (notification) => notification.status === false
+  ).length;
   const [currentUser, setCurrentUser] = useState<User>({
     id: "",
     email: "",
@@ -106,12 +118,21 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     },
     {
       label: (
+        <Link id="profile" className="dropdown-item" to={`/notifications`}>
+          <BellOutlined style={{ fontSize: "20px", marginRight: "5px" }} /> View
+          Notification
+        </Link>
+      ),
+      key: 4,
+    },
+    {
+      label: (
         <Link id="profile" className="dropdown-item" to={`/forgot`}>
           <SyncOutlined style={{ fontSize: "20px", marginRight: "5px" }} />{" "}
           Change Password
         </Link>
       ),
-      key: 4,
+      key: 5,
     },
     {
       type: "divider",
@@ -129,7 +150,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
           </p>
         </div>
       ),
-      key: 5,
+      key: 6,
     },
   ];
 
@@ -177,9 +198,30 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
       .catch((err) => console.log(err));
   };
 
+  const getNotificationList = async (id: any) => {
+    setIsLoading(true);
+    if (currentUser.id) {
+      await axios
+        .get(`http://localhost:5000/notifications/${id}`, {
+          headers: {
+            token: userToken,
+          },
+        })
+        .then((res: any) => {
+          setNotifications(res.data);
+          setIsLoading(false);
+        })
+        .catch((err: any) => console.log(err));
+    }
+  };
+
   useEffect(() => {
-    fetchCurrentUserData();
-  }, []);
+    const fetchData = async () => {
+      await fetchCurrentUserData();
+      await getNotificationList(currentUser.id);
+    };
+    fetchData();
+  }, [currentUser.id]);
 
   useEffect(() => {
     // console.log("Current user: ", currentUser);
@@ -260,6 +302,14 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
             ) : (
               <>
                 <li>
+                  <span style={{ margin: "10px 15px 0px 0px" }}>
+                    <a href="/notifications">
+                      <Badge size="default" count={filteredNotification}>
+                        <BellOutlined style={{ fontSize: "20px" }} />
+                      </Badge>
+                    </a>
+                  </span>
+
                   <Dropdown menu={{ items }} trigger={["click"]}>
                     <a onClick={(e) => e.preventDefault()}>
                       <Space id="user-section">
