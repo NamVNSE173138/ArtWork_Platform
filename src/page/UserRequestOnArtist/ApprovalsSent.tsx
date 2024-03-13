@@ -66,9 +66,9 @@ export default function ApprovalsSent() {
     const [messageApi, contextHolder] = message.useMessage()
 
     const userToken = localStorage.getItem("USER")
-    const [artistRequestList, setArtistRequestList] = useState([])
+    const [approvalSentList, setApprovalSentList] = useState([])
 
-    const fetchUserRequest = async () => {
+    const fetchApprovalSent = async () => {
         await axios.get(`http://localhost:5000/users/getUserInfo`, {
             headers: {
                 token: userToken, //userToken = localStorage("USER")
@@ -79,7 +79,7 @@ export default function ApprovalsSent() {
                 axios.get(`http://localhost:5000/artistRequests/artist/${res.data.id}`)
                     .then((res) => {
                         console.log("User request list: ", res.data)
-                        setArtistRequestList(res.data)
+                        setApprovalSentList(res.data)
                     })
                     .catch((err) => console.log(err))
             })
@@ -88,7 +88,7 @@ export default function ApprovalsSent() {
     };
 
     useEffect(() => {
-        fetchUserRequest()
+        fetchApprovalSent()
     }, [])
 
     const columns: TableProps<ArtistRequest>['columns'] = [
@@ -160,7 +160,7 @@ export default function ApprovalsSent() {
         {
             title:
                 <Tooltip title='Reload' overlayInnerStyle={{ backgroundColor: '#FFF', color: '#000' }}>
-                    <Button onClick={() => fetchUserRequest()} style={{ display: 'flex', alignItems: 'center' }}>
+                    <Button onClick={() => fetchApprovalSent()} style={{ display: 'flex', alignItems: 'center' }}>
                         <ReloadOutlined />
                     </Button>
                 </Tooltip>,
@@ -184,7 +184,7 @@ export default function ApprovalsSent() {
         await axios.delete(`http://localhost:5000/artistRequests/${id}`)
             .then((res) => {
                 console.log("Delete request: ", res.data)
-                setArtistRequestList(artistRequestList.filter((item: any) => item._id !== id))
+                setApprovalSentList(approvalSentList.filter((item: any) => item._id !== id))
                 message.info("Request recalled.", 5)
             })
             .catch((err) => {
@@ -195,7 +195,7 @@ export default function ApprovalsSent() {
     return (
         <>
             {contextHolder}
-            <Table columns={columns} dataSource={artistRequestList}
+            <Table columns={columns} dataSource={approvalSentList}
                 pagination={{ hideOnSinglePage: true }}
                 scroll={{ y: 500, scrollToFirstRowOnChange: true }} />
         </>

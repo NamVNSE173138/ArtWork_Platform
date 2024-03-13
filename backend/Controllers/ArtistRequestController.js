@@ -39,7 +39,7 @@ module.exports = {
         const id = req.params.id;
         try {
             const artistRequest = await ArtistRequest.findById(id)
-                .populate({
+                .populate([{
                     path: 'userRequest',
                     populate: [{
                         path: 'user',
@@ -50,7 +50,12 @@ module.exports = {
                         model: 'User',
                     }
                     ]
-                }).sort({ 'createdAt': -1 })
+                },
+                {
+                    path: 'artwork',
+                    model: 'Artwork',
+                }
+                ]).sort({ 'createdAt': -1 })
             if (!artistRequest) {
                 throw createError(404, "ArtistRequest does not exist.");
             }

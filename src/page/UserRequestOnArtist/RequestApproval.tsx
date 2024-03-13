@@ -192,6 +192,7 @@ export default function RequestApproval() {
                 numOfLike: 0,
                 tags: [values.artwork.tags],
                 imageUrl: values.artwork.imageUrl,
+                user: userRequest.user,
                 status: false,
             })
                 .then((res) => {

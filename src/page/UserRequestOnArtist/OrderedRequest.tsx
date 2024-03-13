@@ -40,9 +40,9 @@ export default function UserRequestList() {
     const [messageApi, contextHolder] = message.useMessage()
 
     const userToken = localStorage.getItem("USER")
-    const [userRequestList, setUserRequestList] = useState([])
+    const [orderedRequestList, setOrderedRequestList] = useState([])
 
-    const fetchUserRequest = async () => {
+    const fetchOrderedRequest = async () => {
         await axios.get(`http://localhost:5000/users/getUserInfo`, {
             headers: {
                 token: userToken, //userToken = localStorage("USER")
@@ -53,7 +53,7 @@ export default function UserRequestList() {
                 axios.get(`http://localhost:5000/userRequests/artist/${res.data.id}`)
                     .then((res) => {
                         console.log("User request list: ", res.data)
-                        setUserRequestList(res.data)
+                        setOrderedRequestList(res.data)
                     })
                     .catch((err) => console.log(err))
             })
@@ -62,7 +62,7 @@ export default function UserRequestList() {
     };
 
     useEffect(() => {
-        fetchUserRequest()
+        fetchOrderedRequest()
     }, [])
 
     const columns: TableProps<UserRequest>['columns'] = [
@@ -122,7 +122,7 @@ export default function UserRequestList() {
             render: (_, { _id }) => (
                 <Space size="middle">
                     <Button type='primary' style={{ display: 'flex', alignItems: 'center' }}
-                        onClick={() => navigate(`/userRequest/approval/${_id}`)}>
+                        onClick={() => approveRequest(_id)}>
                         Approve
                     </Button>
                     <Popconfirm
@@ -141,7 +141,7 @@ export default function UserRequestList() {
         {
             title:
                 <Tooltip title='Reload' overlayInnerStyle={{ backgroundColor: '#FFF', color: '#000' }}>
-                    <Button onClick={() => fetchUserRequest()} style={{ display: 'flex', alignItems: 'center' }}>
+                    <Button onClick={() => fetchOrderedRequest()} style={{ display: 'flex', alignItems: 'center' }}>
                         <ReloadOutlined />
                     </Button>
                 </Tooltip>,
@@ -149,11 +149,23 @@ export default function UserRequestList() {
         }
     ]
 
+    const approveRequest = (id: string) => {
+        axios.get(`http://localhost:5000/userRequests/${id}`)
+            .then((res) => {
+                navigate(`/userRequest/approval/${id}`)
+            })
+            .catch((err) => {
+                message.error("Request is no longer existed. The sender might have recalled it.", 7)
+                fetchOrderedRequest()
+                console.log(err)
+            })
+    }
+
     const deleteRequest = async (id: string) => {
         await axios.delete(`http://localhost:5000/userRequests/${id}`)
             .then((res) => {
                 console.log("Delete request: ", res.data)
-                setUserRequestList(userRequestList.filter((item: any) => item._id !== id))
+                setOrderedRequestList(orderedRequestList.filter((item: any) => item._id !== id))
             })
             .catch((err) => {
                 console.log(err)
@@ -161,7 +173,7 @@ export default function UserRequestList() {
     }
 
     return (
-        <Table columns={columns} dataSource={userRequestList}
+        <Table columns={columns} dataSource={orderedRequestList}
             pagination={{ hideOnSinglePage: true }}
             scroll={{ y: 500, scrollToFirstRowOnChange: true }} />
     )

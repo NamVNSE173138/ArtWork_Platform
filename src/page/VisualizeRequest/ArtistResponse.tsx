@@ -70,9 +70,9 @@ export default function ArtistResponse() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const userToken = localStorage.getItem("USER")
-    const [artistRequestList, setArtistRequestList] = useState<ArtistRequest[]>([])
+    const [artistResponseList, setArtistResponseList] = useState<ArtistRequest[]>([])
 
-    const fetchArtistRequest = async () => {
+    const fetchArtistResponse = async () => {
         await axios.get(`http://localhost:5000/users/getUserInfo`, {
             headers: {
                 token: userToken, //userToken = localStorage("USER")
@@ -83,7 +83,7 @@ export default function ArtistResponse() {
                 axios.get(`http://localhost:5000/artistRequests/user/${res.data.id}`)
                     .then((res: AxiosResponse) => {
                         console.log("Artist request list: ", res.data)
-                        setArtistRequestList(res.data)
+                        setArtistResponseList(res.data)
                     })
                     .catch((err) => console.log(err))
             })
@@ -91,11 +91,40 @@ export default function ArtistResponse() {
     };
 
     useEffect(() => {
-        fetchArtistRequest()
+        fetchArtistResponse()
     }, [])
 
-    const onGet = (price: number) => {
-        console.log("Price: ", price)
+    const onGet = async (id: string) => {
+        console.log("ID: ", id)
+        await axios.get(`http://localhost:5000/artistRequests/${id}`)
+            .then((res) => {
+                // axios.post('http://localhost:5000/checkouts/create_payment_url', {
+                //     amount: res.data.price,
+                // })
+                //     .then((res) => {
+                //         console.log("PAYMENT URL: ", res.data)
+                //         window.location.href = res.data
+                //     })
+                //     .catch((err) => console.log(err))
+
+                //SUCCESSFULLY PURCHASED VIA VNPAY
+                axios.patch(`http://localhost:5000/artistRequests/status/${id}`, {
+                    status: true,
+                })
+                    .then((res) => {
+                        console.log("Update artist request status", res.data)
+                        fetchArtistResponse()
+                        messageApi
+                            .open({
+                                type: 'loading',
+                                content: 'Loading...',
+                                duration: 1,
+                            })
+                            .then(() => message.success('Purchased successfully. The artwork has been added to your own gallery', 2.5))
+                    })
+                    .catch((err) => console.log(err))
+            })
+            .catch((err) => console.log(err))
     }
 
     const rejectRequest = async () => {
@@ -174,7 +203,7 @@ export default function ArtistResponse() {
             align: 'center',
         },
         {
-            title: 'Sent at',
+            title: 'Sent',
             dataIndex: 'createdAt',
             key: 'createdAt',
             align: 'center',
@@ -192,15 +221,15 @@ export default function ArtistResponse() {
             key: 'action',
             align: 'center',
             width: '100px',
-            render: (_, { price }) => (
+            render: (_, { _id }) => (
                 <Flex justify='center' align='center' gap={5}>
-                    <Button type='primary' onClick={() => onGet(price)}
-                        style={{ display: 'flex', alignItems: 'center', backgroundColor: 'green' }}
+                    <Button type='primary' onClick={() => onGet(_id)}
+                        style={{ display: 'flex', alignItems: 'center', backgroundColor: '#0FB40C' }}
                     >
-                        <strong>ACCEPT</strong>
+                        <strong>BUY</strong>
                     </Button>
-                    <Button type='primary' danger onClick={rejectRequest}
-                        style={{ display: 'flex', alignItems: 'center' }}
+                    <Button type='primary' onClick={rejectRequest}
+                        style={{ display: 'flex', alignItems: 'center', backgroundColor: '#B40D0D' }}
                     >
                         <strong>REJECT</strong>
                     </Button>
@@ -210,7 +239,7 @@ export default function ArtistResponse() {
         {
             title:
                 <Tooltip title='Reload' overlayInnerStyle={{ backgroundColor: '#FFF', color: '#000' }}>
-                    <Button onClick={() => fetchArtistRequest()} style={{ display: 'flex', alignItems: 'center' }}>
+                    <Button onClick={() => fetchArtistResponse()} style={{ display: 'flex', alignItems: 'center' }}>
                         <ReloadOutlined />
                     </Button>
                 </Tooltip>,
@@ -219,7 +248,10 @@ export default function ArtistResponse() {
     ]
 
     return (
-        <Table columns={columns} dataSource={artistRequestList} bordered size='small'
-            pagination={{ defaultPageSize: 10, hideOnSinglePage: true, position: ["bottomCenter"] }} />
+        <>
+            {contextHolder}
+            <Table columns={columns} dataSource={artistResponseList} bordered size='small'
+                pagination={{ defaultPageSize: 10, hideOnSinglePage: true, position: ["bottomCenter"] }} />
+        </>
     )
 }
