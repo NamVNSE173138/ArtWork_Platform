@@ -98,31 +98,33 @@ export default function ArtistResponse() {
         console.log("ID: ", id)
         await axios.get(`http://localhost:5000/artistRequests/${id}`)
             .then((res) => {
-                // axios.post('http://localhost:5000/checkouts/create_payment_url', {
-                //     amount: res.data.price,
-                // })
-                //     .then((res) => {
-                //         console.log("PAYMENT URL: ", res.data)
-                //         window.location.href = res.data
-                //     })
-                //     .catch((err) => console.log(err))
-
-                //SUCCESSFULLY PURCHASED VIA VNPAY
-                axios.patch(`http://localhost:5000/artistRequests/status/${id}`, {
-                    status: true,
+                axios.post('http://localhost:5000/checkouts/create_payment_url', {
+                    amount: res.data.price,
                 })
                     .then((res) => {
-                        console.log("Update artist request status", res.data)
-                        fetchArtistResponse()
-                        messageApi
-                            .open({
-                                type: 'loading',
-                                content: 'Loading...',
-                                duration: 1,
-                            })
-                            .then(() => message.success('Purchased successfully. The artwork has been added to your own gallery', 2.5))
+                        console.log("PAYMENT URL: ", res.data)
+                        window.location.href = res.data
                     })
-                    .catch((err) => console.log(err))
+                    .catch((err) => console.log("Payment url create error: ", err.message))
+
+
+
+                //SUCCESSFULLY PURCHASED VIA VNPAY
+                // axios.patch(`http://localhost:5000/artistRequests/status/${id}`, {
+                //     status: true,
+                // })
+                //     .then((res) => {
+                //         console.log("Update artist request status", res.data)
+                //         fetchArtistResponse()
+                //         messageApi
+                //             .open({
+                //                 type: 'loading',
+                //                 content: 'Loading...',
+                //                 duration: 1,
+                //             })
+                //             .then(() => message.success('Purchased successfully. The artwork has been added to your own gallery', 2.5))
+                //     })
+                //     .catch((err) => console.log(err))
             })
             .catch((err) => console.log(err))
     }
