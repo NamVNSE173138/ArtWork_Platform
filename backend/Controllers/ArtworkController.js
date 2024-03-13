@@ -147,4 +147,16 @@ module.exports = {
       console.log(error.message);
     }
   },
+  getArtworksByArtist: async (req, res, next) => {
+    try {
+      const { artistId } = req.params;
+      const artworks = await Artwork.find(
+        { user: artistId, status: true },
+        { __v: 0 }
+      );
+      res.send(artworks);
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
 };
