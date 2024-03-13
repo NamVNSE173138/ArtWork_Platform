@@ -138,17 +138,6 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
   console.log(dataSource);
 
   const [hasMore, setHasMore] = useState(true);
-  const fetchMoreData = () => {
-    if (dataSource.length >= pins.length) {
-      setHasMore(false);
-      return;
-    }
-    setTimeout(() => {
-      setDataSource(
-        dataSource.concat(pins.slice(dataSource.length, dataSource.length + 20))
-      );
-    }, 1000);
-  };
 
   const getColumnCount = () => {
     const width = window.innerWidth;
@@ -197,6 +186,17 @@ const Mainboard: React.FC<MainboardProps> = ({ pins }) => {
     const shuffled = [...pins].sort(() => Math.random() - 0.5);
     setShuffledPins(shuffled);
   }, [pins]);
+  const fetchMoreData = () => {
+    if (shuffledPins.length >= pins.length) {
+      setHasMore(false);
+      return;
+    }
+    setTimeout(() => {
+      setDataSource(
+        dataSource.concat(pins.slice(dataSource.length, dataSource.length + 20))
+      );
+    }, 1000);
+  };
   return (
     <div className="mainboard_wrapper">
       <InfiniteScroll

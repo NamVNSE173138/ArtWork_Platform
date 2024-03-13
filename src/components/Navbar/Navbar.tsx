@@ -315,6 +315,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                         <img
                           alt="avatar"
                           style={{
+                            width: "30px",
                             height: "30px",
                             borderRadius: "20px",
                             marginRight: "5px",

@@ -73,6 +73,9 @@ const ProfilePage: React.FC = () => {
     const imageUrl = e.target.value;
     setAvatarPreview(imageUrl);
     console.log("current img", imageUrl);
+    form.setFieldsValue({
+      avatar: e.target.value,
+    });
   };
   const fetchFavoriteList = async () => {
     await axios
@@ -99,9 +102,23 @@ const ProfilePage: React.FC = () => {
   const handleEditModalOk = async () => {
     try {
       const values = await form.validateFields();
+
+      // Check if any input field contains only spaces
+      const containsOnlySpaces = Object.values(values).some(
+        (value) => typeof value === "string" && value.trim() === ""
+      );
+
+      if (containsOnlySpaces) {
+        message.error("Please fill in all fields with valid information.");
+        return;
+      }
+
+      console.log("Form values:", values);
+      console.log("Avatar URL:", values.avatar);
+
       const updatedUser = {
         ...currentUser,
-        ...values
+        ...values,
       };
 
       await axios.patch(
@@ -109,29 +126,26 @@ const ProfilePage: React.FC = () => {
         {
           nickname: updatedUser.nickname,
           avatar: updatedUser.avatar,
-          bio: updatedUser.bio
+          bio: updatedUser.bio,
         },
         {
           headers: {
-            token: token
-          }
+            token: token,
+          },
         }
       );
 
       message.success("Profile updated successfully");
 
-      localStorage.removeItem("USER");
-
-      navigate("/signin");
       // Update currentUser state with the updated information
       setCurrentUser(updatedUser);
 
       // Update avatarPreview if avatar URL is changed
       if (values.avatar !== currentUser.avatar) {
         setAvatarPreview(values.avatar);
-        setCurrentUser(prevState => ({
+        setCurrentUser((prevState) => ({
           ...prevState,
-          avatar: values.avatar
+          avatar: values.avatar,
         }));
       }
 
@@ -141,10 +155,6 @@ const ProfilePage: React.FC = () => {
       message.error("Failed to update profile. Please try again later.");
     }
   };
-
-
-
-
 
   const userToken = localStorage.getItem("USER");
 
@@ -165,7 +175,6 @@ const ProfilePage: React.FC = () => {
 
   const [requestList, setRequestList] = useState([]);
   const [artworks, setArtworks] = useState<any[]>([]);
-
 
   const fetchCurrentUserData = async () => {
     setIsLoading(true);
@@ -239,9 +248,10 @@ const ProfilePage: React.FC = () => {
       children: <Contributed />,
     },
   ];
+
   return (
     <>
-      <Navbar onSubmit={() => { }} />
+      <Navbar onSubmit={() => {}} />
       <div className="profile-container">
         <Row gutter={16}>
           <Col span={24}>
@@ -299,13 +309,23 @@ const ProfilePage: React.FC = () => {
                 onCancel={handleEditModalCancel}
               >
                 <Form layout="vertical" form={form}>
-                  <Form.Item label="Full Name" name="nickname" initialValue={currentUser.nickname}>
+                  <Form.Item
+                    label="Full Name"
+                    name="nickname"
+                    initialValue={currentUser.nickname}
+                  >
                     <Input placeholder="Enter your full name" />
                   </Form.Item>
-                  <Form.Item label="Avatar" name="avatar" initialValue={currentUser.avatar}>
+                  <Form.Item
+                    label="Avatar"
+                    name="avatar"
+                    // initialValue={currentUser.avatar}
+                  >
                     <Input
                       placeholder="Enter avatar URL"
                       onChange={handleAvatarChange}
+                      onSubmit={handleAvatarChange}
+                      defaultValue={currentUser.avatar}
                     />
                     {avatarPreview && (
                       <img
@@ -322,12 +342,15 @@ const ProfilePage: React.FC = () => {
                       />
                     )}
                   </Form.Item>
-                  <Form.Item label="Bio" name="bio" initialValue={currentUser.bio}>
+                  <Form.Item
+                    label="Bio"
+                    name="bio"
+                    initialValue={currentUser.bio}
+                  >
                     <Input.TextArea placeholder="Enter your bio" />
                   </Form.Item>
                 </Form>
               </Modal>
-
             </div>
           </Col>
         </Row>
