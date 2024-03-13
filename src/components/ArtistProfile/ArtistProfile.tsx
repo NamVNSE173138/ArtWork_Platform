@@ -1,4 +1,3 @@
-// ArtistProfile.tsx
 import React, { useEffect, useState } from "react";
 import {
   Row,
@@ -6,7 +5,6 @@ import {
   Card,
   Avatar,
   Button,
-  Tabs,
   Modal,
   Form,
   Input,
@@ -18,25 +16,18 @@ import {
   ShareAltOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import type { TabsProps } from "antd";
 import "./ArtistProfile.css"; // Create this stylesheet for additional styling if needed
-import Contributed from "../ContributedArtwork/ContributedArtwork";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { Box } from "@mui/material";
 import Masonry from "@mui/lab/Masonry";
 import LazyLoad from "react-lazyload";
+import InfiniteScroll from "react-infinite-scroll-component";
+
 const { Meta } = Card;
-const items: TabsProps["items"] = [
-  {
-    key: "2",
-    label: "Contributed Artwork",
-    children: "Content of Tab Pane 2",
-  },
-];
+
 const ArtistProfile: React.FC = () => {
   const { _id } = useParams();
-  console.log(_id);
 
   const [artist, setArtist] = useState<any>(null);
   const [artworks, setArtworks] = useState<any[]>([]);
@@ -80,6 +71,25 @@ const ArtistProfile: React.FC = () => {
     fetchUser();
     fetchArtworks();
   }, [_id]);
+  console.log(artworks);
+
+  const [artistArtwork, setArtistArtwork] = useState(artworks.slice(0, 30));
+  console.log(artistArtwork);
+
+  const [hasMore, setHasMore] = useState(true);
+  const fetchMoreData = () => {
+    if (artistArtwork.length >= artworks.length) {
+      setHasMore(false);
+      return;
+    }
+    setTimeout(() => {
+      setArtistArtwork(
+        artistArtwork.concat(
+          artworks.slice(artistArtwork.length, artistArtwork.length + 20)
+        )
+      );
+    }, 1000);
+  };
 
   return (
     <div className="profile-container">
@@ -119,46 +129,37 @@ const ArtistProfile: React.FC = () => {
           </div>
         </Col>
       </Row>
+      <InfiniteScroll
+        dataLength={artworks.length}
+        next={fetchMoreData}
+        hasMore={hasMore}
+        loader={<p>loading ...</p>}
+      >
+        <Box sx={{ width: 1200, minHeight: 829, overflow: "hidden" }}>
+          <Masonry columns={5} spacing={2}>
+            {artworks.map((artwork, index) => (
+              <div key={index}>
+                <LazyLoad once>
+                  <Link to={`/artwork/${artwork._id}`}>
+                    <img
+                      src={`${artwork.imageUrl}?w=162&auto=format`}
+                      alt={artwork.name}
+                      loading="lazy"
+                      style={{
+                        borderRadius: "15px",
+                        display: "block",
+                        width: "100%",
+                      }}
+                    />
+                  </Link>
+                </LazyLoad>
+              </div>
+            ))}
+          </Masonry>
+        </Box>
+      </InfiniteScroll>
       <Row gutter={16} style={{ marginTop: 20 }}>
-        <Col span={24}>
-          <Tabs defaultActiveKey="1" size="large" type="card">
-            <Tabs.TabPane tab="Contributed Artwork" key="1" className="hi">
-              {/* {artworks.map(
-                (artwork,index) =>
-                  // Move the curly brace to the beginning of the JSX expression
-                  artwork.user === _id && (
-                    <img alt={artwork.name} src={artwork.imageUrl} />
-                  )
-              )} */}
-              <Box sx={{ width: 1000, minHeight: 829 }}>
-                <Masonry columns={5} spacing={2}>
-                  {artworks.map(
-                    (artwork, index) =>
-                      artwork.user === _id && (
-                        <div key={index}>
-                          <LazyLoad once>
-                            <Link to={`/artwork/${artwork._id}`}>
-                              <img
-                                // srcSet={`${item.img}?w=162&auto=format&dpr=2 2x`}
-                                src={`${artwork.imageUrl}?w=162&auto=format`}
-                                alt={artwork.name}
-                                loading="lazy"
-                                style={{
-                                  borderRadius: "15px",
-                                  display: "block",
-                                  width: "100%",
-                                }}
-                              />
-                            </Link>
-                          </LazyLoad>
-                        </div>
-                      )
-                  )}
-                </Masonry>
-              </Box>
-            </Tabs.TabPane>
-          </Tabs>
-        </Col>
+        <Col span={24}></Col>
       </Row>
     </div>
   );
