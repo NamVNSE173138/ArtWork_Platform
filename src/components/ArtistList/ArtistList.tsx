@@ -19,16 +19,13 @@ import {
   TreeSelect,
   theme,
 } from "antd";
-import {
-  PlusCircleOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { PlusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import "./ArtistList.css";
 import TextArea from "antd/es/input/TextArea";
 import axios, { AxiosResponse } from "axios";
 
 const ArtistList = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -75,28 +72,29 @@ const ArtistList = () => {
   }
 
   const [artistData, setArtistData] = useState<UserData[]>([]);
-  const userToken = localStorage.getItem("USER")
+  const userToken = localStorage.getItem("USER");
 
   const fetchArtistList = async () => {
-    await axios.get(`http://localhost:5000/users/getUserInfo`, {
-      headers: {
-        token: userToken, //userToken = localStorage("USER")
-      },
-    })
+    await axios
+      .get(`http://localhost:5000/users/getUserInfo`, {
+        headers: {
+          token: userToken, //userToken = localStorage("USER")
+        },
+      })
       .then((res) => {
-        console.log("Current user: ", res.data)
-        axios.get(`http://localhost:5000/users/artists/${res.data.id}`)
+        console.log("Current user: ", res.data);
+        axios
+          .get(`http://localhost:5000/users/artists/${res.data.id}`)
           .then((res: AxiosResponse) => {
             setArtistData(res.data);
           })
           .catch((error: any) => console.error("Error fetching data:", error));
       })
       .catch((err) => console.log(err));
-  }
+  };
 
   useEffect(() => {
-    fetchArtistList()
-
+    fetchArtistList();
   }, []);
 
   const formItemLayout = {
@@ -184,7 +182,7 @@ const ArtistList = () => {
         className="artist-list"
         itemLayout="vertical"
         size="large"
-        // pagination={{ pageSize: 6 }}
+        pagination={{ pageSize: 9 }}
         dataSource={artistData}
         renderItem={(item: any) => (
           <List.Item key={item._id}>
@@ -211,134 +209,12 @@ const ArtistList = () => {
                   Follow
                 </Button>
                 {/* <Button className="btn-fl" onClick={showModal}> */}
-                <Button className="btn-fl" onClick={() => navigate(`/request/requirements/${item._id}`)}>
+                <Button
+                  className="btn-fl"
+                  onClick={() => navigate(`/request/requirements/${item._id}`)}
+                >
                   Request to make artwork
                 </Button>
-                <Modal
-                  mask={false}
-                  open={open}
-                  title="Request Form"
-                  onOk={handleOk}
-                  onCancel={handleCancel}
-                  footer={[
-                    <Button key="back" onClick={handleCancel}>
-                      Cancel
-                    </Button>,
-                    <Button
-                      key="submit"
-                      type="primary"
-                      loading={loading}
-                      onClick={handleOk}
-                    >
-                      Submit
-                    </Button>,
-                    <Button key="id">{item._id}</Button>,
-                  ]}
-                >
-                  <Form
-                    {...formItemLayout}
-                    // variant="filled"
-                    style={{ maxWidth: 600 }}
-                    ref={formRef}
-                  >
-                    <Form.Item
-                      label="Name of artwork"
-                      name="name"
-                      rules={[{ required: true, message: "Please input!" }]}
-                    >
-                      <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                      label="Tag"
-                      name="tag"
-                      rules={[{ required: true, message: "Please input!" }]}
-                    >
-                      <Space size={[0, 8]} wrap>
-                        {tags.map((tag, index) => {
-                          if (editInputIndex === index) {
-                            return (
-                              <Input
-                                ref={editInputRef}
-                                key={tag}
-                                size="small"
-                                style={tagInputStyle}
-                                value={editInputValue}
-                                onChange={handleEditInputChange}
-                                onBlur={handleEditInputConfirm}
-                                onPressEnter={handleEditInputConfirm}
-                              />
-                            );
-                          }
-                          const isLongTag = tag.length > 20;
-                          const tagElem = (
-                            <Tag
-                              key={tag}
-                              closable={index !== 0}
-                              style={{ userSelect: "none" }}
-                              onClose={() => handleClose(tag)}
-                            >
-                              <span
-                                onDoubleClick={(e) => {
-                                  if (index !== 0) {
-                                    setEditInputIndex(index);
-                                    setEditInputValue(tag);
-                                    e.preventDefault();
-                                  }
-                                }}
-                              >
-                                {isLongTag ? `${tag.slice(0, 20)}...` : tag}
-                              </span>
-                            </Tag>
-                          );
-                          return isLongTag ? (
-                            <Tooltip title={tag} key={tag}>
-                              {tagElem}
-                            </Tooltip>
-                          ) : (
-                            tagElem
-                          );
-                        })}
-                        {inputVisible ? (
-                          <Input
-                            ref={inputRef}
-                            type="text"
-                            size="small"
-                            style={tagInputStyle}
-                            value={inputValue}
-                            onChange={handleInputChange}
-                            onBlur={handleInputConfirm}
-                            onPressEnter={handleInputConfirm}
-                          />
-                        ) : (
-                          <Tag
-                            style={tagPlusStyle}
-                            icon={<PlusOutlined />}
-                            onClick={showInput}
-                          >
-                            New Tag
-                          </Tag>
-                        )}
-                      </Space>
-                    </Form.Item>
-
-                    <Form.Item
-                      label="Prices"
-                      name="prices"
-                      rules={[{ required: true, message: "Please input!" }]}
-                    >
-                      <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                      label="Des"
-                      name="description"
-                      rules={[{ required: true, message: "Please input!" }]}
-                    >
-                      <TextArea />
-                    </Form.Item>
-                  </Form>
-                </Modal>
               </div>
             </Card>
           </List.Item>

@@ -2,3 +2,27 @@
     display: flex !important;
     justify-content: center !important;
 }
+
+.profile-artist-container {
+    margin: 5% 100px;
+    overflow: hidden;
+}
+
+.list-image {
+    height: 150px;
+    width: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Optional hover effect */
+.list-image:hover {
+    transform: scale(1.05);
+    /* Scale up slightly on hover */
+}
+
+.artwork-artist-list {
+    overflow: hidden;
+    padding-top: 10px;
+}

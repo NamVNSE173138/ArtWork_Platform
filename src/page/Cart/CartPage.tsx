@@ -101,7 +101,7 @@ const CartPage = () => {
     );
   };
 
-  const handleNothing = () => {};
+  const handleNothing = () => { };
 
   const ShowCart = () => {
     let subtotal = 0;

@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
 import styles from "./Artwork.module.css";
-import { List, Button, Avatar, Typography, Spin, Badge, Flex, message, Tag, Tooltip } from "antd";
+import {
+  List,
+  Button,
+  Avatar,
+  Typography,
+  Spin,
+  Badge,
+  Flex,
+  message,
+  Tag,
+  Tooltip,
+} from "antd";
 import {
   LoadingOutlined,
   HeartFilled,
@@ -9,6 +20,7 @@ import {
   PlusCircleOutlined,
   LikeOutlined,
   LikeFilled,
+  HeartOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
@@ -66,7 +78,7 @@ interface FavoriteList {
 
 export default function Artwork() {
   const { Text, Title } = Typography;
-  const [messageApi, contextHolder] = message.useMessage()
+  const [messageApi, contextHolder] = message.useMessage();
   const { id } = useParams();
   const userToken = localStorage.getItem("USER");
   const [isLoading, setIsLoading] = useState(false);
@@ -130,7 +142,7 @@ export default function Artwork() {
   const [commentList, setCommentList] = useState<Comment[]>([]);
   const [newCommentIncoming, setNewCommentIncoming] = useState(false);
 
-  const [isLiked, setIsLiked] = useState(false); // State to track if artwork is liked
+  const [isLiked, setIsLiked] = useState(false);
   const [favoriteList, setFavoriteList] = useState<FavoriteList[]>([]);
 
   const commentForm: FormikProps<Comment> = useFormik<Comment>({
@@ -151,40 +163,43 @@ export default function Artwork() {
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
-      text: Yup.string().required()
+      text: Yup.string().required(),
     }),
     onSubmit: (values: Comment, { resetForm }) => {
       if (values.text.length > 0) {
         setNewCommentIncoming(true);
-        axios.post("http://localhost:5000/comments", {
-          artwork: id,
-          user: currentUser.id,
-          text: values.text.trim(),
-          numOfLike: 0,
-        },
-          {
-            headers: {
-              token: userToken,
+        axios
+          .post(
+            "http://localhost:5000/comments",
+            {
+              artwork: id,
+              user: currentUser.id,
+              text: values.text.trim(),
+              numOfLike: 0,
             },
-          }
-        )
+            {
+              headers: {
+                token: userToken,
+              },
+            }
+          )
           .then((res) => {
             console.log(res.data);
             setIsLoading(false);
           })
           .catch((err) => console.log(err));
-        resetForm()
+        resetForm();
         setTimeout(() => {
           setNewCommentIncoming(false);
         }, 500);
       } else {
         messageApi.open({
-          type: 'warning',
-          content: 'Comments should not be left empty !'
-        })
-        resetForm()
+          type: "warning",
+          content: "Comments should not be left empty !",
+        });
+        resetForm();
       }
-    }
+    },
   });
 
   const fetchCurrentUserData = async () => {
@@ -230,15 +245,38 @@ export default function Artwork() {
       .catch((err) => console.log(err));
   };
 
+  const fetchFavoriteList = async () => {
+    try {
+      await axios
+        .get("http://localhost:5000/artworks/getUserFavoriteList", {
+          headers: {
+            token: userToken,
+          },
+        })
+        .then((res) => {
+          console.log("Favorite List Response:", res.data.data);
+          if (Array.isArray(res.data.data)) {
+            const isArtworkLiked = res.data.data.some(
+              (item: any) => item.artwork?._id === id
+            );
+            setIsLiked(isArtworkLiked);
+          } else {
+            console.error("Response data is not an array:", res.data.data);
+          }
+        });
+    } catch (error: any) {
+      console.error("Error fetching favorite list:", error.message);
+      // Handle error
+    }
+  };
+
   const likeArtwork = async () => {
     try {
-      console.log(localStorage.getItem("USER"));
-
-      console.log("user", currentUser.id);
       if (!currentUser || !currentUser.id) {
         console.error("Current user data is not available");
         return;
       }
+
       // Make a POST request to likeArtwork API endpoint
       const response = await axios.post(
         `http://localhost:5000/artworks/favoriteList/${artwork._id}`,
@@ -249,11 +287,19 @@ export default function Artwork() {
           },
         }
       );
+
       console.log("Response:", response.data);
-      if (response.status == 200) {
-        console.log("favorite", response.data);
-        setIsLiked(true); // Set isLiked state to true after successfully liking the artwork
-        setFavoriteList([...favoriteList, artwork]); // Add artwork to favorite list
+
+      if (response.status === 200) {
+        if (isLiked) {
+          const updatedFavoriteList = favoriteList.filter(
+            (item) => item.artwork?._id !== artwork._id
+          );
+          setFavoriteList(updatedFavoriteList);
+        } else {
+          setFavoriteList([...favoriteList, artwork]);
+        }
+        setIsLiked(!isLiked);
       }
     } catch (error: any) {
       console.error("Error liking artwork:", error.message);
@@ -264,6 +310,7 @@ export default function Artwork() {
   useEffect(() => {
     fetchCurrentUserData();
     fetchArtworkData();
+    fetchFavoriteList();
   }, []);
 
   useEffect(() => {
@@ -285,7 +332,14 @@ export default function Artwork() {
           <>
             <div className={styles.leftSection}>
               {artwork.price > 0 ? (
-                <Badge.Ribbon text={<Text strong style={{ color: '#FFF' }}>{artwork.price} $</Text>} color="red">
+                <Badge.Ribbon
+                  text={
+                    <Text strong style={{ color: "#FFF" }}>
+                      {artwork.price} $
+                    </Text>
+                  }
+                  color="red"
+                >
                   <img className={styles.image} src={artwork.imageUrl} alt="" />
                 </Badge.Ribbon>
               ) : (
@@ -299,12 +353,9 @@ export default function Artwork() {
                   <br />
                   <span id={styles.description}>
                     <Tooltip title={artwork.description} placement="topLeft">
-                      <Text italic>
-                        Description: {artwork.description}
-                      </Text>
+                      <Text italic>Description: {artwork.description}</Text>
                     </Tooltip>
                   </span>
-                  {/* <br /> */}
                   <div
                     style={{
                       marginTop: "-20px",
@@ -341,7 +392,7 @@ export default function Artwork() {
                     <Text
                       strong
                       id={styles.userName}
-                      onClick={() => navigate(`/artistList/${artist.id}`)}
+                      onClick={() => navigate(`/artistList/${artwork.user}`)}
                       style={{ textDecoration: "underline" }}
                     >
                       {artist.nickname}
@@ -473,9 +524,11 @@ export default function Artwork() {
                 <Button
                   size="large"
                   className="like-modal-btn"
-                  icon={<HeartFilled />}
+                  // icon={<HeartFilled />}
+                  icon={isLiked ? <HeartFilled /> : <HeartOutlined />}
+                  // icon={isLiked ? <HeartOutlined /> : <HeartFilled />}
                   onClick={likeArtwork}
-                  disabled={isLiked}
+                  // disabled={isLiked}
                 />
                 {artwork.price > 0 ? (
                   <BuyArtwork artwork={artwork._id} user={currentUser.id} />
