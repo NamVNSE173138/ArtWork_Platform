@@ -136,11 +136,11 @@ const ProfilePage: React.FC = () => {
       );
 
       message.success("Profile updated successfully");
+      localStorage.removeItem("USER");
 
-      // Update currentUser state with the updated information
+      navigate("/signin");
       setCurrentUser(updatedUser);
 
-      // Update avatarPreview if avatar URL is changed
       if (values.avatar !== currentUser.avatar) {
         setAvatarPreview(values.avatar);
         setCurrentUser((prevState) => ({
