@@ -1,13 +1,9 @@
 import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import axios, { AxiosResponse } from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Flex, Image, Typography, Button, message, Tabs, Badge } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { Flex, Typography, message, Tabs, Badge } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
-import styles from './UserRequest.module.css'
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import RequestRequirements from './RequestRequirements';
 import type { TabsProps } from 'antd';
 import PendingRequest from './PendingRequest';
 import ArtistResponse from './ArtistResponse';

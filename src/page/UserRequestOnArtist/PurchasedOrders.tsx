@@ -7,6 +7,7 @@ import type { TableProps } from 'antd';
 import { DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import dateFormat from '../../assistants/date.format';
 import moment from 'moment';
+import { generateCode } from '../../assistants/Generators';
 
 interface User {
     _id: string,
@@ -107,6 +108,7 @@ export default function PurchasedOrders() {
             .then(async () => {
                 await axios.get(`http://localhost:5000/artistRequests/${id}`)
                     .then((res) => {
+                        console.log("Artist request info: ", res.data)
                         axios.patch(`http://localhost:5000/users/${currentUser._id}`, {
                             balance: (currentUser.balance > 0) ? (currentUser.balance + res.data.price) : res.data.price
                         })
@@ -114,8 +116,18 @@ export default function PurchasedOrders() {
                                 console.log("Update user's balance: ", res.data)
                             })
                             .catch((err) => console.log(err))
+                        axios.post('http://localhost:5000/orders', {
+                            user: currentUser._id,
+                            artwork: res.data.artwork._id,
+                            amount: res.data.price,
+                            status: true,
+                            code: generateCode(10, '')
+                        })
+                            .then((res) => {
+                                console.log("Order created: ", res.data)
+                            })
+                            .catch((err) => console.log(err))
                         message.success(`You have earned ${res.data.price} $. Double-check your balance !`, 5)
-
                     })
                     .catch((err) => console.log(err))
 
@@ -209,7 +221,7 @@ export default function PurchasedOrders() {
     return (
         <>
             {contextHolder}
-            < Table columns={columns} dataSource={purchasedOrderList}
+            <Table columns={columns} dataSource={purchasedOrderList}
                 pagination={{ hideOnSinglePage: true }
                 }
                 scroll={{ y: 500, scrollToFirstRowOnChange: true }} />
