@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const Artwork = require("../Models/artwork");
 const artworkController = require("../Controllers/ArtworkController");
 
 router.get("/", artworkController.getAllArtwork);
@@ -18,5 +17,7 @@ router.patch("/:id", artworkController.updateArtwork);
 router.delete("/:id", artworkController.deleteArtwork);
 
 router.post("/favoriteList/:id", artworkController.likeArtwork);
+
+router.get("/artworkOf/:artistId", artworkController.getArtworksByArtist);
 
 module.exports = router;

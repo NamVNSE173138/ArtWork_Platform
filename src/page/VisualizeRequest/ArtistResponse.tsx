@@ -134,8 +134,20 @@ export default function ArtistResponse() {
             .catch((err) => console.log(err))
     }
 
-    const rejectRequest = async () => {
-
+    const rejectRequest = async (id: string) => {
+        await axios.delete(`http://localhost:5000/artistRequests/${id}`)
+            .then((res) => {
+                console.log("Deleted artist request: ", res.data)
+                fetchArtistResponse()
+                messageApi
+                    .open({
+                        type: 'loading',
+                        content: '',
+                        duration: 1,
+                    })
+                    .then(() => message.info('Request rejected.', 3))
+            })
+            .catch((err) => console.log(err))
     }
 
     const columns: TableProps<ArtistRequest>['columns'] = [
@@ -235,7 +247,7 @@ export default function ArtistResponse() {
                     >
                         <strong>BUY</strong>
                     </Button>
-                    <Button type='primary' onClick={rejectRequest}
+                    <Button type='primary' onClick={() => rejectRequest(_id)}
                         style={{ display: 'flex', alignItems: 'center', backgroundColor: '#B40D0D' }}
                     >
                         <strong>REJECT</strong>

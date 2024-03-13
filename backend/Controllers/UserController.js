@@ -1,7 +1,7 @@
-const createError = require('http-errors');
-const mongoose = require('mongoose');
-const { createToken, decodeToken } = require('../Config/config.js')
-const User = require('../Models/user.js');
+const createError = require("http-errors");
+const mongoose = require("mongoose");
+const { createToken, decodeToken } = require("../Config/config.js");
+const User = require("../Models/user.js");
 
 module.exports = {
   getAllUsers: async (req, res, next) => {
@@ -15,7 +15,9 @@ module.exports = {
 
   getArtistList: async (req, res, next) => {
     try {
-      const results = await User.find({ role: "artist" }, { __v: 0 }).sort({ 'numOfFollower': -1 });
+      const results = await User.find({ role: "artist" }, { __v: 0 }).sort({
+        numOfFollower: -1,
+      });
       res.send(results);
     } catch (error) {
       console.log(error.message);
@@ -24,8 +26,11 @@ module.exports = {
 
   getArtistListExceptLoginUser: async (req, res, next) => {
     try {
-      const id = req.params.id
-      const results = await User.find({ role: "artist", _id: { $ne: id } }, { __v: 0 }).sort({ 'numOfFollower': -1 });
+      const id = req.params.id;
+      const results = await User.find(
+        { role: "artist", _id: { $ne: id } },
+        { __v: 0 }
+      ).sort({ numOfFollower: -1 });
       res.send(results);
     } catch (error) {
       console.log(error.message);
@@ -39,7 +44,7 @@ module.exports = {
       res.send(result);
     } catch (error) {
       console.log(error.message);
-      if (error.name === 'ValidationError') {
+      if (error.name === "ValidationError") {
         next(createError(422, error.message));
         return;
       }
@@ -62,7 +67,7 @@ module.exports = {
       }
     } catch (error) {
       console.error(error.message);
-      if (error.name === 'ValidationError') {
+      if (error.name === "ValidationError") {
         next(createError(422, error.message));
         return;
       }
@@ -75,13 +80,13 @@ module.exports = {
     try {
       const user = await User.findById(id, { __v: 0 });
       if (!user) {
-        throw createError(404, 'User does not exist.');
+        throw createError(404, "User does not exist.");
       }
       res.send(user);
     } catch (error) {
       console.log(error.message);
       if (error instanceof mongoose.CastError) {
-        next(createError(400, 'Invalid User id'));
+        next(createError(400, "Invalid User id"));
         return;
       }
       next(error);
@@ -96,13 +101,13 @@ module.exports = {
 
       const result = await User.findByIdAndUpdate(id, updates, options);
       if (!result) {
-        throw createError(404, 'User does not exist');
+        throw createError(404, "User does not exist");
       }
       res.send(result);
     } catch (error) {
       console.log(error.message);
       if (error instanceof mongoose.CastError) {
-        return next(createError(400, 'Invalid User Id'));
+        return next(createError(400, "Invalid User Id"));
       }
 
       next(error);
@@ -113,19 +118,19 @@ module.exports = {
     try {
       const id = req.params.id;
       const updates = {
-        role: "artist"
+        role: "artist",
       };
       const options = { new: true };
 
       const result = await User.findByIdAndUpdate(id, updates, options);
       if (!result) {
-        throw createError(404, 'User does not exist');
+        throw createError(404, "User does not exist");
       }
       res.send(result);
     } catch (error) {
       console.log(error.message);
       if (error instanceof mongoose.CastError) {
-        return next(createError(400, 'Invalid User Id'));
+        return next(createError(400, "Invalid User Id"));
       }
 
       next(error);
@@ -137,13 +142,13 @@ module.exports = {
     try {
       const result = await User.findByIdAndDelete(id);
       if (!result) {
-        throw createError(404, 'User does not exist.');
+        throw createError(404, "User does not exist.");
       }
       res.send(result);
     } catch (error) {
       console.log(error.message);
       if (error instanceof mongoose.CastError) {
-        next(createError(400, 'Invalid User id'));
+        next(createError(400, "Invalid User id"));
         return;
       }
       next(error);
@@ -178,24 +183,25 @@ module.exports = {
         avatar: userInfo?.data?.checkEmail?.avatar,
         role: userInfo?.data?.checkEmail?.role,
         numOfFollower: userInfo?.data?.checkEmail?.numOfFollower,
-        balance: userInfo?.data?.checkEmail?.balance
-      }
+        bio: userInfo?.data?.checkEmail?.bio,
+        balance: userInfo?.data?.checkEmail?.balance,
+      };
       // console.log(data)
       if (!userInfo) {
-        return res.status(401).json({ message: 'Invalid or expired token' });
+        return res.status(401).json({ message: "Invalid or expired token" });
       }
 
       res.json(data);
     } catch (error) {
       // Handle errors
-      console.error('Error in getUserInfo:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      console.error("Error in getUserInfo:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
   },
 
   countUser: async (req, res, next) => {
     try {
-      const results = await User.find({ role: 'user' })
+      const results = await User.find({ role: "user" });
       const total = results.length;
       res.send({ total });
     } catch (error) {
@@ -205,12 +211,11 @@ module.exports = {
 
   countArtist: async (req, res, next) => {
     try {
-      const results = await User.find({ role: 'artist' })
+      const results = await User.find({ role: "artist" });
       const total = results.length;
       res.send({ total });
     } catch (error) {
       console.log(error.message);
     }
-  }
+  },
 };
-

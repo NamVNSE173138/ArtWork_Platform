@@ -59,7 +59,27 @@ const VnPayPayment: React.FC = () => {
         transCode: "",
     });
 
+
+
     useEffect(() => {
+        const queryString = window.location.search;
+        console.log("queryString:", queryString);
+
+        const urlParams = new URLSearchParams(queryString);
+        console.log("urlParams:", urlParams);
+
+        const bankName = urlParams.get('vnp_BankCode');
+        console.log("bankName:", bankName);
+
+        const amount = urlParams.get('vnp_Amount');
+        console.log("amount:", amount);
+
+        const payDate = urlParams.get('vnp_PayDate');
+        console.log("payDate:", payDate);
+
+        const transCode = urlParams.get('vnp_BankTranNo');
+        console.log("transCode:", transCode);
+
         const saveBillTransaction = async () => {
             try {
                 console.log("token to vnpay in client", userToken);
@@ -70,8 +90,10 @@ const VnPayPayment: React.FC = () => {
                     // return;
                 }
 
-                const queryString = window.location.search;
-                const urlParams = new URLSearchParams(queryString);
+                // const queryString = window.location.search;
+                // console.log("url", queryString);
+
+                // const urlParams = new URLSearchParams(queryString);
 
                 console.log("vnp url", queryString);
 

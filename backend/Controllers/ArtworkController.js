@@ -123,10 +123,12 @@ module.exports = {
         const result = await favoriteList.save();
         res.send(result);
       } else {
-        console.log("you liked artwork");
-        res
-          .status(400)
-          .json({ message: "You have already liked this artwork" });
+        // console.log("you liked artwork");
+        // res
+        //   .status(400)
+        //   .json({ message: "You have already liked this artwork" });
+        const deletedLike = await FavoriteList.findOneAndDelete({ user: userId, artwork: id });
+        res.send({ message: "You have unliked this artwork", deletedLike });
       }
     } catch (error) {
       console.log("Loi ne", error.message);
@@ -143,6 +145,18 @@ module.exports = {
         "imageUrl"
       );
       res.send({ message: "ok", data: artwork });
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+  getArtworksByArtist: async (req, res, next) => {
+    try {
+      const { artistId } = req.params;
+      const artworks = await Artwork.find(
+        { user: artistId, status: true },
+        { __v: 0 }
+      );
+      res.send(artworks);
     } catch (error) {
       console.log(error.message);
     }

@@ -51,6 +51,7 @@ export default function Order() {
     const navigate = useNavigate()
     const userToken = localStorage.getItem("USER")
 
+    const [currentUser, setCurrentUser] = useState<User>()
     const [orderList, setOrderList] = useState<Order[]>([])
 
     const fetchOrderList = async () => {
@@ -60,7 +61,13 @@ export default function Order() {
             },
         })
             .then((res) => {
-                console.log("Current user on order: ", res.data)
+                axios.get(`http://localhost:5000/users/${res.data.id}`)
+                    .then((res) => {
+                        console.log("Current user on order: ", res.data)
+                        setCurrentUser(res.data)
+                    })
+                    .catch((err) => console.log(err))
+
                 axios.get(`http://localhost:5000/orders/user/${res.data.id}`)
                     .then((res) => {
                         console.log("Order list: ", res.data)
@@ -148,7 +155,20 @@ export default function Order() {
         <>
             <Navbar onSubmit={() => { }} />
             <Flex vertical justify='center' align='center'>
-                <Title>ORDERS</Title>
+                <Flex justify='center' align='center'>
+                    <Title>ORDERS</Title>
+                </Flex>
+                {currentUser?.balance
+                    ? <Flex gap={10} justify='center' align='center' style={{ margin: '0 5% 2% auto' }}>
+                        <Text strong>Current balance: </Text>
+                        <Text strong
+                            style={{ backgroundColor: "green", padding: '2px 10px', borderRadius: '10px', color: '#FFF', fontSize: '150%' }}>
+                            {currentUser.balance} $
+                        </Text>
+                    </Flex>
+                    : null
+                }
+
                 <Table columns={columns} dataSource={orderList} bordered size='small' style={{ width: '90%' }}
                     pagination={{ defaultPageSize: 10, hideOnSinglePage: true, position: ["bottomCenter"] }}
                 />

@@ -9,6 +9,7 @@ import {
   Form,
   Input,
   message,
+  List,
 } from "antd";
 import {
   EditOutlined,
@@ -17,7 +18,7 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import "./ArtistProfile.css"; // Create this stylesheet for additional styling if needed
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Box } from "@mui/material";
 import Masonry from "@mui/lab/Masonry";
@@ -59,7 +60,7 @@ const ArtistProfile: React.FC = () => {
     const fetchArtworks = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/artworks?user=${_id}`
+          `http://localhost:5000/artworks/artworkOf/${_id}`
         );
         setArtworks(response.data);
         console.log(response.data);
@@ -73,29 +74,29 @@ const ArtistProfile: React.FC = () => {
   }, [_id]);
   console.log(artworks);
 
-  const [artistArtwork, setArtistArtwork] = useState(artworks.slice(0, 30));
-  console.log(artistArtwork);
+  // const [artistArtwork, setArtistArtwork] = useState(artworks.slice(0, 30));
+  // console.log(artistArtwork);
 
-  const [hasMore, setHasMore] = useState(true);
-  const fetchMoreData = () => {
-    if (artistArtwork.length >= artworks.length) {
-      setHasMore(false);
-      return;
-    }
-    setTimeout(() => {
-      setArtistArtwork(
-        artistArtwork.concat(
-          artworks.slice(artistArtwork.length, artistArtwork.length + 20)
-        )
-      );
-    }, 1000);
-  };
-
+  // const [hasMore, setHasMore] = useState(true);
+  // const fetchMoreData = () => {
+  //   if (artistArtwork.length >= artworks.length) {
+  //     setHasMore(false);
+  //     return;
+  //   }
+  //   setTimeout(() => {
+  //     setArtistArtwork(
+  //       artistArtwork.concat(
+  //         artworks.slice(artistArtwork.length, artistArtwork.length + 20)
+  //       )
+  //     );
+  //   }, 1000);
+  // };
+  const navigate = useNavigate();
   return (
-    <div className="profile-container">
+    <div className="profile-artist-container">
       <Row gutter={16}>
         <Col span={24}>
-          <div className="profile-content">
+          <div className="profile-artist-content">
             <Card>
               <Meta
                 avatar={<Avatar src={artist && artist.avatar} />}
@@ -129,38 +130,26 @@ const ArtistProfile: React.FC = () => {
           </div>
         </Col>
       </Row>
-      <InfiniteScroll
-        dataLength={artworks.length}
-        next={fetchMoreData}
-        hasMore={hasMore}
-        loader={<p>loading ...</p>}
-      >
-        <Box sx={{ width: 1200, minHeight: 829, overflow: "hidden" }}>
-          <Masonry columns={5} spacing={2}>
-            {artworks.map((artwork, index) => (
-              <div key={index}>
-                <LazyLoad once>
-                  <Link to={`/artwork/${artwork._id}`}>
-                    <img
-                      src={`${artwork.imageUrl}?w=162&auto=format`}
-                      alt={artwork.name}
-                      loading="lazy"
-                      style={{
-                        borderRadius: "15px",
-                        display: "block",
-                        width: "100%",
-                      }}
-                    />
-                  </Link>
-                </LazyLoad>
-              </div>
-            ))}
-          </Masonry>
-        </Box>
-      </InfiniteScroll>
-      <Row gutter={16} style={{ marginTop: 20 }}>
-        <Col span={24}></Col>
-      </Row>
+      <List
+        grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 2, xl: 3, xxl: 3 }}
+        className="artwork-artist-list"
+        itemLayout="vertical"
+        size="large"
+        pagination={{ pageSize: 6 }}
+        dataSource={artworks}
+        renderItem={(item: any) => (
+          <List.Item key={item._id}>
+            <Card style={{ width: "100%" }} actions={[]}>
+              <img
+                alt={item.name}
+                src={item.imageUrl}
+                className="list-image"
+                onClick={() => navigate(`/artwork/${item._id}`)}
+              />
+            </Card>
+          </List.Item>
+        )}
+      />
     </div>
   );
 };
