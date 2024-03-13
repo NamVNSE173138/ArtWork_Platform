@@ -233,21 +233,33 @@ export default function Artwork() {
 
   const fetchFavoriteList = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/favoriteList", {
-        headers: {
-          Authorization: userToken,
-        },
-      });
-      console.log("Favorite List:", response.data);
-      // Check if the current artwork is in the user's favorite list
-      const isArtworkLiked = response.data.some(
-        (item: any) => item.artwork?._id === id
-      );
-      setIsLiked(isArtworkLiked);
+      await axios.get("http://localhost:5000/artworks/getUserFavoriteList",
+        {
+          headers: {
+            token: userToken,
+          },
+        }).then((res) => {
+
+          console.log("Favorite List Response:", res.data.data);
+          if (Array.isArray(res.data.data)) {
+            const isArtworkLiked = res.data.data.some(
+              (item: any) => item.artwork?._id === id
+            );
+            setIsLiked(isArtworkLiked);
+          } else {
+            console.error("Response data is not an array:", res.data.data);
+          }
+        });
+
+
+
     } catch (error: any) {
       console.error("Error fetching favorite list:", error.message);
+      // Handle error
     }
   };
+
+
 
   // const likeArtwork = async () => {
   //   try {
