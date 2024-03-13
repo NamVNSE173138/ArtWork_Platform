@@ -1,6 +1,6 @@
 import { useEffect, useState, ReactNode } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Card, Image } from "antd";
+import { Button, Card, Image, notification } from "antd";
 import axios from "axios";
 import { Tabs, TabsTrigger, TabsList } from "@radix-ui/react-tabs";
 import { DeleteOutlined } from "@ant-design/icons";
@@ -28,7 +28,7 @@ interface NotificationProps {
   };
   artist: string;
   artwork: {
-    artworkId: string;
+    _id: string;
     name: string;
   };
   type: string;
@@ -48,6 +48,7 @@ function SkeletonNotifications() {
 }
 
 const Notification = () => {
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [filter, setFilter] = useState<"Like" | "Buy" | "Request">("Like");
   const filteredNotifications = notifications.filter(
@@ -67,8 +68,6 @@ const Notification = () => {
     createdAt: "",
     updatedAt: "",
   });
-
-  const navigate = useNavigate();
 
   const getNotificationList = async (id: any) => {
     setIsLoading(true);
@@ -135,9 +134,9 @@ const Notification = () => {
         <div>
           <div className="font-bold mb-2">{title}</div>
           <div>
-            <Link to={`/profile/${notification.user.userId}`}>
-              {notification.user.nickname}{" "}
-            </Link>
+            {/* <Link to={`/profile/${notification.user.userId}`}> */}
+            {notification.user.nickname}
+            {/* </Link> */}
             {description}
           </div>
         </div>
@@ -149,9 +148,10 @@ const Notification = () => {
             if (!notification.status) {
               markNotificationAsRead(notification._id);
             } else {
-              console.log("IDDD: ", notification.artwork.artworkId);
+              console.log("DAD: ", notification);
+              // console.log("IDDD: ", notification.user);
             }
-            navigate(`/artwork/${notification.artwork.artworkId}`);
+            navigate(`/artwork/${notification.artwork?._id}`);
           }}
         >
           {notification.status ? "View" : "Read"}
