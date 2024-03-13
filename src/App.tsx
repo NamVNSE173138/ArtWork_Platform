@@ -22,6 +22,7 @@ import VisualizeRequest from "./page/VisualizeRequest/RequestHistory";
 import RequestApproval from "./page/UserRequestOnArtist/RequestApproval";
 import UserRequestOnArtist from "./page/UserRequestOnArtist/UserRequestOnArtist";
 import VnPayPayment from "./components/VNPay/VnPayPayment";
+import NotFound from "./page/404";
 
 function App() {
   return (
@@ -41,16 +42,14 @@ function App() {
       <Route path="/favoriteList" element={<FavoriteList />} />
       <Route path="/request" element={<ArtistList />} />
       <Route path="/request/history" element={<VisualizeRequest />} />
-      <Route
-        path="/request/requirements/:id"
-        element={<RequestRequirements />}
-      />
+      <Route path="/request/requirements/:id" element={<RequestRequirements />} />
       <Route path="/userRequest/approval/:id" element={<RequestApproval />} />
       <Route path="/artistList/:_id" element={<ArtistProfile />} />
       <Route path="/artworkRequest" element={<ArtworkRequest />} />
       <Route path="/cart" element={<CartPage />} />
       <Route path="/order/vnpay_return" element={<VnPayPayment />} />
       <Route path="/notifications" element={<NotificationPage />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

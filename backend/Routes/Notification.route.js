@@ -12,7 +12,6 @@ router.put('/:notificationId', NotificationController.markNotificationAsRead);
 
 router.delete('/:id', NotificationController.deleteNotification);
 
-//TEST
 router.post('/decline/:id', NotificationController.declineNotification);
 
 module.exports = router;

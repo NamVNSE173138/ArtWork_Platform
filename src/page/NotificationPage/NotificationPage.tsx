@@ -146,12 +146,12 @@ const Notification = () => {
           title={notification.status ? "outline" : "default"}
           className="ml-auto"
           onClick={() => {
-            if (!notification.status) {
+            if (notification.status === false) {
               markNotificationAsRead(notification._id);
             } else {
               console.log("DAD: ", notification);
             }
-            navigate(`/artwork/${notification.artwork?._id}`);
+            // navigate(`/artwork/${notification.artwork?._id}`);
           }}
         >
           {notification.status ? "View" : "Read"}

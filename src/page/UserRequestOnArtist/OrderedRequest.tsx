@@ -51,9 +51,9 @@ export default function UserRequestList() {
   const [messageApi, contextHolder] = message.useMessage();
 
   const userToken = localStorage.getItem("USER");
-  const [userRequestList, setUserRequestList] = useState([]);
+  const [orderedRequestList, setOrderedRequestList] = useState([]);
 
-  const fetchUserRequest = async () => {
+  const fetchOrderedRequest = async () => {
     await axios
       .get(`http://localhost:5000/users/getUserInfo`, {
         headers: {
@@ -66,7 +66,7 @@ export default function UserRequestList() {
           .get(`http://localhost:5000/userRequests/artist/${res.data.id}`)
           .then((res) => {
             console.log("User request list: ", res.data);
-            setUserRequestList(res.data);
+            setOrderedRequestList(res.data);
           })
           .catch((err) => console.log(err));
       })
@@ -74,7 +74,7 @@ export default function UserRequestList() {
   };
 
   useEffect(() => {
-    fetchUserRequest();
+    fetchOrderedRequest();
   }, []);
 
   const columns: TableProps<UserRequest>["columns"] = [
@@ -145,12 +145,12 @@ export default function UserRequestList() {
       title: "Action",
       key: "action",
       // render: (_, { _id }) => (
-      render: (text, record) => (
+      render: (_, record) => (
         <Space size="middle">
           <Button
             type="primary"
             style={{ display: "flex", alignItems: "center" }}
-            onClick={() => navigate(`/userRequest/approval/${record._id}`)}
+            onClick={() => approveRequest(record._id)}
           >
             Approve
           </Button>
@@ -181,7 +181,7 @@ export default function UserRequestList() {
           overlayInnerStyle={{ backgroundColor: "#FFF", color: "#000" }}
         >
           <Button
-            onClick={() => fetchUserRequest()}
+            onClick={() => fetchOrderedRequest()}
             style={{ display: "flex", alignItems: "center" }}
           >
             <ReloadOutlined />
@@ -192,13 +192,29 @@ export default function UserRequestList() {
     },
   ];
 
+  const approveRequest = (id: string) => {
+    axios
+      .get(`http://localhost:5000/userRequests/${id}`)
+      .then((res) => {
+        navigate(`/userRequest/approval/${id}`);
+      })
+      .catch((err) => {
+        message.error(
+          "Request is no longer existed. The sender might have recalled it.",
+          7
+        );
+        fetchOrderedRequest();
+        console.log(err);
+      });
+  };
+
   const deleteRequest = async (id: string) => {
     await axios
       .delete(`http://localhost:5000/userRequests/${id}`)
       .then((res) => {
         console.log("Delete request: ", res.data);
-        setUserRequestList(
-          userRequestList.filter((item: any) => item._id !== id)
+        setOrderedRequestList(
+          orderedRequestList.filter((item: any) => item._id !== id)
         );
       })
       .catch((err) => {
@@ -209,7 +225,7 @@ export default function UserRequestList() {
   return (
     <Table
       columns={columns}
-      dataSource={userRequestList}
+      dataSource={orderedRequestList}
       pagination={{ hideOnSinglePage: true }}
       scroll={{ y: 500, scrollToFirstRowOnChange: true }}
     />

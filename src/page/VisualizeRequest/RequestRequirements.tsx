@@ -193,7 +193,7 @@ export default function RequestRequirements() {
                             content: 'Sending request...',
                             duration: 2,
                         })
-                        .then(() => message.success('Your request is sent. Please stay tuned for responses from the artist', 3))
+                        .then(() => message.success('Your request has been sent. Please stay tuned for responses from the artist', 3))
                     setTimeout(() => {
                         navigate('/request')
                     }, 2500)
@@ -227,7 +227,7 @@ export default function RequestRequirements() {
                             <Text>{artist.bio}</Text>
                             <textarea name="message" rows={8} cols={8} wrap="soft" placeholder='Note to artist...' style={{ marginTop: '3%' }}
                                 className={styles.messageInput}
-                                value={requestForm.values.message}
+                                value={requestForm.values.message.trimStart()}
                                 onChange={requestForm.handleChange}
                                 onBlur={requestForm.handleBlur}
                             />
@@ -239,7 +239,7 @@ export default function RequestRequirements() {
                         <Flex vertical style={{ width: '80%', margin: '0 auto' }} gap={10}>
                             <Text>Name of the artwork <strong style={{ color: 'red' }}>*</strong></Text>
                             <input className={styles.formInput} type='text' name='name' placeholder='What is it called ?' autoComplete='off'
-                                value={requestForm.values.name}
+                                value={requestForm.values.name.trimStart()}
                                 onChange={requestForm.handleChange}
                                 onBlur={requestForm.handleBlur}
                             />
@@ -247,14 +247,14 @@ export default function RequestRequirements() {
                             <Text>Description <strong style={{ color: 'red' }}>*</strong></Text>
                             <textarea name='description' placeholder='Describe your art...' autoComplete='off'
                                 className={styles.messageInput}
-                                value={requestForm.values.description}
+                                value={requestForm.values.description.trimStart()}
                                 onChange={requestForm.handleChange}
                                 onBlur={requestForm.handleBlur}
                             />
 
                             <Flex vertical>
                                 <Text>Estimated price each ($) <strong style={{ color: 'red' }}>*</strong></Text>
-                                <input className={styles.formNumberInput} type='number' name='priceEst'
+                                <input className={styles.formNumberInput} type='number' name='priceEst' style={{ width: 'fit-content' }}
                                     value={requestForm.values.priceEst}
                                     onChange={requestForm.handleChange}
                                     onBlur={requestForm.handleBlur}

@@ -307,7 +307,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
                 <li>
                   <span style={{ margin: "10px 15px 0px 0px" }}>
                     <a href="/notifications">
-                      <Badge size="small" count={filteredNotification}>
+                      <Badge size="default" count={filteredNotification}>
                         <BellOutlined style={{ fontSize: "20px" }} />
                       </Badge>
                     </a>

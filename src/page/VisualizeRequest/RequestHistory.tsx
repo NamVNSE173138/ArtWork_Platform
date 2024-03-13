@@ -40,27 +40,40 @@ export default function RequestHistory() {
 
     const userToken = localStorage.getItem("USER")
     const [loading, setLoading] = useState<boolean>(true);
-    const [userRequestList, setUserRequestList] = useState([])
-    const [artistRequestList, setArtistRequestList] = useState([])
+    const [pendingRequestList, setPendingRequestList] = useState([])
+    const [artistResponseList, setArtistResponseList] = useState([])
 
-    const fetchUserRequestHistory = async () => {
+    const fetchPendingRequest = async () => {
         await axios.get(`http://localhost:5000/users/getUserInfo`, {
             headers: {
-                token: userToken,
+                token: userToken, //userToken = localStorage("USER")
             },
         })
             .then((res) => {
                 console.log("Current user data: ", res.data)
-                axios.get(`http://localhost:5000/userRequests/artist/${res.data.id}`)
+                axios.get(`http://localhost:5000/userRequests/user/${res.data.id}`)
                     .then((res) => {
                         console.log("User request list: ", res.data)
-                        setUserRequestList(res.data)
+                        setPendingRequestList(res.data)
                     })
                     .catch((err) => console.log(err))
+            })
+            .catch((err) => console.log(err));
+
+    };
+
+    const fetchArtistResponse = async () => {
+        await axios.get(`http://localhost:5000/users/getUserInfo`, {
+            headers: {
+                token: userToken, //userToken = localStorage("USER")
+            },
+        })
+            .then((res) => {
+                console.log("Current user data: ", res.data)
                 axios.get(`http://localhost:5000/artistRequests/user/${res.data.id}`)
                     .then((res: AxiosResponse) => {
                         console.log("Artist request list: ", res.data)
-                        setArtistRequestList(res.data)
+                        setArtistResponseList(res.data)
                     })
                     .catch((err) => console.log(err))
             })
@@ -68,7 +81,8 @@ export default function RequestHistory() {
     };
 
     useEffect(() => {
-        fetchUserRequestHistory()
+        fetchPendingRequest()
+        fetchArtistResponse()
     }, [])
 
     const items: TabsProps['items'] = [
@@ -80,7 +94,7 @@ export default function RequestHistory() {
         {
             key: '2',
             label:
-                <Badge dot={artistRequestList.length > 0}>
+                <Badge dot={artistResponseList.length > 0}>
                     <Text>Artist's responses</Text>
                 </Badge>,
             children: <ArtistResponse />

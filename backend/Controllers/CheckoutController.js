@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const moment = require("moment");
 const { decodeToken } = require("../Config/config");
 const Checkout = require("../Models/checkout");
-require('dotenv').config();
+// require('dotenv').config();
+
 function sortObject(obj) {
     let sorted = {};
     let str = [];
@@ -42,7 +43,7 @@ module.exports = {
         // let tmnCode = "J6FWHWSG";
         // let secretKey = "NTPZPCKNVCMJUQPPVTKQTGAOCEKAGQLY";
         // let vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        // let returnUrl = "http://localhost:8888/order/vnpay_return";
+        // let returnUrl = "http://localhost:5000/checkouts/vnpay_ipn";
 
 
         // let returnUrl = "http://localhost:3000/order/vnpay_return";
@@ -80,11 +81,38 @@ module.exports = {
         let signData = querystring.stringify(vnp_Params, { encode: false });
         let crypto = require("crypto");
         let hmac = crypto.createHmac("sha512", secretKey);
-        let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
+        let signed = hmac.update(new Buffer.alloc(signData, 'utf-8')).digest("hex");
         vnp_Params['vnp_SecureHash'] = signed;
         vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
-        console.log("vnurl", vnpUrl);
         res.send(vnpUrl)
+    },
+
+    getVnpayIPN: async function (req, res, next) {
+        var vnp_Params = req.query;
+        var secureHash = vnp_Params['vnp_SecureHash'];
+
+        delete vnp_Params['vnp_SecureHash'];
+        delete vnp_Params['vnp_SecureHashType'];
+
+        vnp_Params = sortObject(vnp_Params);
+        var config = require('config');
+        var secretKey = config.get('vnp_HashSecret');
+        var querystring = require('qs');
+        var signData = querystring.stringify(vnp_Params, { encode: false });
+        var crypto = require("crypto");
+        var hmac = crypto.createHmac("sha512", secretKey);
+        var signed = hmac.update(new Buffer.alloc(signData, 'utf-8')).digest("hex");
+
+
+        if (secureHash === signed) {
+            var orderId = vnp_Params['vnp_TxnRef'];
+            var rspCode = vnp_Params['vnp_ResponseCode'];
+            //Kiem tra du lieu co hop le khong, cap nhat trang thai don hang va gui ket qua cho VNPAY theo dinh dang duoi
+            res.status(200).json({ RspCode: '00', Message: 'success' })
+        }
+        else {
+            res.status(200).json({ RspCode: '97', Message: 'Fail checksum' })
+        }
     },
 
     saveBillTransaction: async (req, res, next) => {

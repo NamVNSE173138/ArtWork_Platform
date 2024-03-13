@@ -76,9 +76,8 @@ const ArtistList = () => {
 
   const [artistData, setArtistData] = useState<UserData[]>([]);
   const userToken = localStorage.getItem("USER")
-  const [currentUserId, setCurrentUserId] = useState("")
 
-  const fetchCurrentUserData = async () => {
+  const fetchArtistList = async () => {
     await axios.get(`http://localhost:5000/users/getUserInfo`, {
       headers: {
         token: userToken, //userToken = localStorage("USER")
@@ -86,18 +85,18 @@ const ArtistList = () => {
     })
       .then((res) => {
         console.log("Current user: ", res.data)
-        setCurrentUserId(res.data.id)
+        axios.get(`http://localhost:5000/users/artists/${res.data.id}`)
+          .then((res: AxiosResponse) => {
+            setArtistData(res.data);
+          })
+          .catch((error: any) => console.error("Error fetching data:", error));
       })
       .catch((err) => console.log(err));
   }
 
   useEffect(() => {
-    fetchCurrentUserData()
-    axios.get(`http://localhost:5000/users/artists/${currentUserId}`)
-      .then((res: AxiosResponse) => {
-        setArtistData(res.data);
-      })
-      .catch((error: any) => console.error("Error fetching data:", error));
+    fetchArtistList()
+
   }, []);
 
   const formItemLayout = {
@@ -200,7 +199,7 @@ const ArtistList = () => {
                 description={
                   <>
                     <span style={{ fontSize: "16px", fontWeight: "bold" }}>
-                      Follower: {item.numOfFollower}
+                      Followers: {item.numOfFollower}
                     </span>
                     <br />
                     <i>{item.bio}</i>
