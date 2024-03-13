@@ -34,6 +34,36 @@ module.exports = {
     }
   },
 
+  getOrderByUserId: async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      const results = await Order.find({ user: id, status: true }).sort({ 'createdAt': -1 })
+        .populate([
+          {
+            path: 'user',
+            model: 'User',
+          },
+          {
+            path: 'artwork',
+            model: 'Artwork',
+          }
+        ])
+
+      if (results) {
+        res.send(results);
+      }
+      else {
+        throw createError(404, "Order does not exist!")
+      }
+    }
+    catch (error) {
+      console.log(error.message);
+      if (error instanceof mongoose.CastError) {
+        return next(createError(400, 'Invalid Order Id'))
+      }
+    }
+  },
+
   postNewOrder: async (req, res, next) => {
     try {
       const order = new Order(req.body);
@@ -53,6 +83,29 @@ module.exports = {
       const options = { new: true };
 
       const result = await Order.findByIdAndUpdate(id, update, options);
+
+      if (!result) {
+        throw createError(404, "Order does not exist!");
+      }
+      else {
+        res.send(result);
+      }
+    }
+    catch (error) {
+      console.log(error.message);
+      if (error instanceof mongoose.CastError) {
+        return next(createError(400, 'Invalid Order Id'))
+      }
+    }
+  },
+
+  updateOrderByCode: async (req, res, next) => {
+    try {
+      const code = req.params.code;
+      const updates = req.body;
+      const options = { new: true };
+
+      const result = await Order.findOneAndUpdate({ 'code': code }, updates, options)
 
       if (!result) {
         throw createError(404, "Order does not exist!");

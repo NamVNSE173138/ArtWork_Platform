@@ -18,8 +18,7 @@ import {
   BellOutlined,
   LoadingOutlined,
   LogoutOutlined,
-  MenuOutlined,
-  SearchOutlined,
+  FileDoneOutlined,
   ShoppingCartOutlined,
   SolutionOutlined,
   SyncOutlined,
@@ -94,8 +93,8 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
     {
       label: (
         <Link id="profile" className="dropdown-item" to={`/profile`}>
-          <UserOutlined style={{ fontSize: "20px", marginRight: "5px" }} /> View
-          Profile
+          <UserOutlined style={{ fontSize: "20px", marginRight: "5px" }} />
+          View profile
         </Link>
       ),
       key: 1,
@@ -106,7 +105,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
           <ShoppingCartOutlined
             style={{ fontSize: "20px", marginRight: "5px" }}
           />{" "}
-          View Cart
+          View cart
         </Link>
       ),
       key: 2,
@@ -115,16 +114,16 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
       label: (
         <Link id="profile" className="dropdown-item" to={`/request/history`}>
           <SolutionOutlined style={{ fontSize: "20px", marginRight: "5px" }} />{" "}
-          Request History
+          Request history
         </Link>
       ),
       key: 3,
     },
     {
       label: (
-        <Link id="profile" className="dropdown-item" to={`/notifications`}>
-          <BellOutlined style={{ fontSize: "20px", marginRight: "5px" }} /> View
-          Notification
+        <Link id="profile" className="dropdown-item" to={`/order`}>
+          <FileDoneOutlined style={{ fontSize: "20px", marginRight: "5px" }} />
+          Order history
         </Link>
       ),
       key: 4,
@@ -133,7 +132,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSubmit }) => {
       label: (
         <Link id="profile" className="dropdown-item" to={`/forgot`}>
           <SyncOutlined style={{ fontSize: "20px", marginRight: "5px" }} />{" "}
-          Change Password
+          Change password
         </Link>
       ),
       key: 5,

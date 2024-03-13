@@ -23,10 +23,12 @@ interface User {
   email: string;
   password: string;
   nickName: string;
+  bio?: string;
   role: string;
   numOfFollower: number;
   avatar: string;
   status: boolean;
+  balance?: number;
 }
 interface ArtworkResponse {
   data: Pin[];

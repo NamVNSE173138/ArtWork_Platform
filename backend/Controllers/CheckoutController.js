@@ -36,18 +36,18 @@ module.exports = {
         let tmnCode = process.env.VNP_TMNCODE;
         let secretKey = process.env.VNP_SECRETKEY;
         let vnpUrl = process.env.VNP_URL;
-        let returnUrl = process.env.VNP_RETURNURL;
+        // let returnUrl = process.env.VNP_RETURNURL;
 
 
         // let tmnCode = "J6FWHWSG";
         // let secretKey = "NTPZPCKNVCMJUQPPVTKQTGAOCEKAGQLY";
         // let vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        // let returnUrl = "http://localhost:8888/order/vnpay_return";
+        let returnUrl = "http://localhost:3000/order/status";
 
 
         // let returnUrl = "http://localhost:3000/order/vnpay_return";
-        let orderId = moment(date).format('DDHHmmss');
         let amount = req.body.amount;
+        let code = req.body.code
         let bankCode = "VNBANK";
         // let bankCode = req.body.bankCode;
         // let locale = req.body.language;
@@ -63,10 +63,10 @@ module.exports = {
         vnp_Params['vnp_TmnCode'] = tmnCode;
         vnp_Params['vnp_Locale'] = locale;
         vnp_Params['vnp_CurrCode'] = currCode;
-        vnp_Params['vnp_TxnRef'] = orderId;
-        vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId;
+        vnp_Params['vnp_TxnRef'] = code;
+        vnp_Params['vnp_OrderInfo'] = 'Transaction code:' + code
         vnp_Params['vnp_OrderType'] = 'other';
-        vnp_Params['vnp_Amount'] = amount * 100 * 24000;
+        vnp_Params['vnp_Amount'] = amount * 100 * 24680;
         vnp_Params['vnp_ReturnUrl'] = returnUrl;
         vnp_Params['vnp_IpAddr'] = ipAddr;
         vnp_Params['vnp_CreateDate'] = createDate;
