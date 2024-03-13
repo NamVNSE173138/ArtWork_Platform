@@ -1,11 +1,13 @@
-import { useEffect, useState, ReactNode } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Button, Card, Image, notification } from "antd";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Avatar, Button, Card } from "antd";
 import axios from "axios";
-import { Tabs, TabsTrigger, TabsList } from "@radix-ui/react-tabs";
-import { DeleteOutlined } from "@ant-design/icons";
-import { markNotificationAsRead } from "../../api/notificate/notifcationAPI";
+import {
+  deleteNotification,
+  markNotificationAsRead,
+} from "../../api/notificate/notifcationAPI";
 import Navbar from "../../components/Navbar/Navbar";
+import moment from "moment";
 
 interface User {
   id: string;
@@ -25,6 +27,7 @@ interface NotificationProps {
   user: {
     userId: string;
     nickname: string;
+    avatar: string;
   };
   artist: string;
   artwork: {
@@ -33,6 +36,8 @@ interface NotificationProps {
   };
   type: string;
   status: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 function SkeletonNotifications() {
@@ -50,10 +55,6 @@ function SkeletonNotifications() {
 const Notification = () => {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
-  const [filter, setFilter] = useState<"Like" | "Buy" | "Request">("Like");
-  const filteredNotifications = notifications.filter(
-    (notification) => notification.type === filter
-  );
   const userToken = localStorage.getItem("USER");
   const [isLoading, setIsLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState<User>({
@@ -115,33 +116,33 @@ const Notification = () => {
 
   function Notification({
     notification,
-    title,
     description,
-    icon,
   }: {
     notification: NotificationProps;
-    title: string;
     description: string;
-    icon: ReactNode;
   }) {
     return (
       <div
         className="flex items-center gap-4 border p-4 rounded"
         key={notification._id}
       >
-        {icon}
-
         <div>
-          <div className="font-bold mb-2">{title}</div>
-          <div>
-            {/* <Link to={`/profile/${notification.user.userId}`}> */}
-            {notification.user.nickname}
-            {/* </Link> */}
-            {description}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Avatar size={50} src={notification.user.avatar} />
+            <div style={{ marginLeft: "10px", marginTop: "-20px" }}>
+              <span style={{ fontWeight: "bold" }}>
+                {notification.user.nickname}
+              </span>
+              {description}
+            </div>
+          </div>
+          <div style={{ margin: "-25px 0px 10px 60px", fontSize: "12px" }}>
+            {moment(notification.createdAt).fromNow()}
           </div>
         </div>
 
         <Button
+          style={{ marginTop: "10px" }}
           title={notification.status ? "outline" : "default"}
           className="ml-auto"
           onClick={() => {
@@ -149,12 +150,17 @@ const Notification = () => {
               markNotificationAsRead(notification._id);
             } else {
               console.log("DAD: ", notification);
-              // console.log("IDDD: ", notification.user);
             }
             navigate(`/artwork/${notification.artwork?._id}`);
           }}
         >
           {notification.status ? "View" : "Read"}
+        </Button>
+        <Button
+          style={{ margin: "10px 0px 0px 10px" }}
+          onClick={() => deleteNotification(notification._id)}
+        >
+          Delete
         </Button>
       </div>
     );
@@ -166,58 +172,33 @@ const Notification = () => {
       <div className="notification-container">
         <h1 className="text-center text-4xl font-bold mb-12">Notifications</h1>
         <div className="flex flex-col gap-8 max-w-xl mx-auto">
-          <Tabs
-            defaultValue="votes"
-            className="mx-auto"
-            onValueChange={(value: any) => {
-              setFilter(value);
-            }}
-          >
-            <TabsList>
-              <TabsTrigger value="Like" className="flex gap-2">
-                Likes
-              </TabsTrigger>
-              <TabsTrigger value="Buy" className="flex gap-2">
-                Buy
-              </TabsTrigger>
-              <TabsTrigger value="Request" className="flex gap-2">
-                Request
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          {notifications.map((notification: any) => {
+            let description = "";
 
-          {filteredNotifications?.map((notification: any) => {
-            if (notification.type === "Like") {
-              return (
-                <Notification
-                  key={notification._id}
-                  description=" liked your post!"
-                  icon={<DeleteOutlined className="h-14 w-14" />}
-                  title="New Liked!!!"
-                  notification={notification}
-                />
-              );
-            } else if (notification.type === "Buy") {
-              return (
-                <Notification
-                  key={notification._id}
-                  description=" want to buy your artwork."
-                  icon={<DeleteOutlined className="h-14 w-14" />}
-                  title="New Money!!!"
-                  notification={notification}
-                />
-              );
-            } else {
-              return (
-                <Notification
-                  key={notification._id}
-                  description=" want to hire you."
-                  icon={<DeleteOutlined className="h-14 w-14" />}
-                  title="New Request!!!"
-                  notification={notification}
-                />
-              );
+            switch (notification.type) {
+              case "Like":
+                description = " liked your post!";
+                break;
+              case "Buy":
+                description = " want to buy your artwork.";
+                break;
+              case "Request":
+                description = " want to hire you.";
+                break;
+              case "Decline":
+                description = " has declined your request.";
+                break;
+              default:
+                break;
             }
+
+            return (
+              <Notification
+                key={notification._id}
+                description={description}
+                notification={notification}
+              />
+            );
           })}
 
           {notifications === undefined && (
@@ -228,17 +209,26 @@ const Notification = () => {
             </div>
           )}
 
-          {filteredNotifications && filteredNotifications.length === 0 && (
-            <div className="flex flex-col items-center gap-8">
-              <Image
-                className="rounded-lg bg-white p-12"
+          {notifications && notifications.length === 0 && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <img
+                style={{
+                  borderRadius: "8px",
+                  backgroundColor: "#ffffff",
+                  padding: "48px",
+                }}
                 src="https://raw.githubusercontent.com/webdevcody/thumbnail-critique/22e8204eab91855ea5069e876b294ba5d2706200/public/void.svg"
                 alt="no found icon"
                 width={400}
               />
-              <div className="text-2xl font-bold">
-                You have no notifications
-              </div>
+              <div style={{ fontSize: "2rem" }}>You have no notifications</div>
             </div>
           )}
         </div>

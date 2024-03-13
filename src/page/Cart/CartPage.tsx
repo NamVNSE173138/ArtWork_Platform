@@ -101,7 +101,7 @@ const CartPage = () => {
     );
   };
 
-  const handleNothing = () => { };
+  const handleNothing = () => {};
 
   const ShowCart = () => {
     let subtotal = 0;
@@ -113,11 +113,14 @@ const CartPage = () => {
 
     const handleCheckout = async () => {
       try {
-        const response = await axios.post('http://localhost:5000/checkouts/create_payment_url', { amount: total });
+        const response = await axios.post(
+          "http://localhost:5000/checkouts/create_payment_url",
+          { amount: total }
+        );
         console.log("url vnpay", response.data);
         window.location.href = response.data;
       } catch (error) {
-        console.error('Error during checkout:', error);
+        console.error("Error during checkout:", error);
       }
     };
 
@@ -164,11 +167,10 @@ const CartPage = () => {
                                 }}
                               >
                                 <button
-                                  className="btn px-2"
+                                  className="btn px-1"
                                   onClick={() => {
                                     deleteCartItem(item._id);
                                   }}
-                                  style={{ marginTop: "-10px" }}
                                 >
                                   X
                                 </button>
@@ -201,7 +203,8 @@ const CartPage = () => {
                   <div className="card-body">
                     <ul className="list-group list-group-flush">
                       <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                        Products ({cart.length})<span>${subtotal}</span>
+                        Products ({cart.length})
+                        <span>${subtotal.toFixed(2)}</span>
                       </li>
                       <li className="list-group-item d-flex justify-content-between align-items-center px-0">
                         VAT Taxes
@@ -213,7 +216,7 @@ const CartPage = () => {
                         </div>
                         <span>
                           {/* <strong>${subtotal + taxes}</strong> */}
-                          <strong>${total}</strong>
+                          <strong>${total.toFixed(2)}</strong>
                         </span>
                       </li>
                     </ul>
