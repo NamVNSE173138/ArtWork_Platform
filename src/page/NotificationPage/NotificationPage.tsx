@@ -131,6 +131,10 @@ const Notification = () => {
       navigate(`/artistList/${notification.user._id}`);
     };
 
+    const navigateApprove = () => {
+      navigate("/request/history");
+    };
+
     let onClickAction: any;
 
     switch (notification.type) {
@@ -142,6 +146,9 @@ const Notification = () => {
         break;
       case "Decline":
         onClickAction = navigateDecline;
+        break;
+      case "Approve":
+        onClickAction = navigateApprove;
         break;
       default:
         onClickAction = () => {}; // Default action if type is unknown
@@ -225,6 +232,9 @@ const Notification = () => {
                   break;
                 case "Decline":
                   description = " has declined your request.";
+                  break;
+                case "Approve":
+                  description = " has approved your request.";
                   break;
                 default:
                   break;

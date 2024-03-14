@@ -14,6 +14,8 @@ router.delete('/:id', NotificationController.deleteNotification);
 
 router.post('/request/:id', NotificationController.requestNotification);
 
+router.post('/approve/:id', NotificationController.approveNotification);
+
 router.post('/decline/:id', NotificationController.declineNotification);
 
 module.exports = router;

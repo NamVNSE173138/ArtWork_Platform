@@ -66,6 +66,19 @@ exports.declineNotification = async (req, res) => {
   }
 }
 
+exports.approveNotification = async (req, res) => {
+  try {
+    const { token } = req.headers;
+    const userInfo = decodeToken(token);
+    const userId = userInfo?.data?.checkEmail?._id;
+    const notification = await Notification.create({ user: userId, artist: req.params.id, type: "Approve", status: false });
+    res.status(201).json({ status: 'success', data: notification });
+  } catch (err) {
+    res.status(400).json({ status: 'fail', message: err.message });
+  }
+}
+
+
 exports.getNotificationsByUser = async (req, res) => {
   try {
     const notifications = await Notification.find({ artist: req.params.userId }).populate('user', 'nickname');
