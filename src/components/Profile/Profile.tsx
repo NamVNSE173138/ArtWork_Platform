@@ -222,11 +222,6 @@ const ProfilePage: React.FC = () => {
       .catch((err) => console.log(err));
   };
 
-<<<<<<< HEAD
-  const fetchArtworks = async (id: string) => {
-    console.log(id);
-
-=======
   const getFollowingList = async (id: any) => {
     setIsLoading(true);
     if (currentUser.id) {
@@ -244,8 +239,7 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  const fetchArtworks = async () => {
->>>>>>> 0c5ebf3064faacf97f562b48ab60632f5e6aee18
+  const fetchArtworks = async (id: string) => {
     try {
       const response = await axios.get(
         `http://localhost:5000/artworks/artworkOf/${id}`
@@ -267,12 +261,7 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     fetchCurrentUserData();
     fetchFavoriteList();
-<<<<<<< HEAD
-    // fetchArtworks();
-=======
-    fetchArtworks();
     getFollowingList(currentUser.id);
->>>>>>> 0c5ebf3064faacf97f562b48ab60632f5e6aee18
   }, [currentUser.id]);
   const items: TabsProps["items"] = [
     {
