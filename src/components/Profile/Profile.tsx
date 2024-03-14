@@ -202,21 +202,31 @@ const ProfilePage: React.FC = () => {
       .catch((err) => console.log(err));
   };
 
-  const fetchArtworks = async () => {
+  const fetchArtworks = async (id: string) => {
+    console.log(id);
+
     try {
       const response = await axios.get(
-        `http://localhost:5000/artworks/artworkOf/${currentUser.id}`
+        `http://localhost:5000/artworks/artworkOf/${id}`
       );
       setArtworks(response.data);
+
       console.log(response.data);
     } catch (error) {
       console.error("Error fetching artworks:", error);
     }
   };
   useEffect(() => {
+    console.log(currentUser.id);
+
+    if (currentUser.id) {
+      fetchArtworks(currentUser.id);
+    }
+  }, [currentUser]);
+  useEffect(() => {
     fetchCurrentUserData();
     fetchFavoriteList();
-    fetchArtworks();
+    // fetchArtworks();
   }, [currentUser.id]);
   const items: TabsProps["items"] = [
     {

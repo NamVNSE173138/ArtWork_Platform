@@ -92,10 +92,10 @@ const ContributedArtwork: React.FC = () => {
       })
       .catch((err) => console.log(err));
   };
-  const fetchArtworks = async () => {
+  const fetchArtworks = async (id: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/artworks/artworkOf/${currentUser.id}`
+        `http://localhost:5000/artworks/artworkOf/${id}`
       );
       setArtworks(response.data);
       console.log(response.data);
@@ -114,9 +114,12 @@ const ContributedArtwork: React.FC = () => {
     setLoading(false);
   };
   useEffect(() => {
+    if (currentUser.id) {
+      fetchArtworks(currentUser.id);
+    }
+  }, [currentUser.id]);
+  useEffect(() => {
     fetchCurrentUserData();
-    fetchArtworks();
-
     generateImageObjects();
   }, [currentUser.id]);
 
