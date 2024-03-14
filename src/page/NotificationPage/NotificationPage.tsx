@@ -25,7 +25,7 @@ interface User {
 interface NotificationProps {
   _id: string;
   user: {
-    userId: string;
+    _id: string;
     nickname: string;
     avatar: string;
   };
@@ -127,8 +127,8 @@ const Notification = () => {
       navigate("/profile/requests");
     };
 
-    const navigateToBuy = () => {
-      navigate(`/home`);
+    const navigateDecline = () => {
+      navigate(`/artistList/${notification.user._id}`);
     };
 
     let onClickAction: any;
@@ -140,8 +140,8 @@ const Notification = () => {
       case "Request":
         onClickAction = navigateRequest;
         break;
-      case "Buy":
-        onClickAction = navigateToBuy;
+      case "Decline":
+        onClickAction = navigateDecline;
         break;
       default:
         onClickAction = () => {}; // Default action if type is unknown

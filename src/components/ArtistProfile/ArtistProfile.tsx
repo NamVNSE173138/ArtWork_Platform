@@ -16,6 +16,7 @@ import {
   CameraOutlined,
   ShareAltOutlined,
   PlusOutlined,
+  CheckOutlined,
 } from "@ant-design/icons";
 import "./ArtistProfile.css"; // Create this stylesheet for additional styling if needed
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -24,14 +25,29 @@ import { Box } from "@mui/material";
 import Masonry from "@mui/lab/Masonry";
 import LazyLoad from "react-lazyload";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { createFollower, deleteFollower } from "../../api/follow/followAPI";
 
 const { Meta } = Card;
 
 const ArtistProfile: React.FC = () => {
   const { _id } = useParams();
-
+  const userToken = localStorage.getItem("USER");
+  const [isLoading, setIsLoading] = useState(false);
   const [artist, setArtist] = useState<any>(null);
   const [artworks, setArtworks] = useState<any[]>([]);
+  const [follows, setFollows] = useState<any[]>([]);
+  const [currentUser, setCurrentUser] = useState<any>({
+    id: "",
+    email: "",
+    password: "",
+    nickname: "",
+    role: "",
+    numOfFollower: 0,
+    avatar: "",
+    status: false,
+    createdAt: "",
+    updatedAt: "",
+  });
 
   const handleShareProfile = () => {
     // Copy URL to clipboard
@@ -73,6 +89,57 @@ const ArtistProfile: React.FC = () => {
     fetchArtworks();
   }, [_id]);
   console.log(artworks);
+
+  const fetchCurrentUserData = async () => {
+    setIsLoading(true);
+    await axios
+      .get(`http://localhost:5000/users/getUserInfo`, {
+        headers: {
+          token: userToken, //userToken = localStorage("USER")
+        },
+      })
+      .then((res) => {
+        setCurrentUser(res.data);
+        setIsLoading(false);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const getFollowingList = async (id: any) => {
+    setIsLoading(true);
+    if (currentUser.id) {
+      await axios
+        .get(`http://localhost:5000/follows/following/${id}`, {
+          headers: {
+            token: userToken,
+          },
+        })
+        .then((res) => {
+          setFollows(res.data.filter((item: any) => item.following === _id));
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
+  useEffect(() => {
+    fetchCurrentUserData();
+    getFollowingList(currentUser.id);
+  }, [currentUser.id]);
+
+  const handleFollow = () => {
+    createFollower(_id);
+    setTimeout(() => {
+      getFollowingList(currentUser.id);
+    }, 500);
+  };
+
+  const handleUnfollow = () => {
+    deleteFollower(follows[0]._id);
+    setTimeout(() => {
+      getFollowingList(currentUser.id);
+    }, 500);
+  };
 
   // const [artistArtwork, setArtistArtwork] = useState(artworks.slice(0, 30));
   // console.log(artistArtwork);
@@ -122,9 +189,10 @@ const ArtistProfile: React.FC = () => {
               <Button
                 size="large"
                 className="profile-btn"
-                icon={<PlusOutlined />}
+                icon={follows.length > 0 ? <CheckOutlined /> : <PlusOutlined />}
+                onClick={follows.length > 0 ? handleUnfollow : handleFollow}
               >
-                Follow Artist
+                {follows.length > 0 ? "Following" : "Follow"}
               </Button>
             </Card>
           </div>

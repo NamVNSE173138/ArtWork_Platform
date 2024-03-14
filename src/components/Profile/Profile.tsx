@@ -13,11 +13,13 @@ import {
   Badge,
   Typography,
   Flex,
+  List,
 } from "antd";
 import {
   EditOutlined,
   ShareAltOutlined,
   BuildOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import type { TabsProps } from "antd";
 import "./Profile.css";
@@ -26,6 +28,7 @@ import Favorite from "../Favorite/Favorite";
 import Navbar from "../Navbar/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { getUserId } from "../../api";
 const { Meta } = Card;
 const { Text } = Typography;
 
@@ -62,10 +65,18 @@ interface FavoriteList {
   updateAt?: string;
 }
 
+interface FollowList {
+  _id: string;
+  follower: string;
+  following: string;
+  status: boolean;
+}
+
 const ProfilePage: React.FC = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [followingModalVisible, setFollowingModalVisible] = useState(false);
   const token = localStorage.getItem("USER");
   const [favoriteList, setFavoriteList] = useState<FavoriteList[]>([]);
   const [avatarPreview, setAvatarPreview] = useState<string>("");
@@ -89,6 +100,14 @@ const ProfilePage: React.FC = () => {
         setFavoriteList(res.data.data);
       })
       .catch((err) => console.log(err));
+  };
+
+  const showFollowingModal = () => {
+    setFollowingModalVisible(true);
+  };
+
+  const cancelFollowingModal = () => {
+    setFollowingModalVisible(false);
   };
 
   const showEditModal = () => {
@@ -159,6 +178,7 @@ const ProfilePage: React.FC = () => {
   const userToken = localStorage.getItem("USER");
 
   const [isLoading, setIsLoading] = useState(false);
+  const [dataSource, setDataSoure] = useState<FollowList[]>([]);
   const [currentUser, setCurrentUser] = useState<User>({
     id: "",
     email: "",
@@ -202,9 +222,30 @@ const ProfilePage: React.FC = () => {
       .catch((err) => console.log(err));
   };
 
+<<<<<<< HEAD
   const fetchArtworks = async (id: string) => {
     console.log(id);
 
+=======
+  const getFollowingList = async (id: any) => {
+    setIsLoading(true);
+    if (currentUser.id) {
+      await axios
+        .get(`http://localhost:5000/follows/following/${id}`, {
+          headers: {
+            token: userToken,
+          },
+        })
+        .then((res: any) => {
+          setDataSoure(res.data);
+          setIsLoading(false);
+        })
+        .catch((err: any) => console.log(err));
+    }
+  };
+
+  const fetchArtworks = async () => {
+>>>>>>> 0c5ebf3064faacf97f562b48ab60632f5e6aee18
     try {
       const response = await axios.get(
         `http://localhost:5000/artworks/artworkOf/${id}`
@@ -226,7 +267,12 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     fetchCurrentUserData();
     fetchFavoriteList();
+<<<<<<< HEAD
     // fetchArtworks();
+=======
+    fetchArtworks();
+    getFollowingList(currentUser.id);
+>>>>>>> 0c5ebf3064faacf97f562b48ab60632f5e6aee18
   }, [currentUser.id]);
   const items: TabsProps["items"] = [
     {
@@ -258,6 +304,8 @@ const ProfilePage: React.FC = () => {
       children: <Contributed />,
     },
   ];
+
+  console.log("ADAQQQQQ: ", dataSource[0]);
 
   return (
     <>
@@ -295,6 +343,15 @@ const ProfilePage: React.FC = () => {
                     onClick={showEditModal}
                   >
                     Edit Profile
+                  </Button>
+                  <Button
+                    size="large"
+                    className="profile-btn"
+                    icon={<TeamOutlined />}
+                    key="edit"
+                    onClick={showFollowingModal}
+                  >
+                    Following
                   </Button>
                 </Flex>
                 {currentUser.role === "artist" ? (
@@ -360,6 +417,38 @@ const ProfilePage: React.FC = () => {
                     <Input.TextArea placeholder="Enter your bio" />
                   </Form.Item>
                 </Form>
+              </Modal>
+              <Modal
+                title="Following List"
+                open={followingModalVisible}
+                onCancel={cancelFollowingModal}
+                footer={null}
+                centered
+              >
+                <List
+                  itemLayout="horizontal"
+                  dataSource={dataSource}
+                  renderItem={(item, index) => (
+                    <List.Item>
+                      <List.Item.Meta
+                        avatar={
+                          <Avatar
+                          // src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+                          // src={item.following}
+                          />
+                        }
+                        title={
+                          <a
+                            style={{ textDecoration: "none" }}
+                            href={`/artistList/${item.following}`}
+                          >
+                            {item.following}
+                          </a>
+                        }
+                      />
+                    </List.Item>
+                  )}
+                />
               </Modal>
             </div>
           </Col>

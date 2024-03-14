@@ -21,6 +21,7 @@ import {
   LikeOutlined,
   LikeFilled,
   HeartOutlined,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
@@ -338,8 +339,13 @@ export default function Artwork() {
   useEffect(() => {
     fetchCurrentUserData();
     fetchArtworkData();
-    getFollowingList(currentUser.id);
     fetchFavoriteList();
+  }, []);
+
+  useEffect(() => {
+    if (currentUser.id) {
+      getFollowingList(currentUser.id);
+    }
   }, [currentUser.id]);
 
   useEffect(() => {
@@ -450,19 +456,16 @@ export default function Artwork() {
                   shape="round"
                   size="large"
                   id={styles.followButton}
+                  icon={
+                    follows.length > 0 ? (
+                      <CheckCircleOutlined />
+                    ) : (
+                      <PlusCircleOutlined />
+                    )
+                  }
                   onClick={follows.length > 0 ? handleUnfollow : handleFollow}
                 >
-                  {follows.length > 0 ? (
-                    <>
-                      <span>Following</span>
-                      {/* <CheckCircleOutlined /> */}
-                    </>
-                  ) : (
-                    <>
-                      <PlusCircleOutlined />
-                      <span>Follow</span>
-                    </>
-                  )}
+                  {follows.length > 0 ? "Following" : "Follow"}
                 </Button>
               </div>
               <div className={styles.commentSection}>
