@@ -21,6 +21,8 @@ router.patch('/updateUserInfo', userController.updateUser);
 
 router.patch('/updateRole/:id', userController.updateArtistRole);
 
+router.patch('/password/:id', userController.updatePassword);
+
 router.delete('/:id', userController.deleteUser);
 
 

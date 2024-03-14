@@ -40,7 +40,7 @@ export default function Reset() {
         }),
         onSubmit: async (values) => {
             setIsLoading(true)
-            await axios.patch(`http://localhost:5000/users/${params.id}`, {
+            await axios.patch(`http://localhost:5000/users/password/${params.id}`, {
                 password: values.password
             })
                 .then(() => {
