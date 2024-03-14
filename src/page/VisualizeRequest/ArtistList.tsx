@@ -88,7 +88,7 @@ const ArtistList: React.FC = () => {
     getNewPins();
   }, []);
 
-  useEffect(() => { }, [pins]);
+  useEffect(() => {}, [pins]);
   return (
     <>
       <Navbar onSubmit={onSearchSubmit} />
