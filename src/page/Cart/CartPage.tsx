@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import Navbar from "../../components/Navbar/Navbar";
 import { deleteCartItem, getCartItemById } from "../../api/cart/cartAPI";
+import { generateCode } from "../../assistants/Generators";
 
 interface User {
   id: string;
@@ -101,8 +102,6 @@ const CartPage = () => {
     );
   };
 
-  const handleNothing = () => { };
-
   const ShowCart = () => {
     let subtotal = 0;
     let taxes = 30.0;
@@ -113,11 +112,12 @@ const CartPage = () => {
 
     const handleCheckout = async () => {
       try {
+        const code = generateCode(10, '')
         const response = await axios.post(
-          "http://localhost:5000/checkouts/create_payment_url",
-          { amount: total }
-        );
-        console.log("url vnpay", response.data);
+          "http://localhost:5000/checkouts/create_payment_url", {
+          amount: total,
+          code: code,
+        });
         window.location.href = response.data;
       } catch (error) {
         console.error("Error during checkout:", error);
@@ -244,7 +244,7 @@ const CartPage = () => {
 
   return (
     <>
-      <Navbar onSubmit={handleNothing} />
+      <Navbar onSubmit={() => { }} />
       <div className="container my-3 py-3">
         <h1 className="text-center">Cart</h1>
         <hr />
